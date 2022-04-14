@@ -3,12 +3,10 @@ package world;
 import constants.BushConstants;
 import constants.UiConstants;
 import constants.TreeConstants;
-import things.Organism;
-import things.Thing;
-import things.Tree;
-import things.Bush;
+import things.*;
 import quadsearch.Region;
 import quadsearch.QuadTree;
+import utilities.Random;
 
 import java.util.ArrayList;
 
@@ -17,32 +15,41 @@ public class World {
     public float playerPositionY = UiConstants.startPositionY;
     public ArrayList<Thing> things = new ArrayList<>();
     public QuadTree thingCoordinates;
-    Region livingArea = new Region(0, 0, UiConstants.fieldDimX, UiConstants.fieldDimY);
+    Region livingArea = new Region(0, 0, UiConstants.fullDimX, UiConstants.fullDimY);
+    public float currentFPS;
 
-    World() {
-        System.out.println("Creating the world...");
-        initializeTrees();
-        initializeBushes();
-    }
-
-    public void initializeTrees() {
-        for (int i = 0; i< TreeConstants.startingCount; i++) {
-            float randX = (float) Math.random() * UiConstants.fieldDimX;
-            float randY = (float) Math.random() * UiConstants.fieldDimY;
-            float size = (float) Math.random() * TreeConstants.maxSize;
+    private void initializeTrees(float minX, float minY, float maxX, float maxY) {
+        int count = seedDensityToCount(TreeConstants.startingDensity, minX, minY, maxX, maxY);
+        for (int i = 0; i<=count; i++) {
+            float randX = Random.randFloat(minX, maxX);
+            float randY = Random.randFloat(minY, maxY);
+            float size = Random.randFloat(TreeConstants.maxSize / 2, TreeConstants.maxSize);
             Tree tree = new Tree(randX, randY, size, this);
+            tree.healthPercent = Random.randFloat(20, 100);
             things.add(tree);
         }
     }
 
-    public void initializeBushes() {
-        for (int i = 0; i< BushConstants.startingCount; i++) {
-            float randX = (float) Math.random() * UiConstants.fieldDimX;
-            float randY = (float) Math.random() * UiConstants.fieldDimY;
-            float size = (float) Math.random() * BushConstants.maxSize;
+    private void initializeBushes(float minX, float minY, float maxX, float maxY) {
+        int count = seedDensityToCount(BushConstants.startingDensity, minX, minY, maxX, maxY);
+        for (int i = 0; i<=count; i++) {
+            float randX = Random.randFloat(minX, maxX);
+            float randY = Random.randFloat(minY, maxY);
+            float size = Random.randFloat(BushConstants.maxSize / 2, BushConstants.maxSize);
             Bush bush = new Bush(randX, randY, size, this);
+            bush.healthPercent = Random.randFloat(20, 100);
             things.add(bush);
         }
+    }
+
+    public void initializeInRange(float minX, float minY, float maxX, float maxY) {
+        this.initializeTrees(minX, minY, maxX, maxY);
+        this.initializeBushes(minX, minY, maxX, maxY);
+    }
+
+    private int seedDensityToCount(float densityPer100, float minX, float minY, float maxX, float maxY) {
+        float area = (maxX - minX) * (maxY - minY);
+        return (int) (densityPer100 * area / 100000);
     }
 
     public void updateCoordinates() {
@@ -50,6 +57,11 @@ public class World {
         for (int i = 0; i < things.size(); i++) {
             Thing thing = things.get(i);
             if (isCloseEnoughToUpdate(thing)) {
+                if (thing instanceof Tree) {
+                    if (((Tree) thing).sproutEta > 0) {
+                        continue;
+                    }
+                }
                 quadsearch.Point point = new quadsearch.Point(i, thing.xPosition, thing.yPosition);
                 thingCoordinates.addPoint(point);
             }
@@ -57,7 +69,6 @@ public class World {
     }
 
     public void updateThings() {
-        // TODO: i make a new large array every time...
         ArrayList<Thing> newThings = new ArrayList<>();
         for (Thing thing : things) {
             if (thing instanceof Organism && isCloseEnoughToUpdate(thing)) {
@@ -72,11 +83,15 @@ public class World {
     }
 
     private boolean isCloseEnoughToUpdate(Thing thing) {
-        return thing.calcDistanceTo(playerPositionX, playerPositionY) <= UiConstants.interactionRange;
+        return thing.calcDistanceTo(playerPositionX, playerPositionY) <= UiConstants.loadRange;
     }
 
     public void updateWorld() {
         updateCoordinates();
         updateThings();
+    }
+
+    World() {
+        System.out.println("Creating the world...");
     }
 }

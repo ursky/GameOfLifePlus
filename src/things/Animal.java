@@ -2,6 +2,8 @@ package things;
 import constants.UiConstants;
 import world.World;
 
+import java.util.ArrayList;
+
 
 public class Animal extends Organism {
     float maxSpeed, maxAcceleration;
@@ -30,11 +32,11 @@ public class Animal extends Organism {
             this.yVelocity = this.maxSpeed;
         }
         if (this.xPosition + this.xVelocity < 0
-                || this.xPosition + this.xVelocity + this.size >= UiConstants.fieldDimX) {
+                || this.xPosition + this.xVelocity + this.size >= UiConstants.fullDimX) {
             this.xVelocity = 0;
         }
         if (this.yPosition + this.yVelocity < 0
-                || this.yPosition + this.yVelocity + this.size >= UiConstants.fieldDimY) {
+                || this.yPosition + this.yVelocity + this.size >= UiConstants.fullDimY) {
             this.yVelocity = 0;
         }
     }
@@ -42,6 +44,19 @@ public class Animal extends Organism {
     public void updateIntent() {
         this.xAcceleration = randFloat(-this.maxAcceleration, this.maxAcceleration);
         this.yAcceleration = randFloat(-this.maxAcceleration, this.maxAcceleration);
+    }
+
+    @Override
+    public ArrayList<Organism> live() {
+        ArrayList<Organism> updatedCreatures = new ArrayList<>();
+        if (this.healthPercent > 0) {
+            updatedCreatures.add(this);
+            this.grow();
+            ArrayList<Organism> offsprings = reproduce();
+            updatedCreatures.addAll(offsprings);
+            this.move();
+        }
+        return updatedCreatures;
     }
 
     public Animal(float xPosition, float yPosition, float maxSpeed, float maxAcceleration, float size, World world) {

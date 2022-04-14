@@ -27,5 +27,6 @@ public class Bush extends Plant {
         this.shadeRange = BushConstants.shadeRange;
         this.shadePenalty = BushConstants.shadePenalty;
         this.growAtHealth = BushConstants.growAtHealth;
+        this.maxSproutTime = BushConstants.sproutTime;
     }
 }

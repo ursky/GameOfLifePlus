@@ -26,5 +26,6 @@ public class Tree extends Plant {
         this.shadeRange = TreeConstants.shadeRange;
         this.shadePenalty = TreeConstants.shadePenalty;
         this.growAtHealth = TreeConstants.growAtHealth;
+        this.maxSproutTime = TreeConstants.sproutTime;
     }
 }

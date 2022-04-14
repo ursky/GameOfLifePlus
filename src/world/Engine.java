@@ -6,19 +6,20 @@ import java.awt.*;
 
 import constants.UiConstants;
 import things.Thing;
-import ui.Keyboard;
+import utilities.Keyboard;
 
 public class Engine extends JPanel implements ActionListener {
     World world = new World();
+    Procedural procedural = new Procedural(world);
     Timer timer;
-    int currentFPS = 0;
-    long currentTime = 0;
+    int currentFPS = UiConstants.targetFPS;
+    long currentTime = System.currentTimeMillis();
     int framesSinceLastFPS = 0;
-    long timeOfLastFPS = 0;
+    long timeOfLastFPS = System.currentTimeMillis();
 
     Engine() {
-        this.setPreferredSize(new Dimension((int) (UiConstants.panelDimX * UiConstants.enlargeFactor),
-                (int) (UiConstants.panelDimY * UiConstants.enlargeFactor)));
+        this.setPreferredSize(new Dimension((int) (UiConstants.povDimX * UiConstants.enlargeFactor),
+                (int) (UiConstants.povDimY * UiConstants.enlargeFactor)));
         this.setBackground(Color.black);
         timer = new Timer(0, this);
         timer.start();
@@ -40,9 +41,9 @@ public class Engine extends JPanel implements ActionListener {
 
     public void throttleFPS() {
         long frameLength = System.currentTimeMillis() - currentTime;
-        if (frameLength < UiConstants.targetFrameLength) {
+        if (frameLength < UiConstants.targetFrameTime) {
             try {
-                Thread.sleep(UiConstants.targetFrameLength - frameLength);
+                Thread.sleep(UiConstants.targetFrameTime - frameLength);
             }
             catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
@@ -71,8 +72,8 @@ public class Engine extends JPanel implements ActionListener {
     }
 
     private void paintThing(Thing thing, Graphics2D g2D) {
-        float xPos = transformCoordinate(thing.xPosition, thing.size, world.playerPositionX, UiConstants.panelDimX);
-        float yPos = transformCoordinate(thing.yPosition, thing.size, world.playerPositionY, UiConstants.panelDimY);
+        float xPos = transformCoordinate(thing.xPosition, thing.size, world.playerPositionX, UiConstants.povDimX);
+        float yPos = transformCoordinate(thing.yPosition, thing.size, world.playerPositionY, UiConstants.povDimY);
         float size = thing.size * UiConstants.enlargeFactor;
         if (inView(xPos, yPos, size)) {
             g2D.drawImage(thing.itemImage, (int) (xPos * UiConstants.enlargeFactor),
@@ -82,33 +83,35 @@ public class Engine extends JPanel implements ActionListener {
 
     private boolean inView(float xPos, float yPos, float size) {
         return xPos + size / 2 >= 0 && yPos + size / 2 >= 0
-                && xPos - size / 2 < UiConstants.panelDimX
-                && yPos - size / 2 < UiConstants.panelDimY;
+                && xPos - size / 2 < UiConstants.povDimX
+                && yPos - size / 2 < UiConstants.povDimY;
     }
 
     private float transformCoordinate(float position, float size, float fovPosition, float dimension) {
         position = position - size / 2;
-        position = position - fovPosition + (float) dimension / 2;
+        position = position - fovPosition + dimension / 2;
         return position;
     }
 
     private void keyboardCheck() {
         if (Keyboard.isKeyPressed(KeyEvent.VK_W)) {
-            this.world.playerPositionY -= UiConstants.scrollSpeed;
+            this.world.playerPositionY -= UiConstants.scrollSpeed / this.currentFPS;
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_S)) {
-            this.world.playerPositionY += UiConstants.scrollSpeed;
+            this.world.playerPositionY += UiConstants.scrollSpeed / this.currentFPS;
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_A)) {
-            this.world.playerPositionX -= UiConstants.scrollSpeed;
+            this.world.playerPositionX -= UiConstants.scrollSpeed / this.currentFPS;
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_D)) {
-            this.world.playerPositionX += UiConstants.scrollSpeed;
+            this.world.playerPositionX += UiConstants.scrollSpeed / this.currentFPS;
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        procedural.updateBins();
+        world.currentFPS = this.currentFPS;
         world.updateWorld();
         repaint();
         keyboardCheck();

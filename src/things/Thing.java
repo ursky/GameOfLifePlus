@@ -24,11 +24,11 @@ public class Thing {
     }
 
     public boolean isInBounds(float xPos, float yPos) {
-        return (xPos >= 0 && yPos >= 0 && xPos < UiConstants.fieldDimX && yPos < UiConstants.fieldDimY);
+        return (xPos >= 0 && yPos >= 0 && xPos < UiConstants.fullDimX && yPos < UiConstants.fullDimY);
     }
 
     public boolean isInFOV(float xPos, float yPos) {
-        return (xPos >= 0 && yPos >= 0 && xPos < UiConstants.panelDimX && yPos < UiConstants.panelDimY);
+        return (xPos >= 0 && yPos >= 0 && xPos < UiConstants.povDimX && yPos < UiConstants.povDimY);
     }
 
     public float calcDistance(float x1, float y1, float x2, float y2) {
@@ -51,9 +51,8 @@ public class Thing {
         List<Point> pointsInRange = world.thingCoordinates.search(searchArea, null);
         for (Point point: pointsInRange) {
             Thing thing = world.things.get(point.index);
-            float distance = calcDistance(this.xPosition, this.yPosition,
-                    thing.xPosition, thing.yPosition);
-            if (distance > 0 && distance <= radius) {
+            float distance = calcDistance(this.xPosition, this.yPosition, thing.xPosition, thing.yPosition);
+            if (distance > 0 && distance <= radius + thing.size / 2) {
                 creaturesInRange.add(thing);
             }
         }

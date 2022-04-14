@@ -15,12 +15,12 @@ public class Organism extends Thing {
     public float healthPercent = 100;
 
     public void grow() {
-        this.healthPercent += this.metabolismRate;
+        this.healthPercent += this.metabolismRate / this.world.currentFPS;
         if (this.healthPercent > 100) {
             this.healthPercent = 100;
         }
         if (this.size < this.maxSize && this.healthPercent >= this.growAtHealth) {
-            this.size += Math.random() * this.maxGrowthRate;
+            this.size += Math.random() * this.maxGrowthRate / this.world.currentFPS;
         }
     }
 
@@ -29,18 +29,6 @@ public class Organism extends Thing {
         if (this.healthPercent > 0) {
             updatedCreatures.add(this);
             this.grow();
-
-            if (this instanceof Plant) {
-                ArrayList<Plant> offsprings = ((Plant) this).spreadSeeds();
-                updatedCreatures.addAll(offsprings);
-                ((Plant) this).shadeOthers();
-
-            }
-            if (this instanceof Animal) {
-                ((Animal) this).move();
-                ArrayList<Organism> offsprings = reproduce();
-                updatedCreatures.addAll(offsprings);
-            }
         }
         return updatedCreatures;
     }

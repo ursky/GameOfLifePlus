@@ -8,7 +8,8 @@ public class Plant extends Organism {
     public float dispersalRange;
     public float shadeRange;
     public float shadePenalty;
-    // todo: implement a seed sprout timer (a way to survive longer)
+    public float maxSproutTime;
+    public int sproutEta = 0;
 
     public ArrayList<Plant> spreadSeeds() {
         ArrayList<Plant> seedlings = new ArrayList<>();
@@ -28,10 +29,10 @@ public class Plant extends Organism {
                 && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.dispersalRange) {
             Plant seedling = makeClone();
             seedling.size = 1;
+            seedling.sproutEta = (int) (Math.random() * this.maxSproutTime * this.world.currentFPS);
             seedling.healthPercent = this.growAtHealth;
             seedling.xPosition = seedX;
             seedling.yPosition = seedY;
-
             seedlings.add(seedling);
         }
     }
@@ -52,6 +53,7 @@ public class Plant extends Organism {
         clone.dispersalRange = this.dispersalRange;
         clone.shadeRange = this.shadeRange;
         clone.shadePenalty = this.shadePenalty;
+        clone.maxSproutTime = this.maxSproutTime;
         return clone;
     }
 
@@ -60,12 +62,31 @@ public class Plant extends Organism {
     }
 
     public void shadeOthers() {
-        for (Thing otherTree : this.getThingsInRange(this.shadeRange / 2)) {
-            if (otherTree instanceof Plant && this.size > otherTree.size) {
-                    ((Plant) otherTree).healthPercent += this.shadePenalty;
+        if (this.size >= this.maxSize * 0.1) {
+            for (Thing otherTree : this.getThingsInRange(this.shadeRange)) {
+                if (otherTree instanceof Plant && this.size > otherTree.size) {
+                    ((Plant) otherTree).healthPercent += this.shadePenalty / this.world.currentFPS;
                 }
             }
         }
+    }
+
+    @Override
+    public ArrayList<Organism> live() {
+        ArrayList<Organism> updatedCreatures = new ArrayList<>();
+        if (this.healthPercent <= 0) {
+            return updatedCreatures;
+        }
+        if (this.sproutEta <= 0) {
+            ArrayList<Plant> offsprings = this.spreadSeeds();
+            updatedCreatures.addAll(offsprings);
+            this.grow();
+            this.shadeOthers();
+        }
+        this.sproutEta--;
+        updatedCreatures.add(this);
+        return updatedCreatures;
+    }
 
     public Plant(float xPosition, float yPosition, float size, World world) {
         super(xPosition, yPosition, size, world);
