@@ -29,7 +29,7 @@ public class Plant extends Organism {
                 && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.dispersalRange) {
             Plant seedling = makeClone();
             seedling.size = 1;
-            seedling.sproutEta = (int) (Math.random() * this.maxSproutTime * this.world.currentFPS);
+            seedling.sproutEta = (int) (Math.random() * this.maxSproutTime * this.world.engine.currentFPS);
             seedling.healthPercent = this.growAtHealth;
             seedling.xPosition = seedX;
             seedling.yPosition = seedY;
@@ -65,7 +65,7 @@ public class Plant extends Organism {
         if (this.size >= this.maxSize * 0.1) {
             for (Thing otherTree : this.getThingsInRange(this.shadeRange)) {
                 if (otherTree instanceof Plant && this.size > otherTree.size) {
-                    ((Plant) otherTree).healthPercent += this.shadePenalty / this.world.currentFPS;
+                    ((Plant) otherTree).healthPercent += this.shadePenalty / this.world.engine.currentFPS;
                 }
             }
         }
@@ -73,6 +73,9 @@ public class Plant extends Organism {
 
     @Override
     public ArrayList<Organism> live() {
+        long startTime = System.nanoTime();
+
+
         ArrayList<Organism> updatedCreatures = new ArrayList<>();
         if (this.healthPercent <= 0) {
             return updatedCreatures;
@@ -85,6 +88,14 @@ public class Plant extends Organism {
         }
         this.sproutEta--;
         updatedCreatures.add(this);
+
+
+        long endTime = System.nanoTime();
+        double delta = (double) (endTime - startTime) / 1000.0;
+        if (this.world.print) {
+            System.out.println("Live: " + delta);
+        }
+
         return updatedCreatures;
     }
 

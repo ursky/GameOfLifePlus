@@ -19,10 +19,10 @@ public class Procedural {
     }
 
     private void updateRenderedRange() {
-        this.minToRenderX = this.world.playerPositionX - UiConstants.loadRange;
-        this.minToRenderY = this.world.playerPositionY - UiConstants.loadRange;
-        this.maxToRenderX = this.world.playerPositionX + UiConstants.loadRange;
-        this.maxToRenderY = this.world.playerPositionY + UiConstants.loadRange;
+        this.minToRenderX = this.world.playerPositionX - this.world.engine.loadRange;
+        this.minToRenderY = this.world.playerPositionY - this.world.engine.loadRange;
+        this.maxToRenderX = this.world.playerPositionX + this.world.engine.loadRange;
+        this.maxToRenderY = this.world.playerPositionY + this.world.engine.loadRange;
         this.minBinToRenderX = convertCoordinateToBin(this.minToRenderX, UiConstants.fullDimX);
         this.minBinToRenderY = convertCoordinateToBin(this.minToRenderY, UiConstants.fullDimY);
         this.maxBinToRenderX = convertCoordinateToBin(this.maxToRenderX, UiConstants.fullDimX);

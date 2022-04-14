@@ -15,12 +15,12 @@ public class Organism extends Thing {
     public float healthPercent = 100;
 
     public void grow() {
-        this.healthPercent += this.metabolismRate / this.world.currentFPS;
+        this.healthPercent += this.metabolismRate / this.world.engine.currentFPS;
         if (this.healthPercent > 100) {
             this.healthPercent = 100;
         }
         if (this.size < this.maxSize && this.healthPercent >= this.growAtHealth) {
-            this.size += Math.random() * this.maxGrowthRate / this.world.currentFPS;
+            this.size += Math.random() * this.maxGrowthRate / this.world.engine.currentFPS;
         }
     }
 

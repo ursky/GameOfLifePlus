@@ -11,12 +11,13 @@ import utilities.Random;
 import java.util.ArrayList;
 
 public class World {
+    public Engine engine;
     public float playerPositionX = UiConstants.startPositionX;
     public float playerPositionY = UiConstants.startPositionY;
     public ArrayList<Thing> things = new ArrayList<>();
     public QuadTree thingCoordinates;
-    Region livingArea = new Region(0, 0, UiConstants.fullDimX, UiConstants.fullDimY);
-    public float currentFPS;
+    public Region livingArea = new Region(0, 0, UiConstants.fullDimX, UiConstants.fullDimY);
+    public boolean print = true;
 
     private void initializeTrees(float minX, float minY, float maxX, float maxY) {
         int count = seedDensityToCount(TreeConstants.startingDensity, minX, minY, maxX, maxY);
@@ -68,11 +69,33 @@ public class World {
         }
     }
 
+//    public void updateThings() {
+//        for (int i=0; i<this.things.size(); i++) {
+//            Thing thing = this.things.get(i);
+//            if (thing instanceof Organism && isCloseEnoughToUpdate(thing)) {
+//                ((Organism) thing).live(this.things, i);
+//            }
+//        }
+//    }
+
     public void updateThings() {
         ArrayList<Thing> newThings = new ArrayList<>();
+        this.print = this.engine.frameCounter % 100 == 0;
         for (Thing thing : things) {
             if (thing instanceof Organism && isCloseEnoughToUpdate(thing)) {
+                long startTime = System.nanoTime();
+
                 ArrayList<Organism> updatedThings = ((Organism) thing).live();
+
+                long endTime = System.nanoTime();
+                double delta = (double) (endTime - startTime) / 1000.0;
+                if (this.print) {
+                    System.out.println("Update: " + delta);
+                }
+                this.print = false;
+
+
+
                 newThings.addAll(updatedThings);
             }
             else {
@@ -83,15 +106,18 @@ public class World {
     }
 
     private boolean isCloseEnoughToUpdate(Thing thing) {
-        return thing.calcDistanceTo(playerPositionX, playerPositionY) <= UiConstants.loadRange;
+        return thing.calcDistanceTo(playerPositionX, playerPositionY) <= this.engine.loadRange;
     }
 
     public void updateWorld() {
         updateCoordinates();
+        this.engine.timeUpdate("Update coordinates");
         updateThings();
+        this.engine.timeUpdate("Update things");
     }
 
-    World() {
+    World(Engine engine) {
+        this.engine = engine;
         System.out.println("Creating the world...");
     }
 }

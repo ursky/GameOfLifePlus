@@ -27,10 +27,6 @@ public class Thing {
         return (xPos >= 0 && yPos >= 0 && xPos < UiConstants.fullDimX && yPos < UiConstants.fullDimY);
     }
 
-    public boolean isInFOV(float xPos, float yPos) {
-        return (xPos >= 0 && yPos >= 0 && xPos < UiConstants.povDimX && yPos < UiConstants.povDimY);
-    }
-
     public float calcDistance(float x1, float y1, float x2, float y2) {
         float x_dif = x2 - x1;
         float y_dif = y2 - y1;

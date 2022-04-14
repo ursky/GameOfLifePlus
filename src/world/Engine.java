@@ -9,27 +9,45 @@ import things.Thing;
 import utilities.Keyboard;
 
 public class Engine extends JPanel implements ActionListener {
-    World world = new World();
-    Procedural procedural = new Procedural(world);
-    Timer timer;
-    int currentFPS = UiConstants.targetFPS;
-    long currentTime = System.currentTimeMillis();
-    int framesSinceLastFPS = 0;
-    long timeOfLastFPS = System.currentTimeMillis();
+    public World world = new World(this);
+    public Procedural procedural = new Procedural(world);
+    public Timer timer;
+    public int currentFPS = UiConstants.targetFPS;
+    private long currentTime = System.currentTimeMillis();
+    private int framesSinceLastFPS = 0;
+    private long timeOfLastFPS = System.currentTimeMillis();
+    private long timeOfLastUpdate = System.nanoTime();
+    public int frameCounter = 0;
+    public boolean doPrintUpdates = false;
+
+    private float zoomLevel = UiConstants.startZoom;
+    public float zoomSpeed = UiConstants.zoomSpeed;
+    private float povDimX = UiConstants.panelWidth / this.zoomLevel;
+    private float povDimY = UiConstants.panelHeight / this.zoomLevel;
+    public float loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
+    private float scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
 
     Engine() {
-        this.setPreferredSize(new Dimension((int) (UiConstants.povDimX * UiConstants.enlargeFactor),
-                (int) (UiConstants.povDimY * UiConstants.enlargeFactor)));
+        this.setPreferredSize(new Dimension((int)UiConstants.panelWidth, (int)UiConstants.panelHeight));
         this.setBackground(Color.black);
         timer = new Timer(0, this);
         timer.start();
+    }
+
+    public void timeUpdate(String stepName) {
+        long currentTime = System.nanoTime();
+        long timeDelta = currentTime - this.timeOfLastUpdate;
+        this.timeOfLastUpdate = currentTime;
+        if (this.frameCounter % 100 == 0 && doPrintUpdates) {
+            System.out.println(stepName + ": " + (float) timeDelta / 1000 + " ms");
+        }
     }
 
     public void updateFPS(Graphics g) {
         throttleFPS();
         framesSinceLastFPS ++;
         long timeSinceLastFPS = System.currentTimeMillis() - timeOfLastFPS;
-        if (timeSinceLastFPS > 1000) {
+        if (timeSinceLastFPS > 100) {
             currentFPS = 1000 * framesSinceLastFPS / (int) timeSinceLastFPS;
             framesSinceLastFPS = 0;
             timeOfLastFPS = System.currentTimeMillis();
@@ -72,19 +90,19 @@ public class Engine extends JPanel implements ActionListener {
     }
 
     private void paintThing(Thing thing, Graphics2D g2D) {
-        float xPos = transformCoordinate(thing.xPosition, thing.size, world.playerPositionX, UiConstants.povDimX);
-        float yPos = transformCoordinate(thing.yPosition, thing.size, world.playerPositionY, UiConstants.povDimY);
-        float size = thing.size * UiConstants.enlargeFactor;
+        float xPos = transformCoordinate(thing.xPosition, thing.size, world.playerPositionX, this.povDimX);
+        float yPos = transformCoordinate(thing.yPosition, thing.size, world.playerPositionY, this.povDimY);
+        float size = thing.size * this.zoomLevel;
         if (inView(xPos, yPos, size)) {
-            g2D.drawImage(thing.itemImage, (int) (xPos * UiConstants.enlargeFactor),
-                    (int) (yPos * UiConstants.enlargeFactor), (int) size, (int) size, null);
+            g2D.drawImage(thing.itemImage, (int) (xPos * this.zoomLevel),
+                    (int) (yPos * this.zoomLevel), (int) size, (int) size, null);
         }
     }
 
     private boolean inView(float xPos, float yPos, float size) {
         return xPos + size / 2 >= 0 && yPos + size / 2 >= 0
-                && xPos - size / 2 < UiConstants.povDimX
-                && yPos - size / 2 < UiConstants.povDimY;
+                && xPos - size / 2 < this.povDimX
+                && yPos - size / 2 < this.povDimY;
     }
 
     private float transformCoordinate(float position, float size, float fovPosition, float dimension) {
@@ -95,25 +113,52 @@ public class Engine extends JPanel implements ActionListener {
 
     private void keyboardCheck() {
         if (Keyboard.isKeyPressed(KeyEvent.VK_W)) {
-            this.world.playerPositionY -= UiConstants.scrollSpeed / this.currentFPS;
+            this.world.playerPositionY -= this.scrollSpeed / this.currentFPS;
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_S)) {
-            this.world.playerPositionY += UiConstants.scrollSpeed / this.currentFPS;
+            this.world.playerPositionY += this.scrollSpeed / this.currentFPS;
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_A)) {
-            this.world.playerPositionX -= UiConstants.scrollSpeed / this.currentFPS;
+            this.world.playerPositionX -= this.scrollSpeed / this.currentFPS;
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_D)) {
-            this.world.playerPositionX += UiConstants.scrollSpeed / this.currentFPS;
+            this.world.playerPositionX += this.scrollSpeed / this.currentFPS;
         }
+        if (Keyboard.isKeyPressed(KeyEvent.VK_EQUALS)) {
+            this.zoomLevel += this.zoomLevel * this.zoomSpeed / this.currentFPS;
+            reAdjustView();
+        }
+        if (Keyboard.isKeyPressed(KeyEvent.VK_MINUS)) {
+            this.zoomLevel -= this.zoomLevel * this.zoomSpeed / this.currentFPS;
+            reAdjustView();
+        }
+    }
+
+    private void reAdjustView() {
+        if (this.zoomLevel < UiConstants.minZoom) {
+            this.zoomLevel = UiConstants.minZoom;
+        }
+        if (this.zoomLevel > UiConstants.maxZoom) {
+            this.zoomLevel = UiConstants.maxZoom;
+        }
+        this.scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
+        this.povDimX = UiConstants.panelWidth / this.zoomLevel;
+        this.povDimY = UiConstants.panelHeight / this.zoomLevel;
+        this.loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        this.doPrintUpdates = true;
+        timeUpdate("\nStart");
         procedural.updateBins();
-        world.currentFPS = this.currentFPS;
+        timeUpdate("Update bins");
         world.updateWorld();
+        timeUpdate("Update world");
         repaint();
+        timeUpdate("Paint world");
         keyboardCheck();
+        timeUpdate("Keyboard check");
+        this.frameCounter++;
     }
 }
