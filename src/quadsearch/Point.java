@@ -2,8 +2,8 @@ package quadsearch;
 
 public class Point {
     public final int index;
-    private final float x;
-    private final float y;
+    public float x;
+    public float y;
 
     public Point(int index, float x, float y) {
         this.index = index;

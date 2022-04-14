@@ -1,9 +1,13 @@
+package world;
+
+import world.Engine;
+
 import javax.swing.*;
 
 public class Frame extends JFrame {
     Engine panel;
 
-    Frame() {
+    public Frame() {
         panel = new Engine();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.add(panel);
