@@ -1,4 +1,4 @@
-package utilities;
+package world;
 
 import things.Organism;
 import things.Thing;
@@ -32,8 +32,8 @@ public class UpdateThingsThread implements Runnable {
     public void run() {
         for (int i=this.start; i<this.end; i++) {
             Thing thing = this.things.get(i);
-            if (thing.coolDown <= 0) {
-                if (thing instanceof Organism && thing.world.isCloseEnoughToUpdate(thing)) {
+            if (thing.coolDown <= 0 && thing.isRendered()) {
+                if (thing instanceof Organism) {
                     ((Organism) thing).live();
                 }
             } else { thing.coolDown--; }

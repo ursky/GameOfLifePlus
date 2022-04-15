@@ -1,29 +1,36 @@
 package constants;
 
-public final class BushConstants {
-    private BushConstants() {
-        // restricted
+import world.World;
+
+import javax.swing.*;
+
+public final class BushConstants extends ThingConstants {
+    public BushConstants(World world) {
+        super(world);
+
+        // thing constants
+        this.name = "Bush";
+        this.type = "Plant";
+        this.imagePath = "graphics/tree_1.png";
+        this.image = new ImageIcon(this.imagePath).getImage();
+        this.startingDensity = 30; // per 100pixels^2
+        this.maxSize = 10;
+        this.minSizeToShow = 1f;
+        this.maxCoolDownFrames = 20;
+
+        // organism constants
+        this.metabolismRate = 5f; // adjust to FPS and cool down
+        this.growAtHealth = 50;
+        this.maxGrowthRate = 15.0f; // adjust to FPS and cool down
+        this.reproduceAtSize = 0.6f * maxSize;
+        this.reproduceAtHealth = 90;
+        this.reproductionPenalty = 0.8f;
+        this.maxOffsprings = 10;
+
+        // plant constants
+        this.dispersalRange = 30;
+        this.maxShadeRange = 1.5f * this.maxSize / 2;
+        this.shadePenalty = -20f; // adjust to FPS and cool down
+        this.sproutTime = 1.1f; // adjust to FPS and cool down
     }
-    // thing constants
-    public static final String imagePath = "graphics/tree_5.png";
-    public static final int startingDensity = 30; // per 100pixels^2
-    public static final float maxSize = 10;
-    public static final float minSizeToShow = 1f;
-    public static final float maxCoolDownFrames = 10;
-
-    // organism constants
-    public static final float metabolismRate = 5f; // adjust to FPS and cool down
-    public static final float growAtHealth = 50;
-    public static final float maxGrowthRate = 15.0f; // adjust to FPS and cool down
-    public static final float reproduceAtSize = 0.6f * maxSize;
-    public static final float reproduceAtHealth = 90;
-    public static final float reproductionPenalty = 0.8f;
-    public static final int maxOffsprings = 10;
-
-    // plant constants
-    public static final float dispersalRange = 30;
-    // todo: adjust range by size
-    public static final float shadeRange = 6;
-    public static final float shadePenalty = -20f; // adjust to FPS and cool down
-    public static final float sproutTime = 1.1f; // adjust to FPS and cool down
 }

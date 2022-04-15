@@ -1,28 +1,38 @@
 package constants;
 
-public final class TreeConstants {
-    private TreeConstants() {
-        // restricted
+import world.World;
+
+import javax.swing.*;
+
+public final class TreeConstants extends ThingConstants {
+    public TreeConstants(World world) {
+        super(world);
+
+        // thing constants
+        this.name = "Tree";
+        this.type = "Plant";
+        this.imagePath = "graphics/tree_4.png";
+        this.image = new ImageIcon(this.imagePath).getImage();
+        this.startingDensity = 5; // per 100pixels^2
+        this.maxSize = 30;
+        this.minSizeToShow = 1f;
+        this.maxCoolDownFrames = 20;
+
+        // organism constants
+        this.metabolismRate = 5.0f; // adjust to FPS and cool down
+        this.growAtHealth = 80;
+        this.maxGrowthRate = 15.0f; // adjust to FPS and cool down
+        this.reproduceAtSize = 0.8f * maxSize;
+        this.reproduceAtHealth = 90;
+        this.reproductionPenalty = 0.5f;
+        this.maxOffsprings = 5;
+
+        // plant constants
+        this.dispersalRange = 50;
+        this.maxShadeRange = 1.5f * this.maxSize / 2;
+        this.shadePenalty = -20f; // adjust to FPS and cool down
+        this.sproutTime = 3f; // adjust to FPS and cool down
+
+        this.update();
     }
-    // thing constants
-    public static final String imagePath = "graphics/tree_3.png";
-    public static final int startingDensity = 2; // per 100pixels^2
-    public static final float maxSize = 20;
-    public static final float minSizeToShow = 1f;
-    public static final float maxCoolDownFrames = 10;
-
-    // organism constants
-    public static final float metabolismRate = 5.0f; // adjust to FPS and cool down
-    public static final float growAtHealth = 80;
-    public static final float maxGrowthRate = 15.0f; // adjust to FPS and cool down
-    public static final float reproduceAtSize = 0.8f * maxSize;
-    public static final float reproduceAtHealth = 90;
-    public static final float reproductionPenalty = 0.5f;
-    public static final int maxOffsprings = 5;
-
-    // plant constants
-    public static final float dispersalRange = 50;
-    public static final float shadeRange = 15;
-    public static final float shadePenalty = -20f; // adjust to FPS and cool down
-    public static final float sproutTime = 3f; // adjust to FPS and cool down
 }

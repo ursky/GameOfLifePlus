@@ -1,13 +1,9 @@
 package world;
 
-import constants.BushConstants;
 import constants.UiConstants;
-import constants.TreeConstants;
+import engine.Engine;
+import quadsearch.SearchAreas;
 import things.*;
-import quadsearch.Region;
-import quadsearch.QuadTree;
-import utilities.UpdateThingsThread;
-import utilities.Random;
 
 import java.util.ArrayList;
 
@@ -17,59 +13,25 @@ public class World {
     public float playerPositionY = UiConstants.startPositionY;
     public ArrayList<Thing> things = new ArrayList<>();
     public ArrayList<Thing> newThings = new ArrayList<>();
-    public QuadTree thingCoordinates;
-    public Region livingArea = new Region(0, 0, UiConstants.fullDimX, UiConstants.fullDimY);
+    public SearchAreas searchAreas;
+    public InitThings initThings;
 
-    private void initializeTrees(float minX, float minY, float maxX, float maxY) {
-        int count = seedDensityToCount(TreeConstants.startingDensity, minX, minY, maxX, maxY);
-        for (int i = 0; i<=count; i++) {
-            float randX = Random.randFloat(minX, maxX);
-            float randY = Random.randFloat(minY, maxY);
-            float size = Random.randFloat(TreeConstants.maxSize / 2, TreeConstants.maxSize);
-            Tree tree = new Tree(randX, randY, size, this);
-            tree.healthPercent = Random.randFloat(20, 100);
-            things.add(tree);
+    public void calcDistancesMultithreading() {
+        this.searchAreas = new SearchAreas(this.engine.threadCount);
+        ArrayList<QuadTreeThread> threads = new ArrayList<>();
+        for (int i = 0; i<this.engine.threadCount; i++) {
+            QuadTreeThread thread = new QuadTreeThread(this.things, i);
+            threads.add(thread);
         }
-    }
-
-    private void initializeBushes(float minX, float minY, float maxX, float maxY) {
-        int count = seedDensityToCount(BushConstants.startingDensity, minX, minY, maxX, maxY);
-        for (int i = 0; i<=count; i++) {
-            float randX = Random.randFloat(minX, maxX);
-            float randY = Random.randFloat(minY, maxY);
-            float size = Random.randFloat(BushConstants.maxSize / 2, BushConstants.maxSize);
-            Bush bush = new Bush(randX, randY, size, this);
-            bush.healthPercent = Random.randFloat(20, 100);
-            things.add(bush);
-        }
-    }
-
-    public void initializeInRange(float minX, float minY, float maxX, float maxY) {
-        this.initializeTrees(minX, minY, maxX, maxY);
-        this.initializeBushes(minX, minY, maxX, maxY);
-    }
-
-    private int seedDensityToCount(float densityPer100, float minX, float minY, float maxX, float maxY) {
-        float area = (maxX - minX) * (maxY - minY);
-        return (int) (densityPer100 * area / 100000);
-    }
-
-    public void calcCoordinates() {
-        thingCoordinates = new QuadTree(livingArea);
-        for (int i = 0; i < things.size(); i++) {
-            Thing thing = things.get(i);
-            if (isCloseEnoughToUpdate(thing)) {
-                quadsearch.Point point = new quadsearch.Point(i, thing.xPosition, thing.yPosition);
-                thingCoordinates.addPoint(point);
-            }
-        }
+        for (QuadTreeThread thread: threads) { thread.start(); }
+        for (QuadTreeThread thread: threads) { thread.join(); }
     }
 
     public void updateThingsMultithreading() {
         if (this.engine.frameCounter < 10) { return; }
         ArrayList<UpdateThingsThread> threads = new ArrayList<>();
         int[][] positions = breakIntoChunks(this.things);
-        for (int i=0; i<UiConstants.threads; i++) {
+        for (int i = 0; i<this.engine.threadCount; i++) {
             UpdateThingsThread thread = new UpdateThingsThread(this.things, positions[i][0], positions[i][1]);
             threads.add(thread);
         }
@@ -78,9 +40,9 @@ public class World {
     }
 
     private int[][] breakIntoChunks(ArrayList<Thing> arrayList) {
-        int increment = arrayList.size() / UiConstants.threads;
-        int[][] positions = new int[UiConstants.threads][2];
-        for (int i=0; i<UiConstants.threads; i++) {
+        int increment = arrayList.size() / this.engine.threadCount;
+        int[][] positions = new int[this.engine.threadCount][2];
+        for (int i = 0; i<this.engine.threadCount; i++) {
             int start = i * increment;
             int end = (i + 1) * increment;
             if (end > arrayList.size()) {
@@ -110,14 +72,10 @@ public class World {
         this.things = livingThings;
     }
 
-    public boolean isCloseEnoughToUpdate(Thing thing) {
-        return thing.calcDistanceTo(playerPositionX, playerPositionY) <= this.engine.loadRange;
-    }
-
     public void updateWorld() {
         this.engine.timeUpdate("\ndisplay");
 
-        this.calcCoordinates();
+        this.calcDistancesMultithreading();
         this.engine.timeUpdate("calc coordinates");
 
         this.updateThingsMultithreading();
@@ -131,7 +89,8 @@ public class World {
         this.engine.timeUpdate("remove dead");
     }
 
-    World(Engine engine) {
+    public World(Engine engine) {
         this.engine = engine;
+        this.initThings = new InitThings(this);
     }
 }

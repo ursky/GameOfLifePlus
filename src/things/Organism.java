@@ -1,24 +1,19 @@
 package things;
+import constants.ThingConstants;
 import world.World;
 
 
 public class Organism extends Thing {
-    public int maxOffsprings;
-    public float maxSize;
-    public float maxGrowthRate;
-    public float reproduceAtSize;
-    public float reproduceAtHealth;
-    public float reproductionPenalty;
-    public float growAtHealth;
-    public float metabolismRate;
-
     public void grow() {
-        this.healthPercent += this.metabolismRate * this.coolDownFrames / this.world.engine.currentFPS;
+        this.healthPercent += this.constants._metabolismRate * this.coolDownFrames;
         if (this.healthPercent > 100) {
             this.healthPercent = 100;
         }
-        if (this.size < this.maxSize && this.healthPercent >= this.growAtHealth) {
-            this.size += Math.random() * this.maxGrowthRate * this.coolDownFrames / this.world.engine.currentFPS;
+        if (this.size < this.constants.maxSize && this.healthPercent >= this.constants.growAtHealth) {
+            this.size += Math.random() * this.constants._maxGrowthRate * this.coolDownFrames;
+        }
+        if (this.size > this.constants.maxSize) {
+            this.size = this.constants.maxSize;
         }
     }
 
@@ -33,7 +28,7 @@ public class Organism extends Thing {
         // this is just a placeholder method
     }
 
-    public Organism(float xPosition, float yPosition, float size, World world) {
-        super(xPosition, yPosition, size, world);
+    public Organism(float xPosition, float yPosition, float size, World world, ThingConstants constants) {
+        super(xPosition, yPosition, size, world, constants);
     }
 }

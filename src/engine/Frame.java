@@ -1,6 +1,6 @@
-package world;
+package engine;
 
-import world.Engine;
+import engine.Engine;
 
 import javax.swing.*;
 

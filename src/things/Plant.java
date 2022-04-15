@@ -1,71 +1,50 @@
 package things;
+import constants.ThingConstants;
+import utilities.Random;
 import world.World;
 
 public class Plant extends Organism {
-    public float dispersalRange;
-    public float shadeRange;
-    public float shadePenalty;
-    public float maxSproutTime;
-
     public void spreadSeeds() {
-        if (this.size >= this.reproduceAtSize && this.healthPercent >= this.reproduceAtHealth) {
-            for (int i=0; i<this.maxOffsprings; i++) {
+        if (this.healthPercent >= this.constants.reproduceAtHealth && this.size >= this.constants.reproduceAtSize) {
+            for (int i=0; i<this.constants.maxOffsprings; i++) {
                 makeSeed();
             }
-            this.healthPercent *= this.reproductionPenalty;
+            this.healthPercent *= this.constants.reproductionPenalty;
         }
     }
 
     private void makeSeed() {
-        float seedX = randFloat(this.xPosition - this.dispersalRange, this.xPosition + this.dispersalRange);
-        float seedY = randFloat(this.yPosition - this.dispersalRange, this.yPosition + this.dispersalRange);
+        float seedX = Random.randFloat(this.xPosition - this.constants.dispersalRange,
+                this.xPosition + this.constants.dispersalRange);
+        float seedY = Random.randFloat(this.yPosition - this.constants.dispersalRange,
+                this.yPosition + this.constants.dispersalRange);
         if (isInBounds(seedX, seedY)
-                && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.dispersalRange) {
-            Plant seedling = makeClone();
+                && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.constants.dispersalRange) {
+            Thing seedling = makeClone();
             seedling.size = 1;
-            seedling.coolDown = (int) (Math.random() * this.maxSproutTime * this.coolDownFrames
+            seedling.coolDown = (int) (Math.random() * this.constants.sproutTime * this.coolDownFrames
                     * this.world.engine.currentFPS);
-            seedling.healthPercent = this.growAtHealth;
+            seedling.healthPercent = this.constants.growAtHealth;
             seedling.xPosition = seedX;
             seedling.yPosition = seedY;
             this.world.newThings.add(seedling);
         }
     }
 
-    public Plant makeClone() {
-        Plant clone = makeBlank();
-        clone.itemImage = this.itemImage;
-        clone.maxSize = this.maxSize;
-        clone.minSizeToShow = this.minSizeToShow;
-        clone.maxGrowthRate = this.maxGrowthRate;
-        clone.growAtHealth = this.growAtHealth;
-        clone.metabolismRate = this.metabolismRate;
-        clone.healthPercent = this.healthPercent;
-        clone.reproduceAtSize = this.reproduceAtSize;
-        clone.reproduceAtHealth = this.reproduceAtHealth;
-        clone.maxOffsprings = this.maxOffsprings;
-        clone.reproductionPenalty = this.reproductionPenalty;
-        clone.dispersalRange = this.dispersalRange;
-        clone.shadeRange = this.shadeRange;
-        clone.shadePenalty = this.shadePenalty;
-        clone.maxSproutTime = this.maxSproutTime;
-        clone.coolDown = this.coolDown;
-        clone.maxCoolDownFrames = this.maxCoolDownFrames;
-        return clone;
-    }
-
-    public Plant makeBlank() {
-        return new Plant(this.xPosition, this.yPosition, this.size, this.world);
-    }
-
     public void shadeOthers() {
-        if (this.size >= this.maxSize * 0.1) {
-            for (Thing otherTree : this.getThingsInRange(this.shadeRange)) {
+        float shadeRange = this.constants.maxShadeRange * this.size / this.constants.maxSize;
+        if (shadeRange > 1) {
+            for (Thing otherTree : this.getThingsInRange(shadeRange)) {
                 if (otherTree instanceof Plant && this.size > otherTree.size) {
-                    otherTree.healthPercent += this.shadePenalty * this.coolDownFrames / this.world.engine.currentFPS;
+                    otherTree.healthPercent += this.constants._shadePenalty * this.coolDownFrames;
                 }
             }
         }
+    }
+
+    @Override
+    public Plant makeBlank() {
+        return new Plant(this.xPosition, this.yPosition, this.size, this.world, this.constants);
     }
 
     @Override
@@ -78,7 +57,7 @@ public class Plant extends Organism {
         }
     }
 
-    public Plant(float xPosition, float yPosition, float size, World world) {
-        super(xPosition, yPosition, size, world);
+    public Plant(float xPosition, float yPosition, float size, World world, ThingConstants constants) {
+        super(xPosition, yPosition, size, world, constants);
     }
 }

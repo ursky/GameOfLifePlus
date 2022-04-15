@@ -1,16 +1,19 @@
-package world;
+package engine;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 
+import constants.ThingConstants;
 import constants.UiConstants;
 import things.Thing;
 import utilities.Keyboard;
+import world.ProceduralGeneration;
+import world.World;
 
 public class Engine extends JPanel implements ActionListener {
     public World world = new World(this);
-    public Procedural procedural = new Procedural(world);
+    public ProceduralGeneration procedural = new ProceduralGeneration(world);
     public Timer timer;
     public int currentFPS = UiConstants.targetFPS;
     private long currentTime = System.currentTimeMillis();
@@ -18,14 +21,16 @@ public class Engine extends JPanel implements ActionListener {
     private long timeOfLastFPS = System.currentTimeMillis();
     private long timeOfLastUpdate = System.nanoTime();
     public int frameCounter = 0;
-    public boolean doPrintUpdates = false;
-
-    private float zoomLevel = UiConstants.startZoom;
+    public float zoomLevel = UiConstants.startZoom;
     public float zoomSpeed = UiConstants.zoomSpeed;
     private float povDimX = UiConstants.panelWidth / this.zoomLevel;
     private float povDimY = UiConstants.panelHeight / this.zoomLevel;
     public float loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
     private float scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
+    public int threadCount = UiConstants.threadCount;
+    public float threadBuffer = 0;
+    public float threadWidth = this.loadRange * 2 / this.threadCount;
+    public float renderedLeftX = this.world.playerPositionX - this.loadRange;
 
     public void timeUpdate(String stepName) {
         long currentTime = System.nanoTime();
@@ -38,17 +43,18 @@ public class Engine extends JPanel implements ActionListener {
 
     public void updateFPS(Graphics g) {
         throttleFPS();
-        framesSinceLastFPS ++;
+        this.framesSinceLastFPS ++;
         long timeSinceLastFPS = System.currentTimeMillis() - timeOfLastFPS;
         if (timeSinceLastFPS > 100) {
-            currentFPS = 1000 * framesSinceLastFPS / (int) timeSinceLastFPS;
-            currentFPS = Math.min(currentFPS, UiConstants.targetFPS);
-            framesSinceLastFPS = 0;
-            timeOfLastFPS = System.currentTimeMillis();
+            this.currentFPS = 1000 * this.framesSinceLastFPS / (int) timeSinceLastFPS;
+            this.currentFPS = Math.min(this.currentFPS, UiConstants.targetFPS);
+            this.currentFPS = Math.max(this.currentFPS, 1);
+            this.framesSinceLastFPS = 0;
+            this.timeOfLastFPS = System.currentTimeMillis();
         }
         g.setColor(Color.white);
         String strFPS = String.valueOf(currentFPS);
-        g.drawString("FPS: " + strFPS + "; Trees: " + world.things.size(), 0, 12);
+        g.drawString("FPS: " + strFPS + "; #Things: " + world.things.size(), 0, 12);
     }
 
     public void throttleFPS() {
@@ -67,17 +73,16 @@ public class Engine extends JPanel implements ActionListener {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2D = (Graphics2D) g;
-        String[] paintOrder = new String[]{"Bush", "Tree"};
-        for (String className: paintOrder) {
-            scanThingsToPaint(className, g2D);
+        for (ThingConstants constants: this.world.initThings.orderedThingConstants) {
+            scanThingsToPaint(constants.name, g2D);
         }
         updateFPS(g);
     }
 
     private void scanThingsToPaint(String className, Graphics2D g2D) {
         for (Thing thing : world.things) {
-            String thingClass = thing.getClass().getSimpleName();
-            if (thing.size >= thing.minSizeToShow && thingClass.equals(className)) {
+            String thingName = thing.constants.name;
+            if (thing.size >= thing.constants.minSizeToShow && thingName.equals(className)) {
                 paintThing(thing, g2D);
             }
         }
@@ -108,15 +113,19 @@ public class Engine extends JPanel implements ActionListener {
     private void keyboardCheck() {
         if (Keyboard.isKeyPressed(KeyEvent.VK_W)) {
             this.world.playerPositionY -= this.scrollSpeed / this.currentFPS;
+            reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_S)) {
             this.world.playerPositionY += this.scrollSpeed / this.currentFPS;
+            reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_A)) {
             this.world.playerPositionX -= this.scrollSpeed / this.currentFPS;
+            reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_D)) {
             this.world.playerPositionX += this.scrollSpeed / this.currentFPS;
+            reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_EQUALS)) {
             this.zoomLevel += this.zoomLevel * this.zoomSpeed / this.currentFPS;
@@ -129,16 +138,24 @@ public class Engine extends JPanel implements ActionListener {
     }
 
     private void reAdjustView() {
-        if (this.zoomLevel < UiConstants.minZoom) {
-            this.zoomLevel = UiConstants.minZoom;
-        }
-        if (this.zoomLevel > UiConstants.maxZoom) {
+        if (this.zoomLevel < UiConstants.maxZoom) {
             this.zoomLevel = UiConstants.maxZoom;
+        }
+        if (this.zoomLevel > UiConstants.minZoom) {
+            this.zoomLevel = UiConstants.minZoom;
         }
         this.scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
         this.povDimX = UiConstants.panelWidth / this.zoomLevel;
         this.povDimY = UiConstants.panelHeight / this.zoomLevel;
         this.loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
+        this.loadRange = Math.max(this.loadRange, UiConstants.minLoadRange);
+        this.threadWidth = this.loadRange * 2 / this.threadCount;
+        this.renderedLeftX = this.world.playerPositionX - this.loadRange;
+    }
+
+    private void updateFrames() {
+        this.frameCounter++;
+        this.threadBuffer = this.world.engine.currentFPS % (this.loadRange * 2);
     }
 
     @Override
@@ -147,7 +164,8 @@ public class Engine extends JPanel implements ActionListener {
         world.updateWorld();
         repaint();
         keyboardCheck();
-        this.frameCounter++;
+        this.world.initThings.updateConstants();
+        this.updateFrames();
     }
 
     Engine() {

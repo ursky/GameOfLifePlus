@@ -47,8 +47,7 @@ public class QuadTree {
     private boolean addPointToOneQuadrant(Point point) {
         boolean isPointAdded;
         for (int i = 0; i < 4; i++) {
-            isPointAdded = this.quadTrees.get(i)
-                    .addPoint(point);
+            isPointAdded = this.quadTrees.get(i).addPoint(point);
             if (isPointAdded)
                 return true;
         }

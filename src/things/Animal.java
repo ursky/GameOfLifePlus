@@ -1,17 +1,18 @@
 package things;
+import constants.ThingConstants;
 import constants.UiConstants;
+import utilities.Random;
 import world.World;
 
 
 public class Animal extends Organism {
-    float maxSpeed, maxAcceleration;
     float xVelocity = 0;
     float yVelocity = 0;
     float xAcceleration = 0;
     float yAcceleration = 0;
 
     public void move() {
-        if (maxSpeed == 0) {
+        if (this.constants.maxSpeed == 0) {
             return;
         }
         updateIntent();
@@ -23,11 +24,11 @@ public class Animal extends Organism {
     }
 
     private void checkSpeedBounds() {
-        if (this.xVelocity > this.maxSpeed) {
-            this.xVelocity = this.maxSpeed;
+        if (this.xVelocity > this.constants.maxSpeed) {
+            this.xVelocity = this.constants.maxSpeed;
         }
-        if (this.yVelocity > this.maxSpeed) {
-            this.yVelocity = this.maxSpeed;
+        if (this.yVelocity > this.constants.maxSpeed) {
+            this.yVelocity = this.constants.maxSpeed;
         }
         if (this.xPosition + this.xVelocity < 0
                 || this.xPosition + this.xVelocity + this.size >= UiConstants.fullDimX) {
@@ -40,8 +41,8 @@ public class Animal extends Organism {
     }
 
     public void updateIntent() {
-        this.xAcceleration = randFloat(-this.maxAcceleration, this.maxAcceleration);
-        this.yAcceleration = randFloat(-this.maxAcceleration, this.maxAcceleration);
+        this.xAcceleration = Random.randFloat(-this.constants.maxAcceleration, this.constants.maxAcceleration);
+        this.yAcceleration = Random.randFloat(-this.constants.maxAcceleration, this.constants.maxAcceleration);
     }
 
     @Override
@@ -53,9 +54,8 @@ public class Animal extends Organism {
         }
     }
 
-    public Animal(float xPosition, float yPosition, float maxSpeed, float maxAcceleration, float size, World world) {
-        super(xPosition, yPosition, size, world);
-        this.maxSpeed = maxSpeed;
-        this.maxAcceleration = maxAcceleration;
+    public Animal(float xPosition, float yPosition,
+                  float size, World world, ThingConstants constants) {
+        super(xPosition, yPosition, size, world, constants);
     }
 }
