@@ -14,8 +14,8 @@ public class Bush extends Plant {
     public Bush(float xPosition, float yPosition, float size, World world) {
         super(xPosition, yPosition, size, world);
         this.itemImage = new ImageIcon(BushConstants.imagePath).getImage();
-
         this.maxSize = BushConstants.maxSize;
+        this.maxCoolDownFrames = BushConstants.maxCoolDownFrames;
         this.minSizeToShow = BushConstants.minSizeToShow;
         this.maxGrowthRate = BushConstants.maxGrowthRate;
         this.metabolismRate = BushConstants.metabolismRate;

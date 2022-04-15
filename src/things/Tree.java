@@ -13,8 +13,8 @@ public class Tree extends Plant {
     public Tree(float xPosition, float yPosition, float size, World world) {
         super(xPosition, yPosition, size, world);
         this.itemImage = new ImageIcon(TreeConstants.imagePath).getImage();
-
         this.maxSize = TreeConstants.maxSize;
+        this.maxCoolDownFrames = TreeConstants.maxCoolDownFrames;
         this.minSizeToShow = TreeConstants.minSizeToShow;
         this.maxGrowthRate = TreeConstants.maxGrowthRate;
         this.metabolismRate = TreeConstants.metabolismRate;

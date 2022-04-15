@@ -1,7 +1,6 @@
 package things;
 import world.World;
 
-import java.util.ArrayList;
 
 public class Organism extends Thing {
     public int maxOffsprings;
@@ -12,30 +11,26 @@ public class Organism extends Thing {
     public float reproductionPenalty;
     public float growAtHealth;
     public float metabolismRate;
-    public float healthPercent = 100;
 
     public void grow() {
-        this.healthPercent += this.metabolismRate / this.world.engine.currentFPS;
+        this.healthPercent += this.metabolismRate * this.coolDownFrames / this.world.engine.currentFPS;
         if (this.healthPercent > 100) {
             this.healthPercent = 100;
         }
         if (this.size < this.maxSize && this.healthPercent >= this.growAtHealth) {
-            this.size += Math.random() * this.maxGrowthRate / this.world.engine.currentFPS;
+            this.size += Math.random() * this.maxGrowthRate * this.coolDownFrames / this.world.engine.currentFPS;
         }
     }
 
-    public ArrayList<Organism> live() {
-        ArrayList<Organism> updatedCreatures = new ArrayList<>();
+    public void live() {
         if (this.healthPercent > 0) {
-            updatedCreatures.add(this);
             this.grow();
+            this.updateCoolDowns();
         }
-        return updatedCreatures;
     }
 
-    public ArrayList<Organism> reproduce() {
+    public void reproduce() {
         // this is just a placeholder method
-        return new ArrayList<>();
     }
 
     public Organism(float xPosition, float yPosition, float size, World world) {

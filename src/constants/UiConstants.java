@@ -4,6 +4,7 @@ public final class UiConstants {
     private UiConstants() {
         // restricted
     }
+    public static final int threads = 12;
     public static final int fullDimX = 100000;
     public static final int fullDimY = 100000;
     public static final int nProceduralBins = fullDimX / 100;
@@ -12,7 +13,7 @@ public final class UiConstants {
 
     public static final float panelWidth = 800;
     public static final float panelHeight = 600;
-    public static final float startZoom = 0.5f;
+    public static final float startZoom = 2f;
     public static final float minZoom = 0.5f;
     public static final float maxZoom = 20f;
     public static final float loadRangeMultiplier = 3f;

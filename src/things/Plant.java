@@ -1,39 +1,34 @@
 package things;
 import world.World;
 
-import java.util.ArrayList;
-
-
 public class Plant extends Organism {
     public float dispersalRange;
     public float shadeRange;
     public float shadePenalty;
     public float maxSproutTime;
-    public int sproutEta = 0;
 
-    public ArrayList<Plant> spreadSeeds() {
-        ArrayList<Plant> seedlings = new ArrayList<>();
+    public void spreadSeeds() {
         if (this.size >= this.reproduceAtSize && this.healthPercent >= this.reproduceAtHealth) {
             for (int i=0; i<this.maxOffsprings; i++) {
-                makeSeed(seedlings);
+                makeSeed();
             }
             this.healthPercent *= this.reproductionPenalty;
         }
-        return seedlings;
     }
 
-    private void makeSeed(ArrayList<Plant> seedlings) {
+    private void makeSeed() {
         float seedX = randFloat(this.xPosition - this.dispersalRange, this.xPosition + this.dispersalRange);
         float seedY = randFloat(this.yPosition - this.dispersalRange, this.yPosition + this.dispersalRange);
         if (isInBounds(seedX, seedY)
                 && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.dispersalRange) {
             Plant seedling = makeClone();
             seedling.size = 1;
-            seedling.sproutEta = (int) (Math.random() * this.maxSproutTime * this.world.engine.currentFPS);
+            seedling.coolDown = (int) (Math.random() * this.maxSproutTime * this.coolDownFrames
+                    * this.world.engine.currentFPS);
             seedling.healthPercent = this.growAtHealth;
             seedling.xPosition = seedX;
             seedling.yPosition = seedY;
-            seedlings.add(seedling);
+            this.world.newThings.add(seedling);
         }
     }
 
@@ -54,6 +49,8 @@ public class Plant extends Organism {
         clone.shadeRange = this.shadeRange;
         clone.shadePenalty = this.shadePenalty;
         clone.maxSproutTime = this.maxSproutTime;
+        clone.coolDown = this.coolDown;
+        clone.maxCoolDownFrames = this.maxCoolDownFrames;
         return clone;
     }
 
@@ -65,38 +62,20 @@ public class Plant extends Organism {
         if (this.size >= this.maxSize * 0.1) {
             for (Thing otherTree : this.getThingsInRange(this.shadeRange)) {
                 if (otherTree instanceof Plant && this.size > otherTree.size) {
-                    ((Plant) otherTree).healthPercent += this.shadePenalty / this.world.engine.currentFPS;
+                    otherTree.healthPercent += this.shadePenalty * this.coolDownFrames / this.world.engine.currentFPS;
                 }
             }
         }
     }
 
     @Override
-    public ArrayList<Organism> live() {
-        long startTime = System.nanoTime();
-
-
-        ArrayList<Organism> updatedCreatures = new ArrayList<>();
-        if (this.healthPercent <= 0) {
-            return updatedCreatures;
-        }
-        if (this.sproutEta <= 0) {
-            ArrayList<Plant> offsprings = this.spreadSeeds();
-            updatedCreatures.addAll(offsprings);
+    public void live() {
+        if (this.healthPercent > 0) {
+            this.spreadSeeds();
             this.grow();
             this.shadeOthers();
+            this.updateCoolDowns();
         }
-        this.sproutEta--;
-        updatedCreatures.add(this);
-
-
-        long endTime = System.nanoTime();
-        double delta = (double) (endTime - startTime) / 1000.0;
-        if (this.world.print) {
-            System.out.println("Live: " + delta);
-        }
-
-        return updatedCreatures;
     }
 
     public Plant(float xPosition, float yPosition, float size, World world) {

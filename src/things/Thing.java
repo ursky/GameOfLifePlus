@@ -17,6 +17,15 @@ public class Thing {
     public float xPosition;
     public float yPosition;
     public Image itemImage;
+    public float healthPercent = 100;
+    public float maxCoolDownFrames = 1;
+    public int coolDownFrames = 1;
+    public int coolDown = 0;
+
+    public void updateCoolDowns() {
+        this.coolDownFrames = (int) randFloat(1f, (float) (1 + Math.random() * this.coolDownFrames));
+        this.coolDown = this.coolDownFrames - 1;
+    }
 
     public static float randFloat(float min, float max) {
         Random rand = new Random();

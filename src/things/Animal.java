@@ -2,8 +2,6 @@ package things;
 import constants.UiConstants;
 import world.World;
 
-import java.util.ArrayList;
-
 
 public class Animal extends Organism {
     float maxSpeed, maxAcceleration;
@@ -47,16 +45,12 @@ public class Animal extends Organism {
     }
 
     @Override
-    public ArrayList<Organism> live() {
-        ArrayList<Organism> updatedCreatures = new ArrayList<>();
+    public void live() {
         if (this.healthPercent > 0) {
-            updatedCreatures.add(this);
             this.grow();
-            ArrayList<Organism> offsprings = reproduce();
-            updatedCreatures.addAll(offsprings);
+            this.reproduce();
             this.move();
         }
-        return updatedCreatures;
     }
 
     public Animal(float xPosition, float yPosition, float maxSpeed, float maxAcceleration, float size, World world) {

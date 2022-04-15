@@ -27,18 +27,11 @@ public class Engine extends JPanel implements ActionListener {
     public float loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
     private float scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
 
-    Engine() {
-        this.setPreferredSize(new Dimension((int)UiConstants.panelWidth, (int)UiConstants.panelHeight));
-        this.setBackground(Color.black);
-        timer = new Timer(0, this);
-        timer.start();
-    }
-
     public void timeUpdate(String stepName) {
         long currentTime = System.nanoTime();
         long timeDelta = currentTime - this.timeOfLastUpdate;
         this.timeOfLastUpdate = currentTime;
-        if (this.frameCounter % 100 == 0 && doPrintUpdates) {
+        if (this.frameCounter % 100 == 0) {
             System.out.println(stepName + ": " + (float) timeDelta / 1000 + " ms");
         }
     }
@@ -49,6 +42,7 @@ public class Engine extends JPanel implements ActionListener {
         long timeSinceLastFPS = System.currentTimeMillis() - timeOfLastFPS;
         if (timeSinceLastFPS > 100) {
             currentFPS = 1000 * framesSinceLastFPS / (int) timeSinceLastFPS;
+            currentFPS = Math.min(currentFPS, UiConstants.targetFPS);
             framesSinceLastFPS = 0;
             timeOfLastFPS = System.currentTimeMillis();
         }
@@ -149,16 +143,17 @@ public class Engine extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        this.doPrintUpdates = true;
-        timeUpdate("\nStart");
         procedural.updateBins();
-        timeUpdate("Update bins");
         world.updateWorld();
-        timeUpdate("Update world");
         repaint();
-        timeUpdate("Paint world");
         keyboardCheck();
-        timeUpdate("Keyboard check");
         this.frameCounter++;
+    }
+
+    Engine() {
+        this.setPreferredSize(new Dimension((int)UiConstants.panelWidth, (int)UiConstants.panelHeight));
+        this.setBackground(Color.black);
+        timer = new Timer(0, this);
+        timer.start();
     }
 }
