@@ -1,5 +1,5 @@
 package things;
-import constants.ThingConstants;
+import constants.BlankConstants;
 import constants.UiConstants;
 import utilities.Random;
 import world.World;
@@ -55,7 +55,7 @@ public class Animal extends Organism {
     }
 
     public Animal(float xPosition, float yPosition,
-                  float size, World world, ThingConstants constants) {
+                  float size, World world, BlankConstants constants) {
         super(xPosition, yPosition, size, world, constants);
     }
 }

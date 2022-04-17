@@ -1,9 +1,8 @@
 package things;
-import constants.ThingConstants;
+import constants.BlankConstants;
 import constants.UiConstants;
 import quadsearch.Point;
 import quadsearch.Region;
-import utilities.Random;
 import world.World;
 
 import java.awt.*;
@@ -13,17 +12,24 @@ import java.util.List;
 
 public class Thing {
     public World world;
-    public ThingConstants constants;
+    public BlankConstants constants;
     public float size;
     public float xPosition;
     public float yPosition;
     public Image itemImage;
+    public boolean isSeed = false;
     public float healthPercent = 100;
     public int coolDownFrames = 1;
     public int coolDown = 0;
 
     public void updateCoolDowns() {
-        this.coolDownFrames = (int) Random.randFloat(1f, (float) (1 + Math.random() * this.coolDownFrames));
+        // todo: this is broken
+        if (this.world.engine.inView(this)) {
+            this.coolDownFrames = this.constants.onScreenCoolDown;
+        }
+        else {
+            this.coolDownFrames = this.constants.offScreenCoolDown;
+        }
         this.coolDown = this.coolDownFrames - 1;
     }
 
@@ -77,7 +83,7 @@ public class Thing {
 
     public Thing makeClone() {
         Thing clone = makeBlank();
-        clone.itemImage = this.itemImage;
+        clone.itemImage = this.constants.loadImage(this.constants.imagePath);
         clone.constants = this.constants;
         clone.healthPercent = this.healthPercent;
         clone.coolDown = this.coolDown;
@@ -88,9 +94,9 @@ public class Thing {
         return new Thing(this.xPosition, this.yPosition, this.size, this.world, this.constants);
     }
 
-    public Thing(float xPosition, float yPosition, float size, World world, ThingConstants constants) {
+    public Thing(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
         this.constants = constants;
-        this.itemImage = this.constants.image;
+        this.itemImage = this.constants.loadImage(this.constants.imagePath);
         this.xPosition = xPosition;
         this.yPosition = yPosition;
         this.world = world;

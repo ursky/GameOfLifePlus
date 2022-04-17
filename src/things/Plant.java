@@ -1,5 +1,5 @@
 package things;
-import constants.ThingConstants;
+import constants.BlankConstants;
 import utilities.Random;
 import world.World;
 
@@ -24,9 +24,11 @@ public class Plant extends Organism {
             seedling.size = 1;
             seedling.coolDown = (int) (Math.random() * this.constants.sproutTime * this.coolDownFrames
                     * this.world.engine.currentFPS);
-            seedling.healthPercent = this.constants.growAtHealth;
+            seedling.healthPercent = seedling.constants.startHealth;
             seedling.xPosition = seedX;
             seedling.yPosition = seedY;
+            seedling.isSeed = true;
+            seedling.itemImage = seedling.constants.loadImage(seedling.constants.youngImagePath);
             this.world.newThings.add(seedling);
         }
     }
@@ -35,7 +37,7 @@ public class Plant extends Organism {
         float shadeRange = this.constants.maxShadeRange * this.size / this.constants.maxSize;
         if (shadeRange > 1) {
             for (Thing otherTree : this.getThingsInRange(shadeRange)) {
-                if (otherTree instanceof Plant && this.size > otherTree.size) {
+                if (otherTree instanceof Plant && this.size >= otherTree.size) {
                     otherTree.healthPercent += this.constants._shadePenalty * this.coolDownFrames;
                 }
             }
@@ -49,15 +51,13 @@ public class Plant extends Organism {
 
     @Override
     public void live() {
-        if (this.healthPercent > 0) {
-            this.spreadSeeds();
-            this.grow();
-            this.shadeOthers();
-            this.updateCoolDowns();
-        }
+        this.spreadSeeds();
+        this.grow();
+        this.shadeOthers();
+        this.updateCoolDowns();
     }
 
-    public Plant(float xPosition, float yPosition, float size, World world, ThingConstants constants) {
+    public Plant(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
         super(xPosition, yPosition, size, world, constants);
     }
 }

@@ -13,7 +13,7 @@ public class ProceduralGeneration {
     public float[] currentCoordinates;
     public int[] currentBins;
     Archive[][] archivedThings = new Archive[nBins][nBins];
-    public int safetyScanRange = 5;
+    public int safetyScanRange = 10;
 
     public int convertCoordinateToBin(float coordinate, float dimension) {
         return (int) (nBins * coordinate / dimension);
@@ -33,8 +33,8 @@ public class ProceduralGeneration {
         this.currentBins = new int[] {
                 convertCoordinateToBin(this.currentCoordinates[0], UiConstants.fullDimX),
                 convertCoordinateToBin(this.currentCoordinates[1], UiConstants.fullDimY),
-                convertCoordinateToBin(this.currentCoordinates[2], UiConstants.fullDimX),
-                convertCoordinateToBin(this.currentCoordinates[3], UiConstants.fullDimY)
+                convertCoordinateToBin(this.currentCoordinates[2], UiConstants.fullDimX) + 1,
+                convertCoordinateToBin(this.currentCoordinates[3], UiConstants.fullDimY) + 1
         };
     }
 
@@ -92,7 +92,13 @@ public class ProceduralGeneration {
         float maxToInitX = minToInitX + UiConstants.fullDimX / (float) nBins;
         float minToInitY = this.convertBinToCoordinate(j, UiConstants.fullDimY);
         float maxToInitY = minToInitY + UiConstants.fullDimY / (float) nBins;
-        this.world.initThings.initThingsInBin(minToInitX, minToInitY, maxToInitX, maxToInitY);
+        if (this.world.engine.frameCounter == 0) {
+            this.world.initThings.initThingsInBin(minToInitX, minToInitY, maxToInitX, maxToInitY);
+        }
+        else {
+            this.world.initThings.copyThingsInBin(minToInitX, minToInitY, maxToInitX, maxToInitY);
+        }
+
     }
 
     public void updateBins() {

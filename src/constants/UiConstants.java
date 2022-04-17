@@ -5,19 +5,19 @@ public final class UiConstants {
         // restricted
     }
     public static final int threadCount = 12;
-    public static final int fullDimX = 10000;
-    public static final int fullDimY = 10000;
-    public static final int nProceduralBins = fullDimX / 100;
+    public static final int fullDimX = 100000;
+    public static final int fullDimY = 100000;
+    public static final int nProceduralBins = fullDimX / 200;
     public static int targetFPS = 60;
     public static int targetFrameTime = 1000 / (targetFPS + 1);
 
-    public static final float panelWidth = 800;
-    public static final float panelHeight = 600;
-    public static final float startZoom = 2f;
-    public static final float maxZoom = 1 / 2f;
-    public static final float minZoom = 1 / 0.06f;
-    public static final float loadRangeMultiplier = 2f;
-    public static final float minLoadRange = 200;
+    public static final float panelWidth = 1200;
+    public static final float panelHeight = 800;
+    public static final float startZoom = 1f;
+    public static final float minZoom = 0.25f;
+    public static final float maxZoom = 20f;
+    public static final float loadRangeMultiplier = 1.5f;
+    public static final float minLoadRange = 400;
     public static final float startPositionX = fullDimX / 2f;
     public static final float startPositionY = fullDimY / 2f;
     public static final float scrollSpeed = 500.0f; // adjust to FPS and enlargement

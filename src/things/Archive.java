@@ -15,10 +15,6 @@ public class Archive {
         return this.things;
     }
 
-    public int size() {
-        return this.things.size();
-    }
-
     public void clear() {
         this.things.clear();
         this.empty = true;

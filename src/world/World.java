@@ -28,7 +28,7 @@ public class World {
     }
 
     public void updateThingsMultithreading() {
-        if (this.engine.frameCounter < 10) { return; }
+        if (this.engine.frameCounter < 30) { return; }
         ArrayList<UpdateThingsThread> threads = new ArrayList<>();
         int[][] positions = breakIntoChunks(this.things);
         for (int i = 0; i<this.engine.threadCount; i++) {
@@ -57,7 +57,7 @@ public class World {
     private void removeDeadOrOffscreen() {
         ArrayList<Thing> livingThings = new ArrayList<>();
         for (Thing thing: this.things) {
-            if (thing.healthPercent > 0) {
+            if (thing.size > 0) {
                 int binX = this.engine.procedural.convertCoordinateToBin(thing.xPosition, UiConstants.fullDimX);
                 int binY = this.engine.procedural.convertCoordinateToBin(thing.yPosition, UiConstants.fullDimY);
                 if (this.engine.procedural.isRendered[binX][binY]) {
@@ -73,20 +73,20 @@ public class World {
     }
 
     public void updateWorld() {
-        this.engine.timeUpdate("\ndisplay");
+        this.engine.timeUpdate("\npMisc");
 
         this.calcDistancesMultithreading();
-        this.engine.timeUpdate("calc coordinates");
+        this.engine.timeUpdate("QuadTree");
 
         this.updateThingsMultithreading();
-        this.engine.timeUpdate("update");
+        this.engine.timeUpdate("Update things");
 
         this.things.addAll(this.newThings);
         this.newThings.clear();
-        this.engine.timeUpdate("add new things");
+        this.engine.timeUpdate("Add new things");
 
         this.removeDeadOrOffscreen();
-        this.engine.timeUpdate("remove dead");
+        this.engine.timeUpdate("Remove dead");
     }
 
     public World(Engine engine) {
