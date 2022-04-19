@@ -28,7 +28,8 @@ public class Plant extends Organism {
             seedling.xPosition = seedX;
             seedling.yPosition = seedY;
             seedling.isSeed = true;
-            seedling.itemImage = seedling.constants.loadImage(seedling.constants.youngImagePath);
+            seedling.currentRotation = Random.randFloat(0, 360);
+            seedling.initImage();
             this.world.newThings.add(seedling);
         }
     }

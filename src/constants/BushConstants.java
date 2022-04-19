@@ -1,6 +1,9 @@
 package constants;
 
+import engine.ImageStack;
 import world.World;
+
+import java.awt.*;
 
 public final class BushConstants extends BlankConstants {
     public BushConstants(World world) {
@@ -9,9 +12,9 @@ public final class BushConstants extends BlankConstants {
         // thing constants
         this.name = "Bush";
         this.type = "Plant";
-        this.imagePath = "graphics/bush.png";
-        this.youngImagePath = "graphics/seed.png";
-        this.deadImagePath = "graphics/dead_plant.png";
+        this.mainImage = new ImageStack("bush.png", 0, 10, 1);
+        this.youngImage = new ImageStack("seed.png", 0, 3, 1);
+        this.deadImage = new ImageStack("dead_tree.png", 0, 3, 10);
         this.startingDensity = 1; // per 100pixels^2
         this.maxSize = 30;
         this.minSizeToShow = 1f;
@@ -20,6 +23,7 @@ public final class BushConstants extends BlankConstants {
 
         // organism constants
         this.metabolismRate = 5f; // adjust to FPS and cool down
+        this.decayRate = -200; // adjust to FPS and cool down
         this.growAtHealth = 50;
         this.maxGrowthRate = 10.0f; // adjust to FPS and cool down
         this.reproduceAtSize = 0.6f * maxSize;

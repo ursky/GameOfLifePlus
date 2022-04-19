@@ -4,6 +4,9 @@ public final class UiConstants {
     private UiConstants() {
         // restricted
     }
+    public static final String imageDir = "graphics";
+    public static final String renderedImageDir = "rendered_images";
+
     public static final int threadCount = 12;
     public static final int fullDimX = 100000;
     public static final int fullDimY = 100000;

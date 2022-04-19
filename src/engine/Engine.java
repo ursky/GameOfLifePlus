@@ -3,6 +3,7 @@ package engine;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 import constants.BlankConstants;
 import constants.UiConstants;

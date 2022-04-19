@@ -57,7 +57,7 @@ public class World {
     private void removeDeadOrOffscreen() {
         ArrayList<Thing> livingThings = new ArrayList<>();
         for (Thing thing: this.things) {
-            if (thing.size > 0) {
+            if (thing.size > 0 && thing.currentOpacity > 0) {
                 int binX = this.engine.procedural.convertCoordinateToBin(thing.xPosition, UiConstants.fullDimX);
                 int binY = this.engine.procedural.convertCoordinateToBin(thing.yPosition, UiConstants.fullDimY);
                 if (this.engine.procedural.isRendered[binX][binY]) {

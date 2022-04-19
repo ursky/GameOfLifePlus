@@ -21,25 +21,30 @@ public class InitThings {
             float randX = Random.randFloat(minX, maxX);
             float randY = Random.randFloat(minY, maxY);
             float size = Random.randFloat(constants.maxSize / 2, constants.maxSize);
-            float health = Random.randFloat(20, 100);
-            createThing(randX, randY, size, health, constants);
+            createThing(randX, randY, size, constants);
         }
     }
 
-    private void createThing(float randX, float randY, float size, float health, BlankConstants constants) {
+    private void createThing(float randX, float randY, float size, BlankConstants constants) {
         if (constants.type.equals("Plant")) {
             Plant thing = new Plant(randX, randY, size, this.world, constants);
-            thing.healthPercent = health;
-            this.world.things.add(thing);
+            initThing(thing);
         } else if (constants.type.equals("Animal")) {
             Animal thing = new Animal(randX, randY, size, this.world, constants);
-            thing.healthPercent = health;
-            this.world.things.add(thing);
+            initThing(thing);
         } else {
             Thing thing = new Thing(randX, randY, size, this.world, constants);
-            thing.healthPercent = health;
-            this.world.things.add(thing);
+            initThing(thing);
         }
+    }
+
+    private void initThing(Thing thing) {
+        float health = Random.randFloat(20, 100);
+        thing.currentRotation = Random.randFloat(0, 360);
+        thing.currentOpacity = 255;
+        thing.initImage();
+        thing.healthPercent = health;
+        this.world.things.add(thing);
     }
 
     public void initThingsInBin(float minX, float minY, float maxX, float maxY) {

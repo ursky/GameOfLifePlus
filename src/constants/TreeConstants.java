@@ -1,5 +1,6 @@
 package constants;
 
+import engine.ImageStack;
 import world.World;
 
 public final class TreeConstants extends BlankConstants {
@@ -9,9 +10,9 @@ public final class TreeConstants extends BlankConstants {
         // thing constants
         this.name = "Tree";
         this.type = "Plant";
-        this.imagePath = "graphics/tree.png";
-        this.youngImagePath = "graphics/seed.png";
-        this.deadImagePath = "graphics/dead_plant.png";
+        this.mainImage = new ImageStack("tree.png", 0, 10, 1);
+        this.youngImage = new ImageStack("seed.png", 0, 3, 1);
+        this.deadImage = new ImageStack("dead_tree.png", 0, 3, 10);
         this.startingDensity = 0.1f; // per 100pixels^2
         this.maxSize = 50;
         this.minSizeToShow = 1f;
@@ -20,6 +21,7 @@ public final class TreeConstants extends BlankConstants {
 
         // organism constants
         this.metabolismRate = 15.0f; // adjust to FPS and cool down
+        this.decayRate = -100; // adjust to FPS and cool down
         this.growAtHealth = 80;
         this.maxGrowthRate = 15.0f; // adjust to FPS and cool down
         this.reproduceAtSize = 0.8f * maxSize;

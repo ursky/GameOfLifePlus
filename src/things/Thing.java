@@ -5,7 +5,7 @@ import quadsearch.Point;
 import quadsearch.Region;
 import world.World;
 
-import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +16,15 @@ public class Thing {
     public float size;
     public float xPosition;
     public float yPosition;
-    public Image itemImage;
+    public BufferedImage itemImage;
+    public float currentRotation = 0;
+    public float currentOpacity = 255;
     public boolean isSeed = false;
     public float healthPercent = 100;
     public int coolDownFrames = 1;
     public int coolDown = 0;
 
     public void updateCoolDowns() {
-        // todo: this is broken
         if (this.world.engine.inView(this)) {
             this.coolDownFrames = this.constants.onScreenCoolDown;
         }
@@ -42,10 +43,6 @@ public class Thing {
         float y_dif = y2 - y1;
         float product = x_dif * x_dif + y_dif * y_dif;
         return (float) Math.sqrt(product);
-    }
-
-    public float calcDistanceTo(float x, float y) {
-        return calcDistance(this.xPosition, this.yPosition, x, y);
     }
 
     public ArrayList<Thing> getThingsInRange(float radius) {
@@ -83,7 +80,9 @@ public class Thing {
 
     public Thing makeClone() {
         Thing clone = makeBlank();
-        clone.itemImage = this.constants.loadImage(this.constants.imagePath);
+        clone.currentRotation = this.currentRotation;
+        clone.currentOpacity = this.currentOpacity;
+        clone.itemImage = this.constants.mainImage.getImage(this.currentRotation, this.currentOpacity);
         clone.constants = this.constants;
         clone.healthPercent = this.healthPercent;
         clone.coolDown = this.coolDown;
@@ -94,9 +93,13 @@ public class Thing {
         return new Thing(this.xPosition, this.yPosition, this.size, this.world, this.constants);
     }
 
+    public void initImage() {
+        this.itemImage = this.constants.mainImage.getImage(this.currentRotation, this.currentOpacity);
+    }
+
     public Thing(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
         this.constants = constants;
-        this.itemImage = this.constants.loadImage(this.constants.imagePath);
+        this.initImage();
         this.xPosition = xPosition;
         this.yPosition = yPosition;
         this.world = world;
