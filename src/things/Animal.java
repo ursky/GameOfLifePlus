@@ -21,6 +21,7 @@ public class Animal extends Organism {
         checkSpeedBounds();
         this.xPosition += this.xVelocity;
         this.yPosition += this.yVelocity;
+        // todo: update this.xBin and yBin
     }
 
     private void checkSpeedBounds() {

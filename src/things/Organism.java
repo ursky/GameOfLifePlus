@@ -13,7 +13,7 @@ public class Organism extends Thing {
             this.size += Math.random() * this.constants._maxGrowthRate * this.coolDownFrames;
         }
         if (this.isSeed) {
-            this.itemImage = this.constants.mainImage.getImage(this.currentRotation, this.currentOpacity);
+            this.initImage(this.constants.mainImage);
             this.size *= 2;
             this.isSeed = false;
         }
@@ -22,7 +22,7 @@ public class Organism extends Thing {
         }
         if (this.healthPercent < 0) {
             this.healthPercent = -10000;
-            this.itemImage = this.constants.deadImage.getImage(this.currentRotation, this.currentOpacity);
+            this.initImage(this.constants.deadImage);
             this.currentOpacity += Math.random() * this.constants._decayRate * this.coolDownFrames;
         }
     }

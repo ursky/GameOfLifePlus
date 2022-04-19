@@ -20,6 +20,7 @@ public final class BushConstants extends BlankConstants {
         this.minSizeToShow = 1f;
         this.offScreenCoolDown = 10;
         this.onScreenCoolDown = 10;
+        this.startSize = 3;
 
         // organism constants
         this.metabolismRate = 5f; // adjust to FPS and cool down

@@ -17,9 +17,9 @@ public class World {
     public InitThings initThings;
 
     public void calcDistancesMultithreading() {
-        this.searchAreas = new SearchAreas(this.engine.threadCount);
+        this.searchAreas = new SearchAreas(UiConstants.threadCount);
         ArrayList<QuadTreeThread> threads = new ArrayList<>();
-        for (int i = 0; i<this.engine.threadCount; i++) {
+        for (int i = 0; i<UiConstants.threadCount; i++) {
             QuadTreeThread thread = new QuadTreeThread(this.things, i);
             threads.add(thread);
         }
@@ -31,7 +31,7 @@ public class World {
         if (this.engine.frameCounter < 30) { return; }
         ArrayList<UpdateThingsThread> threads = new ArrayList<>();
         int[][] positions = breakIntoChunks(this.things);
-        for (int i = 0; i<this.engine.threadCount; i++) {
+        for (int i = 0; i<UiConstants.threadCount; i++) {
             UpdateThingsThread thread = new UpdateThingsThread(this.things, positions[i][0], positions[i][1]);
             threads.add(thread);
         }
@@ -40,9 +40,9 @@ public class World {
     }
 
     private int[][] breakIntoChunks(ArrayList<Thing> arrayList) {
-        int increment = arrayList.size() / this.engine.threadCount;
-        int[][] positions = new int[this.engine.threadCount][2];
-        for (int i = 0; i<this.engine.threadCount; i++) {
+        int increment = arrayList.size() / UiConstants.threadCount;
+        int[][] positions = new int[UiConstants.threadCount][2];
+        for (int i = 0; i<UiConstants.threadCount; i++) {
             int start = i * increment;
             int end = (i + 1) * increment;
             if (end > arrayList.size()) {
@@ -58,13 +58,11 @@ public class World {
         ArrayList<Thing> livingThings = new ArrayList<>();
         for (Thing thing: this.things) {
             if (thing.size > 0 && thing.currentOpacity > 0) {
-                int binX = this.engine.procedural.convertCoordinateToBin(thing.xPosition, UiConstants.fullDimX);
-                int binY = this.engine.procedural.convertCoordinateToBin(thing.yPosition, UiConstants.fullDimY);
-                if (this.engine.procedural.isRendered[binX][binY]) {
+                if (thing.isRendered()) {
                     livingThings.add(thing);
                 }
                 else {
-                    this.engine.procedural.archivedThings[binX][binY].add(thing);
+                    this.engine.procedural.archivedThings[thing.xBin][thing.yBin].add(thing);
                 }
             }
         }
@@ -73,7 +71,7 @@ public class World {
     }
 
     public void updateWorld() {
-        this.engine.timeUpdate("\npMisc");
+        this.engine.timeUpdate("\nMisc");
 
         this.calcDistancesMultithreading();
         this.engine.timeUpdate("QuadTree");

@@ -1,6 +1,7 @@
 package things;
 import constants.BlankConstants;
 import constants.UiConstants;
+import engine.ImageStack;
 import quadsearch.Point;
 import quadsearch.Region;
 import world.World;
@@ -16,6 +17,8 @@ public class Thing {
     public float size;
     public float xPosition;
     public float yPosition;
+    public int xBin;
+    public int yBin;
     public BufferedImage itemImage;
     public float currentRotation = 0;
     public float currentOpacity = 255;
@@ -64,18 +67,31 @@ public class Thing {
     }
 
     public boolean isRendered() {
-        return (this.xPosition >= this.world.playerPositionX - this.world.engine.loadRange
-                && this.xPosition < this.world.playerPositionX + this.world.engine.loadRange
-                && this.yPosition >= this.world.playerPositionY - this.world.engine.loadRange
-                && this.yPosition < this.world.playerPositionY + this.world.engine.loadRange);
+        return this.world.engine.procedural.isRendered[this.xBin][this.yBin];
     }
 
     public int getThreadSlice() {
-        float positionInRendered = this.xPosition - this.world.engine.renderedLeftX + this.world.engine.threadBuffer;
-        if (positionInRendered >= 2 * this.world.engine.loadRange) {
-            positionInRendered -= 2 * this.world.engine.loadRange;
+        float renderedLeftX = this.world.engine.procedural.currentCoordinates[0];
+        float positionInRendered = this.xPosition - renderedLeftX + this.world.engine.threadBuffer;
+        float threadWidth = this.world.engine.procedural.loadRangeWidth / UiConstants.threadCount;
+
+        if (positionInRendered >= this.world.engine.procedural.loadRangeWidth) {
+            positionInRendered -= this.world.engine.procedural.loadRangeWidth;
         }
-        return (int) (positionInRendered / this.world.engine.threadWidth);
+        int slice = (int) (positionInRendered / threadWidth);
+        if (slice < 0 || slice >= UiConstants.threadCount) {
+            // this is only an issue because this.xPosition is less than this.world.engine.procedural.currentCoordinates[0]
+            System.out.println(
+                    slice + " " +
+                    this.xPosition + " " +
+                    this.world.playerPositionX + " " +
+                    this.world.engine.loadRange + " " +
+                    this.world.engine.procedural.currentCoordinates[0] + " " +
+                    this.world.engine.procedural.currentCoordinates[2] + " " +
+                    this.world.engine.procedural.currentBins[0] + " " +
+                    this.world.engine.procedural.currentBins[2]);
+        }
+        return slice;
     }
 
     public Thing makeClone() {
@@ -93,15 +109,17 @@ public class Thing {
         return new Thing(this.xPosition, this.yPosition, this.size, this.world, this.constants);
     }
 
-    public void initImage() {
-        this.itemImage = this.constants.mainImage.getImage(this.currentRotation, this.currentOpacity);
+    public void initImage(ImageStack imageStack) {
+        this.itemImage = imageStack.getImage(this.currentRotation, this.currentOpacity);
     }
 
     public Thing(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
         this.constants = constants;
-        this.initImage();
+        this.initImage(this.constants.mainImage);
         this.xPosition = xPosition;
         this.yPosition = yPosition;
+        this.xBin = (int) (UiConstants.nProceduralBins * this.xPosition / UiConstants.fullDimX);
+        this.yBin = (int) (UiConstants.nProceduralBins * this.yPosition / UiConstants.fullDimY);
         this.world = world;
         this.size = size;
     }

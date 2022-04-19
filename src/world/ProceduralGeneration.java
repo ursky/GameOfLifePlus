@@ -6,22 +6,18 @@ import things.Thing;
 import java.util.ArrayList;
 
 public class ProceduralGeneration {
-    final int nBins = UiConstants.nProceduralBins;
-    boolean[][] wasRendered = new boolean[nBins][nBins];
-    boolean[][] isRendered = new boolean[nBins][nBins];
+    public final int nBins = UiConstants.nProceduralBins;
+    public final float binWidthX = UiConstants.fullDimX / (float)nBins;
+    public final float binWidthY = UiConstants.fullDimY / (float)nBins;
+    public boolean[][] wasRendered = new boolean[nBins][nBins];
+    public boolean[][] isRendered = new boolean[nBins][nBins];
     World world;
     public float[] currentCoordinates;
     public int[] currentBins;
+    public float loadRangeWidth;
+    public float loadRangeHeight;
     Archive[][] archivedThings = new Archive[nBins][nBins];
     public int safetyScanRange = 10;
-
-    public int convertCoordinateToBin(float coordinate, float dimension) {
-        return (int) (nBins * coordinate / dimension);
-    }
-
-    public float convertBinToCoordinate(int bin, float dimension) {
-        return bin * dimension / nBins;
-    }
 
     private void updateRenderedRange() {
         this.currentCoordinates = new float[] {
@@ -31,15 +27,23 @@ public class ProceduralGeneration {
                 this.world.playerPositionY + this.world.engine.loadRange
         };
         this.currentBins = new int[] {
-                convertCoordinateToBin(this.currentCoordinates[0], UiConstants.fullDimX),
-                convertCoordinateToBin(this.currentCoordinates[1], UiConstants.fullDimY),
-                convertCoordinateToBin(this.currentCoordinates[2], UiConstants.fullDimX) + 1,
-                convertCoordinateToBin(this.currentCoordinates[3], UiConstants.fullDimY) + 1
+                (int)(this.currentCoordinates[0] / this.binWidthX),
+                (int)(this.currentCoordinates[1] / this.binWidthY),
+                (int)(this.currentCoordinates[2] / this.binWidthX) + 1,
+                (int)(this.currentCoordinates[3] / this.binWidthY) + 1
         };
+        this.currentCoordinates = new float[] {
+                this.currentBins[0] * this.binWidthX,
+                this.currentBins[1] * this.binWidthY,
+                this.currentBins[2] * this.binWidthX + this.binWidthX,
+                this.currentBins[3] * this.binWidthY + this.binWidthY
+        };
+        this.loadRangeWidth = this.currentCoordinates[2] - this.currentCoordinates[0];
+        this.loadRangeHeight = this.currentCoordinates[3] - this.currentCoordinates[1];
     }
 
     private void checkRenderedBins() {
-        int scanRange =  this.safetyScanRange + (int) (this.safetyScanRange * this.world.engine.zoomLevel);
+        int scanRange = this.safetyScanRange + (int) (this.safetyScanRange * this.world.engine.zoomLevel);
         for (int i=this.currentBins[0]-scanRange; i<=this.currentBins[2]+scanRange; i++) {
             for (int j=this.currentBins[1]-scanRange; j<=this.currentBins[3]+scanRange; j++) {
                 if (this.binIsRendered(i, j)) {
@@ -72,7 +76,10 @@ public class ProceduralGeneration {
             this.isRendered[i][j] = false;
             return false;
         }
-        return true;
+        else {
+            this.isRendered[i][j] = true;
+            return true;
+        }
     }
 
     private int getNRenderedBins() {
@@ -88,10 +95,10 @@ public class ProceduralGeneration {
     }
 
     private void initNewBin(int i, int j) {
-        float minToInitX = this.convertBinToCoordinate(i, UiConstants.fullDimX);
-        float maxToInitX = minToInitX + UiConstants.fullDimX / (float) nBins;
-        float minToInitY = this.convertBinToCoordinate(j, UiConstants.fullDimY);
-        float maxToInitY = minToInitY + UiConstants.fullDimY / (float) nBins;
+        float minToInitX = i * this.binWidthX;
+        float maxToInitX = minToInitX + this.binWidthX;
+        float minToInitY = j * this.binWidthY;
+        float maxToInitY = minToInitY + this.binWidthY;
         if (this.world.engine.frameCounter == 0) {
             this.world.initThings.initThingsInBin(minToInitX, minToInitY, maxToInitX, maxToInitY);
         }

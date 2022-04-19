@@ -33,10 +33,7 @@ public class Engine extends JPanel implements ActionListener {
             this.world.playerPositionY + this.povDimY / 2};
     public float loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
     private float scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
-    public int threadCount = UiConstants.threadCount;
     public float threadBuffer = 0;
-    public float threadWidth = this.loadRange * 2 / this.threadCount;
-    public float renderedLeftX = this.world.playerPositionX - this.loadRange;
 
     public void timeUpdate(String stepName) {
         long currentTime = System.nanoTime();
@@ -79,16 +76,18 @@ public class Engine extends JPanel implements ActionListener {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2D = (Graphics2D) g;
-        for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
-            scanThingsToPaint(constants.name, g2D);
+        float minSize = 1;
+        float maxSize = 100;
+        float sizeIncrement = 5;
+        for (float size=minSize; size<maxSize; size+=sizeIncrement) {
+            scanThingsToPaint(size, size + sizeIncrement, g2D);
         }
         updateFPS(g);
     }
 
-    private void scanThingsToPaint(String className, Graphics2D g2D) {
+    private void scanThingsToPaint(float minSize, float maxSize, Graphics2D g2D) {
         for (Thing thing : world.things) {
-            String thingName = thing.constants.name;
-            if (thing.size >= thing.constants.minSizeToShow && thingName.equals(className)) {
+            if (thing.size >= thing.constants.minSizeToShow && thing.size >= minSize && thing.size < maxSize) {
                 paintThing(thing, g2D);
             }
         }
@@ -158,8 +157,6 @@ public class Engine extends JPanel implements ActionListener {
         this.povDimY = UiConstants.panelHeight / this.zoomLevel;
         this.loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
         this.loadRange = Math.max(this.loadRange, UiConstants.minLoadRange);
-        this.threadWidth = this.loadRange * 2 / this.threadCount;
-        this.renderedLeftX = this.world.playerPositionX - this.loadRange;
         this.positionsInView[0] = this.world.playerPositionX - this.povDimX / 2;
         this.positionsInView[1] =  this.world.playerPositionX + this.povDimX / 2;
         this.positionsInView[2] =  this.world.playerPositionY - this.povDimY / 2;
@@ -168,21 +165,20 @@ public class Engine extends JPanel implements ActionListener {
 
     private void updateFrames() {
         this.frameCounter++;
-        this.threadBuffer = this.world.engine.frameCounter % (this.loadRange * 2);
+        this.threadBuffer = this.world.engine.frameCounter % (this.world.engine.procedural.loadRangeWidth);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        procedural.updateBins();
-        this.timeUpdate("Update bins");
-        world.updateWorld();
+        this.world.updateWorld();
         this.timeUpdate("Update world");
         this.repaint();
         this.timeUpdate("Re-paint");
         this.keyboardCheck();
         this.timeUpdate("Keyboard");
+        this.procedural.updateBins();
+        this.timeUpdate("Update bins");
         this.world.initThings.updateConstants();
-        this.timeUpdate("Init things");
         this.updateFrames();
         this.timeUpdate("Update frames");
     }

@@ -14,7 +14,7 @@ public class BlankConstants {
     public ImageStack mainImage, youngImage, deadImage;
     public int maxOffsprings, onScreenCoolDown, offScreenCoolDown;
     public float startingDensity, maxSize, minSizeToShow, metabolismRate, growAtHealth, decayRate,
-            maxGrowthRate, reproduceAtSize, reproduceAtHealth, reproductionPenalty;
+            maxGrowthRate, reproduceAtSize, reproduceAtHealth, reproductionPenalty, startSize;
     public float dispersalRange, maxShadeRange, shadePenalty, sproutTime, startHealth;
 
     // animal variables

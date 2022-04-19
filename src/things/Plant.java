@@ -21,7 +21,7 @@ public class Plant extends Organism {
         if (isInBounds(seedX, seedY)
                 && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.constants.dispersalRange) {
             Thing seedling = makeClone();
-            seedling.size = 1;
+            seedling.size = seedling.constants.startSize;
             seedling.coolDown = (int) (Math.random() * this.constants.sproutTime * this.coolDownFrames
                     * this.world.engine.currentFPS);
             seedling.healthPercent = seedling.constants.startHealth;
@@ -29,7 +29,7 @@ public class Plant extends Organism {
             seedling.yPosition = seedY;
             seedling.isSeed = true;
             seedling.currentRotation = Random.randFloat(0, 360);
-            seedling.initImage();
+            seedling.initImage(seedling.constants.youngImage);
             this.world.newThings.add(seedling);
         }
     }

@@ -15,6 +15,7 @@ public final class GrassConstants extends BlankConstants {
         this.deadImage = new ImageStack("dead_grass.png", 0, 3, 10);
         this.startingDensity = 2; // per 100pixels^2
         this.maxSize = 20;
+        this.startSize = 2;
         this.minSizeToShow = 1f;
         this.offScreenCoolDown = 10;
         this.onScreenCoolDown = 10;
@@ -26,15 +27,14 @@ public final class GrassConstants extends BlankConstants {
         this.maxGrowthRate = 15; // adjust to FPS and cool down
         this.reproduceAtSize = maxSize;
         this.reproduceAtHealth = 90;
-        this.reproductionPenalty = -1f;
+        this.reproductionPenalty = 0.1f;
         this.maxOffsprings = 10;
-        this.startHealth = 90;
+        this.startHealth = 60;
 
         // plant constants
         this.dispersalRange = 30;
         this.maxShadeRange = 1.5f * this.maxSize / 2;
-        // todo: if a small plant grows into the shade of a larger one, it should not die - just stay at that size
-        this.shadePenalty = -20f; // adjust to FPS and cool down
-        this.sproutTime = 0.1f; // adjust to FPS and cool down
+        this.shadePenalty = -10f; // adjust to FPS and cool down
+        this.sproutTime = 1f; // adjust to FPS and cool down
     }
 }

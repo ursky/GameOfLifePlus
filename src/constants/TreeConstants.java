@@ -18,6 +18,7 @@ public final class TreeConstants extends BlankConstants {
         this.minSizeToShow = 1f;
         this.offScreenCoolDown = 10;
         this.onScreenCoolDown = 10;
+        this.startSize = 5;
 
         // organism constants
         this.metabolismRate = 15.0f; // adjust to FPS and cool down

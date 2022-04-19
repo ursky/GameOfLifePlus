@@ -42,7 +42,7 @@ public class InitThings {
         float health = Random.randFloat(20, 100);
         thing.currentRotation = Random.randFloat(0, 360);
         thing.currentOpacity = 255;
-        thing.initImage();
+        thing.initImage(thing.constants.mainImage);
         thing.healthPercent = health;
         this.world.things.add(thing);
     }
@@ -54,7 +54,8 @@ public class InitThings {
     }
 
     public void copyThingsInBin(float minX, float minY, float maxX, float maxY) {
-        if (maxX - minX > this.world.engine.loadRange * 2 || maxY - minY > this.world.engine.loadRange * 2) {
+        if (maxX - minX > this.world.engine.procedural.loadRangeWidth
+                || maxY - minY > this.world.engine.procedural.loadRangeHeight) {
             this.initThingsInBin(minX, minY, maxX, maxY);
         }
         else {
