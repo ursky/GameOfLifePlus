@@ -10,9 +10,12 @@ public final class GrassConstants extends BlankConstants {
         // thing constants
         this.name = "Grass";
         this.type = "Plant";
-        this.mainImage = new ImageStack("grass.png", 0, 10, 1);
-        this.youngImage = new ImageStack("seed.png", 0, 3, 1);
-        this.deadImage = new ImageStack("dead_grass.png", 0, 3, 10);
+        this.mainImage = new ImageStack("grass.png",
+                0, 10, 1, 400, 0);
+        this.youngImage = new ImageStack("seed.png",
+                0, 3, 1, 200, 15);
+        this.deadImage = new ImageStack("dead_grass.png",
+                0, 3, 10, 400, 0);
         this.startingDensity = 2; // per 100pixels^2
         this.maxSize = 20;
         this.startSize = 2;
@@ -32,7 +35,7 @@ public final class GrassConstants extends BlankConstants {
 
         // plant constants
         this.dispersalRange = 30;
-        this.maxShadeRange = 1.5f * this.maxSize / 2;
+        this.maxShadeRange = 1.3f * this.maxSize / 2;
         this.shadePenalty = -10f; // adjust to FPS and cool down
         this.sproutTime = 1f; // adjust to FPS and cool down
     }

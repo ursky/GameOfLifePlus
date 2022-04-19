@@ -12,9 +12,12 @@ public final class BushConstants extends BlankConstants {
         // thing constants
         this.name = "Bush";
         this.type = "Plant";
-        this.mainImage = new ImageStack("bush.png", 0, 10, 1);
-        this.youngImage = new ImageStack("seed.png", 0, 3, 1);
-        this.deadImage = new ImageStack("dead_tree.png", 0, 3, 10);
+        this.mainImage = new ImageStack("bush.png",
+                0, 10, 1, 500, 50);
+        this.youngImage = new ImageStack("seed.png",
+                0, 3, 1, 200, 15);
+        this.deadImage = new ImageStack("dead_tree.png",
+                0, 3, 10, 500, 0);
         this.startingDensity = 1; // per 100pixels^2
         this.maxSize = 30;
         this.offScreenCoolDown = 10;
@@ -34,7 +37,7 @@ public final class BushConstants extends BlankConstants {
 
         // plant constants
         this.dispersalRange = 30;
-        this.maxShadeRange = 1.5f * this.maxSize / 2;
+        this.maxShadeRange = 1.1f * this.maxSize / 2;
         this.shadePenalty = -20f; // adjust to FPS and cool down
         this.sproutTime = 1f; // adjust to FPS and cool down
     }

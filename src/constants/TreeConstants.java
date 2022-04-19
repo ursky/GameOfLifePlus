@@ -10,9 +10,12 @@ public final class TreeConstants extends BlankConstants {
         // thing constants
         this.name = "Tree";
         this.type = "Plant";
-        this.mainImage = new ImageStack("tree.png", 0, 10, 1);
-        this.youngImage = new ImageStack("seed.png", 0, 3, 1);
-        this.deadImage = new ImageStack("dead_tree.png", 0, 3, 10);
+        this.mainImage = new ImageStack("tree.png",
+                0, 10, 1, 1000, 20);
+        this.youngImage = new ImageStack("seed.png",
+                0, 3, 1, 300, 20);
+        this.deadImage = new ImageStack("dead_tree.png",
+                0, 3, 10, 1000, 0);
         this.startingDensity = 0.1f; // per 100pixels^2
         this.maxSize = 50;
         this.offScreenCoolDown = 10;

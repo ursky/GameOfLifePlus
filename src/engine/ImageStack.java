@@ -20,7 +20,8 @@ public class ImageStack extends JFrame {
     public int startRotation;
     public int rotationVariety;
     public int opacityVariety;
-    public int image_resolution = 1000;
+    public int imageResolution;
+    public int imagePadding;
 
     public BufferedImage getImage(float rotation, float opacity) {
         int roundedRotation = (int)(rotation * this.rotationVariety / 360);
@@ -72,22 +73,24 @@ public class ImageStack extends JFrame {
         for (int rotation=0; rotation<360; rotation+=(360 / this.rotationVariety)) {
             this.imageStack.add(new ArrayList<>());
             for (int opacity=255; opacity>0; opacity-=(255 / this.opacityVariety)) {
-                BufferedImage finalImage = makeOrLoadImage(this.image_resolution, rotation, opacity);
+                BufferedImage finalImage = makeOrLoadImage(rotation, opacity);
                 this.imageStack.get(rotation * this.rotationVariety / 360).add(finalImage);
             }
         }
     }
 
-    private BufferedImage makeOrLoadImage(int resolution, int rotation, int opacity) {
+    private BufferedImage makeOrLoadImage(int rotation, int opacity) {
         String imageFile = this.origImageName.substring(0, this.origImageName.lastIndexOf('.'))
-                + "_" + resolution + "_" + rotation + "_" + opacity + ".png";
+                + "_" + this.imageResolution + "_" + this.imagePadding + "_" + rotation + "_" + opacity + ".png";
         Path imagePath = Paths.get(UiConstants.renderedImageDir + "/" + imageFile);
         if (Files.exists(imagePath)) {
             return toBufferedImage(new ImageIcon(UiConstants.renderedImageDir + "/" + imageFile).getImage());
         }
         else {
-            BufferedImage imageToMod = resize(this.origImage, this.image_resolution, this.image_resolution);
-            BufferedImage rotatedImage = this.rotate(imageToMod, rotation-this.startRotation);
+            System.out.println("Making image " + imageFile + " for the first time");
+            BufferedImage imageToMod = resizeSquare(this.origImage);
+            BufferedImage paddedImage = addPadding(imageToMod);
+            BufferedImage rotatedImage = this.rotate(paddedImage, rotation-this.startRotation);
             BufferedImage finalImage = this.changeOpacity(rotatedImage, opacity);
             File fileOut = new File(UiConstants.renderedImageDir + "/" + imageFile);
             try {
@@ -99,23 +102,37 @@ public class ImageStack extends JFrame {
         }
     }
 
-    public static BufferedImage resize(BufferedImage image, int newWidth, int newHeight) {
-        Image tmp = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-        BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = resizedImage.createGraphics();
-        g2d.drawImage(tmp, 0, 0, null);
-        g2d.dispose();
+    private BufferedImage addPadding(BufferedImage image) {
+        int newDim = this.imageResolution + 2 * this.imagePadding;
+        BufferedImage newImage = new BufferedImage(newDim, newDim, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = newImage.createGraphics();
+        g.setColor(new Color(0, 0, 0, 0));
+        g.fillRect(0, 0, newDim, newDim);
+        g.drawImage(image, this.imagePadding, this.imagePadding,null);
+        g.dispose();
+        return newImage;
+    }
 
+    private BufferedImage resizeSquare(BufferedImage image) {
+        Image tmp = image.getScaledInstance(this.imageResolution, this.imageResolution, Image.SCALE_SMOOTH);
+        BufferedImage resizedImage = new BufferedImage(
+                this.imageResolution, this.imageResolution, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(tmp, 0, 0, null);
+        g.dispose();
         return resizedImage;
     }
 
-    public ImageStack(String imageName, int startRotation, int rotationVariety, int opacityVariety) {
+    public ImageStack(String imageName, int startRotation, int rotationVariety, int opacityVariety,
+                      int imageResolution, int imagePadding) {
         this.origImageName = imageName;
         this.origImage = toBufferedImage(new ImageIcon(UiConstants.imageDir + "/" + imageName).getImage());
         this.startRotation = startRotation;
         this.imageStack = new ArrayList<>();
         this.rotationVariety = rotationVariety;
         this.opacityVariety = opacityVariety;
+        this.imagePadding = imagePadding;
+        this.imageResolution = imageResolution;
         this.initImageStack();
     }
 }

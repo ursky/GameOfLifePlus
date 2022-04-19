@@ -39,7 +39,7 @@ public class Plant extends Organism {
         float shadeRange = this.constants.maxShadeRange * this.size / this.constants.maxSize;
         if (shadeRange > 1) {
             for (Thing otherTree : this.getThingsInRange(shadeRange)) {
-                if (otherTree instanceof Plant && this.size >= otherTree.size) {
+                if (otherTree instanceof Plant && this.size >= otherTree.size && !otherTree.isSeed) {
                     otherTree.healthPercent += this.constants._shadePenalty * this.coolDownFrames;
                 }
             }
