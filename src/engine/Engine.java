@@ -3,10 +3,10 @@ package engine;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import constants.UiConstants;
-import things.Thing;
 import utilities.Keyboard;
 import world.ProceduralGeneration;
 import world.World;
@@ -15,6 +15,7 @@ public class Engine extends JPanel implements ActionListener {
     public World world = new World(this);
     public ProceduralGeneration procedural = new ProceduralGeneration(world);
     public Timer timer;
+    private Graphics2D g2D;
     public int currentFPS = UiConstants.targetFPS;
     private long currentTime = System.currentTimeMillis();
     private int framesSinceLastFPS = 0;
@@ -74,20 +75,22 @@ public class Engine extends JPanel implements ActionListener {
 
     public void paint(Graphics g) {
         super.paint(g);
-        Graphics2D g2D = (Graphics2D) g;
+        this.g2D = (Graphics2D) g;
         ArrayList<PaintThread> paintGroups = initializePaintGroups();
         for (PaintThread paintGroup: paintGroups) {
             for (int i=0; i<paintGroup.images.size(); i++) {
-                g2D.drawImage(
+                paintImage(
                         paintGroup.images.get(i),
                         paintGroup.xPositions.get(i),
                         paintGroup.yPositions.get(i),
-                        paintGroup.sizes.get(i),
-                        paintGroup.sizes.get(i),
-                        null);
+                        paintGroup.sizes.get(i));
             }
         }
         updateFPS(g);
+    }
+
+    public void paintImage(BufferedImage image, int xPos, int yPos, int size) {
+        this.g2D.drawImage(image, xPos, yPos, size, size, null);
     }
 
     private ArrayList<PaintThread> initializePaintGroups() {

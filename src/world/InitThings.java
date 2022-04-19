@@ -55,7 +55,8 @@ public class InitThings {
 
     public void copyThingsInBin(float minX, float minY, float maxX, float maxY) {
         if (maxX - minX > this.world.engine.procedural.loadRangeWidth
-                || maxY - minY > this.world.engine.procedural.loadRangeHeight) {
+                || maxY - minY > this.world.engine.procedural.loadRangeHeight
+                || this.world.engine.frameCounter == 0) {
             this.initThingsInBin(minX, minY, maxX, maxY);
         }
         else {

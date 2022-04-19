@@ -8,9 +8,9 @@ public final class UiConstants {
     public static final String renderedImageDir = "rendered_images";
 
     public static final int threadCount = 12;
-    public static final int fullDimX = 100000;
-    public static final int fullDimY = 100000;
-    public static final int nProceduralBins = fullDimX / 200;
+    public static final int fullDimX = 1000000;
+    public static final int fullDimY = 1000000;
+    public static final int nProceduralBins = fullDimX / 500;
     public static int targetFPS = 60;
     public static int targetFrameTime = 1000 / (targetFPS + 1);
 
