@@ -55,11 +55,11 @@ public class World {
     }
 
     private void removeDeadOrOffscreen() {
-        ArrayList<Thing> livingThings = new ArrayList<>();
+        ArrayList<Thing> thingsInRange = new ArrayList<>();
         for (Thing thing: this.things) {
-            if (thing.size > 0 && thing.currentOpacity > 0) {
+            if (thing != null && thing.size > 0 && thing.currentOpacity > 0) {
                 if (thing.isRendered()) {
-                    livingThings.add(thing);
+                    thingsInRange.add(thing);
                 }
                 else {
                     this.engine.procedural.archivedThings[thing.xBin][thing.yBin].add(thing);
@@ -67,11 +67,11 @@ public class World {
             }
         }
         this.things.clear();
-        this.things = livingThings;
+        this.things = thingsInRange;
     }
 
     public void updateWorld() {
-        this.engine.timeUpdate("\nMisc");
+        this.engine.timeUpdate("\nPaint");
 
         this.calcDistancesMultithreading();
         this.engine.timeUpdate("QuadTree");

@@ -13,7 +13,7 @@ public class BlankConstants {
     public String name, type;
     public ImageStack mainImage, youngImage, deadImage;
     public int maxOffsprings, onScreenCoolDown, offScreenCoolDown;
-    public float startingDensity, maxSize, minSizeToShow, metabolismRate, growAtHealth, decayRate,
+    public float startingDensity, maxSize, metabolismRate, growAtHealth, decayRate,
             maxGrowthRate, reproduceAtSize, reproduceAtHealth, reproductionPenalty, startSize;
     public float dispersalRange, maxShadeRange, shadePenalty, sproutTime, startHealth;
 

@@ -105,6 +105,7 @@ public class InitThings {
         Thing newThing = thing.makeClone();
         newThing.xPosition = newXPos;
         newThing.yPosition = newYPos;
+        newThing.updateBin();
         return newThing;
     }
 
@@ -123,6 +124,16 @@ public class InitThings {
         for (BlankConstants constants: this.orderedBlankConstants) {
             constants.update();
         }
+    }
+
+    public float getBiggestSize() {
+        float biggest = 0;
+        for (BlankConstants constants: this.orderedBlankConstants) {
+            if (constants.maxSize > biggest) {
+                biggest = constants.maxSize;
+            }
+        }
+        return biggest;
     }
 
     public InitThings(World world) {

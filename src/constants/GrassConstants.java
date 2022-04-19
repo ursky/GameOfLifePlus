@@ -16,7 +16,6 @@ public final class GrassConstants extends BlankConstants {
         this.startingDensity = 2; // per 100pixels^2
         this.maxSize = 20;
         this.startSize = 2;
-        this.minSizeToShow = 1f;
         this.offScreenCoolDown = 10;
         this.onScreenCoolDown = 10;
 

@@ -15,7 +15,6 @@ public final class TreeConstants extends BlankConstants {
         this.deadImage = new ImageStack("dead_tree.png", 0, 3, 10);
         this.startingDensity = 0.1f; // per 100pixels^2
         this.maxSize = 50;
-        this.minSizeToShow = 1f;
         this.offScreenCoolDown = 10;
         this.onScreenCoolDown = 10;
         this.startSize = 5;

@@ -3,9 +3,8 @@ package engine;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
-import constants.BlankConstants;
 import constants.UiConstants;
 import things.Thing;
 import utilities.Keyboard;
@@ -76,46 +75,34 @@ public class Engine extends JPanel implements ActionListener {
     public void paint(Graphics g) {
         super.paint(g);
         Graphics2D g2D = (Graphics2D) g;
-        float minSize = 1;
-        float maxSize = 100;
-        float sizeIncrement = 5;
-        for (float size=minSize; size<maxSize; size+=sizeIncrement) {
-            scanThingsToPaint(size, size + sizeIncrement, g2D);
+        ArrayList<PaintThread> paintGroups = initializePaintGroups();
+        for (PaintThread paintGroup: paintGroups) {
+            for (int i=0; i<paintGroup.images.size(); i++) {
+                g2D.drawImage(
+                        paintGroup.images.get(i),
+                        paintGroup.xPositions.get(i),
+                        paintGroup.yPositions.get(i),
+                        paintGroup.sizes.get(i),
+                        paintGroup.sizes.get(i),
+                        null);
+            }
         }
         updateFPS(g);
     }
 
-    private void scanThingsToPaint(float minSize, float maxSize, Graphics2D g2D) {
-        for (Thing thing : world.things) {
-            if (thing.size >= thing.constants.minSizeToShow && thing.size >= minSize && thing.size < maxSize) {
-                paintThing(thing, g2D);
-            }
+    private ArrayList<PaintThread> initializePaintGroups() {
+        ArrayList<PaintThread> paintThreads = new ArrayList<>();
+        float minSize = 0;
+        float maxSize = (int)this.world.initThings.getBiggestSize() + 1;
+        float sizeIncrement = UiConstants.paintSizeIncrement;
+        for (float size=minSize; size<maxSize; size+=sizeIncrement) {
+            PaintThread paintThread = new PaintThread(this, size, size + sizeIncrement);
+            paintThreads.add(paintThread);
         }
-    }
+        for (PaintThread thread: paintThreads) { thread.start(); }
+        for (PaintThread thread: paintThreads) { thread.join(); }
 
-    private void paintThing(Thing thing, Graphics2D g2D) {
-        if (inView(thing)) {
-            float xPos = transformCoordinate(thing.xPosition, thing.size, world.playerPositionX, this.povDimX);
-            float yPos = transformCoordinate(thing.yPosition, thing.size, world.playerPositionY, this.povDimY);
-            float size = thing.size * this.zoomLevel;
-            g2D.drawImage(thing.itemImage, (int) (xPos * this.zoomLevel),
-                    (int) (yPos * this.zoomLevel), (int) size, (int) size, null);
-        }
-    }
-
-    public boolean inView(Thing thing) {
-        float halfSize = thing.size / 2;
-        return (thing.xPosition + halfSize > this.positionsInView[0]
-                && thing.xPosition - halfSize < this.positionsInView[1]
-                && thing.yPosition + halfSize > this.positionsInView[2]
-                && thing.yPosition - halfSize < this.positionsInView[3]
-                && thing.size >= thing.constants.minSizeToShow);
-    }
-
-    private float transformCoordinate(float position, float size, float fovPosition, float dimension) {
-        position = position - size / 2;
-        position = position - fovPosition + dimension / 2;
-        return position;
+        return paintThreads;
     }
 
     private void keyboardCheck() {
@@ -172,12 +159,14 @@ public class Engine extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         this.world.updateWorld();
         this.timeUpdate("Update world");
+
         this.repaint();
-        this.timeUpdate("Re-paint");
         this.keyboardCheck();
         this.timeUpdate("Keyboard");
+
         this.procedural.updateBins();
         this.timeUpdate("Update bins");
+
         this.world.initThings.updateConstants();
         this.updateFrames();
         this.timeUpdate("Update frames");

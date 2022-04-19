@@ -28,13 +28,21 @@ public class Thing {
     public int coolDown = 0;
 
     public void updateCoolDowns() {
-        if (this.world.engine.inView(this)) {
+        if (this.isInView()) {
             this.coolDownFrames = this.constants.onScreenCoolDown;
         }
         else {
             this.coolDownFrames = this.constants.offScreenCoolDown;
         }
         this.coolDown = this.coolDownFrames - 1;
+    }
+
+    public boolean isInView() {
+        float halfSize = this.size / 2;
+        return (this.xPosition + halfSize > this.world.engine.positionsInView[0]
+                && this.xPosition - halfSize < this.world.engine.positionsInView[1]
+                && this.yPosition + halfSize > this.world.engine.positionsInView[2]
+                && this.yPosition - halfSize < this.world.engine.positionsInView[3]);
     }
 
     public boolean isInBounds(float xPos, float yPos) {
@@ -70,6 +78,24 @@ public class Thing {
         return this.world.engine.procedural.isRendered[this.xBin][this.yBin];
     }
 
+    public void printDetails() {
+        System.out.println(
+                "thing:(" + this.xPosition + ", " + this.yPosition + ") "
+                + "thingBin:(" + this.xBin + ", " + this.yBin + ") "
+                + this.world.engine.procedural.isRendered[this.xBin][this.yBin] + " "
+                + "player:(" + this.world.playerPositionX + ", " + this.world.playerPositionY + ") "
+                + "range:(" + this.world.engine.loadRange + ": "
+                    + this.world.engine.procedural.currentCoordinates[0] + ", "
+                    + this.world.engine.procedural.currentCoordinates[1] + ", "
+                    + this.world.engine.procedural.currentCoordinates[2] + ", "
+                    + this.world.engine.procedural.currentCoordinates[3] + ") "
+                + "binRange:(" + this.world.engine.procedural.currentBins[0] + ", "
+                    + this.world.engine.procedural.currentBins[1] + ", "
+                    + this.world.engine.procedural.currentBins[2] + ", "
+                    + this.world.engine.procedural.currentBins[3] + ")"
+        );
+    }
+
     public int getThreadSlice() {
         float renderedLeftX = this.world.engine.procedural.currentCoordinates[0];
         float positionInRendered = this.xPosition - renderedLeftX + this.world.engine.threadBuffer;
@@ -78,20 +104,7 @@ public class Thing {
         if (positionInRendered >= this.world.engine.procedural.loadRangeWidth) {
             positionInRendered -= this.world.engine.procedural.loadRangeWidth;
         }
-        int slice = (int) (positionInRendered / threadWidth);
-        if (slice < 0 || slice >= UiConstants.threadCount) {
-            // this is only an issue because this.xPosition is less than this.world.engine.procedural.currentCoordinates[0]
-            System.out.println(
-                    slice + " " +
-                    this.xPosition + " " +
-                    this.world.playerPositionX + " " +
-                    this.world.engine.loadRange + " " +
-                    this.world.engine.procedural.currentCoordinates[0] + " " +
-                    this.world.engine.procedural.currentCoordinates[2] + " " +
-                    this.world.engine.procedural.currentBins[0] + " " +
-                    this.world.engine.procedural.currentBins[2]);
-        }
-        return slice;
+        return (int) (positionInRendered / threadWidth);
     }
 
     public Thing makeClone() {
@@ -113,14 +126,18 @@ public class Thing {
         this.itemImage = imageStack.getImage(this.currentRotation, this.currentOpacity);
     }
 
+    public void updateBin() {
+        this.xBin = (int) (this.xPosition / this.world.engine.procedural.binWidthX);
+        this.yBin = (int) (this.yPosition / this.world.engine.procedural.binWidthY);
+    }
+
     public Thing(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
         this.constants = constants;
         this.initImage(this.constants.mainImage);
         this.xPosition = xPosition;
         this.yPosition = yPosition;
-        this.xBin = (int) (UiConstants.nProceduralBins * this.xPosition / UiConstants.fullDimX);
-        this.yBin = (int) (UiConstants.nProceduralBins * this.yPosition / UiConstants.fullDimY);
         this.world = world;
         this.size = size;
+        this.updateBin();
     }
 }

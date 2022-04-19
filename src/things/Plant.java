@@ -27,6 +27,7 @@ public class Plant extends Organism {
             seedling.healthPercent = seedling.constants.startHealth;
             seedling.xPosition = seedX;
             seedling.yPosition = seedY;
+            seedling.updateBin();
             seedling.isSeed = true;
             seedling.currentRotation = Random.randFloat(0, 360);
             seedling.initImage(seedling.constants.youngImage);

@@ -67,31 +67,19 @@ public class ProceduralGeneration {
         this.isRendered[i][j] = true;
     }
 
-    private boolean binIsRendered(int i, int j) {
-        if (i < 0 || j < 0 || i >= this.nBins || j >= this.nBins) {
+    private boolean binIsRendered(int x, int y) {
+        if (x < 0 || y < 0 || x >= this.nBins || y >= this.nBins) {
             return false;
         }
-        if (i < this.currentBins[0] || i >= this.currentBins[2] || j < this.currentBins[1] || j >= this.currentBins[3])
+        if (x < this.currentBins[0] || x > this.currentBins[2] || y < this.currentBins[1] || y > this.currentBins[3])
         {
-            this.isRendered[i][j] = false;
+            this.isRendered[x][y] = false;
             return false;
         }
         else {
-            this.isRendered[i][j] = true;
+            this.isRendered[x][y] = true;
             return true;
         }
-    }
-
-    private int getNRenderedBins() {
-        int nRendered = 0;
-        for (int i=0; i<this.nBins; i++) {
-            for (int j = 0; j < this.nBins; j++) {
-                if (this.isRendered[i][j]) {
-                    nRendered++;
-                }
-            }
-        }
-        return nRendered;
     }
 
     private void initNewBin(int i, int j) {
@@ -99,13 +87,7 @@ public class ProceduralGeneration {
         float maxToInitX = minToInitX + this.binWidthX;
         float minToInitY = j * this.binWidthY;
         float maxToInitY = minToInitY + this.binWidthY;
-        if (this.world.engine.frameCounter == 0) {
-            this.world.initThings.initThingsInBin(minToInitX, minToInitY, maxToInitX, maxToInitY);
-        }
-        else {
-            this.world.initThings.copyThingsInBin(minToInitX, minToInitY, maxToInitX, maxToInitY);
-        }
-
+        this.world.initThings.copyThingsInBin(minToInitX, minToInitY, maxToInitX, maxToInitY);
     }
 
     public void updateBins() {

@@ -25,4 +25,5 @@ public final class UiConstants {
     public static final float startPositionY = fullDimY / 2f;
     public static final float scrollSpeed = 500.0f; // adjust to FPS and enlargement
     public static final float zoomSpeed = 2f; // adjust to FPS
+    public static final float paintSizeIncrement = 5;
 }
