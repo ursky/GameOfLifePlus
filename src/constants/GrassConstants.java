@@ -16,8 +16,9 @@ public final class GrassConstants extends BlankConstants {
                 0, 3, 1, 200, 15);
         this.deadImage = new ImageStack("dead_grass.png",
                 0, 3, 10, 400, 0);
-        this.startingDensity = 2; // per 100pixels^2
+        this.startingDensity = 0.4f; // per 100pixels^2
         this.maxSize = 20;
+        this.maxBiomass = 100;
         this.startSize = 2;
         this.offScreenCoolDown = 10;
         this.onScreenCoolDown = 10;

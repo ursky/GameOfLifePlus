@@ -24,8 +24,21 @@ public class ImageStack extends JFrame {
     public int imagePadding;
 
     public BufferedImage getImage(float rotation, float opacity) {
+        if (rotation >= 360) {
+            rotation -= 360;
+        }
+        else if (rotation < 0) {
+            rotation += 360;
+        }
+        if (opacity < 0) {
+            opacity = 0;
+        }
+
         int roundedRotation = (int)(rotation * this.rotationVariety / 360);
         int roundedOpacity = (int)((256 - opacity) * this.opacityVariety / 256);
+        if (roundedRotation >= this.imageStack.size() || roundedOpacity >= 11) {
+            System.out.println(rotation + " " + opacity);
+        }
         return this.imageStack.get(roundedRotation).get(roundedOpacity);
     }
 
@@ -88,7 +101,7 @@ public class ImageStack extends JFrame {
         }
         else {
             System.out.println("Making image " + imageFile + " for the first time");
-            BufferedImage imageToMod = resizeSquare(this.origImage);
+            BufferedImage imageToMod = resizeToSquare(this.origImage);
             BufferedImage paddedImage = addPadding(imageToMod);
             BufferedImage rotatedImage = this.rotate(paddedImage, rotation-this.startRotation);
             BufferedImage finalImage = this.changeOpacity(rotatedImage, opacity);
@@ -113,8 +126,35 @@ public class ImageStack extends JFrame {
         return newImage;
     }
 
-    private BufferedImage resizeSquare(BufferedImage image) {
-        Image tmp = image.getScaledInstance(this.imageResolution, this.imageResolution, Image.SCALE_SMOOTH);
+    private BufferedImage resizeToSquare(BufferedImage image) {
+        BufferedImage squareImage;
+        int imageHeight = image.getHeight();
+        int imageWidth = image.getWidth();
+        if (imageWidth == imageHeight) {
+            squareImage = image;
+        }
+        else {
+            // pad the original image with transparent bars to make it a proper square
+            int newDim = Math.max(imageHeight, imageWidth);
+            squareImage = new BufferedImage(newDim, newDim, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = squareImage.createGraphics();
+            g.setColor(new Color(0, 0, 0, 0));
+            g.fillRect(0, 0, newDim, newDim);
+
+            int xPad, yPad;
+            if (imageHeight > imageWidth) {
+                xPad = (imageHeight - imageWidth) / 2;
+                yPad = 0;
+            }
+            else {
+                xPad = 0;
+                yPad = (imageWidth - imageHeight) / 2;
+            }
+            g.drawImage(image, xPad, yPad, null);
+            g.dispose();
+        }
+
+        Image tmp = squareImage.getScaledInstance(this.imageResolution, this.imageResolution, Image.SCALE_SMOOTH);
         BufferedImage resizedImage = new BufferedImage(
                 this.imageResolution, this.imageResolution, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = resizedImage.createGraphics();

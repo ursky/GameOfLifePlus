@@ -3,9 +3,6 @@ package constants;
 import engine.ImageStack;
 import world.World;
 
-import javax.swing.*;
-import java.awt.*;
-
 public class BlankConstants {
     public World world;
 
@@ -13,15 +10,19 @@ public class BlankConstants {
     public String name, type;
     public ImageStack mainImage, youngImage, deadImage;
     public int maxOffsprings, onScreenCoolDown, offScreenCoolDown;
-    public float startingDensity, maxSize, metabolismRate, growAtHealth, decayRate,
-            maxGrowthRate, reproduceAtSize, reproduceAtHealth, reproductionPenalty, startSize;
+    public float startingDensity, maxSize, maxBiomass, metabolismRate, growAtHealth, decayRate,
+            maxGrowthRate, reproduceAtSize, reproduceAtHealth, reproductionPenalty, reproductionCoolDown, startSize;
     public float dispersalRange, maxShadeRange, shadePenalty, sproutTime, startHealth;
 
     // animal variables
-    public float maxSpeed, maxAcceleration;
+    public float maxSpeed, maxAcceleration, wobbleMaxDegree, wobbleSpeed, wanderRandomness;
+    public float visionRange, minFoodSize, eatingRate, foodConversion;
+    public String foodName;
+    public boolean eatsSeeds;
 
     // variables
     public float _metabolismRate, _maxGrowthRate, _shadePenalty, _sproutTime, _decayRate;
+    public float _maxSpeed, _maxAcceleration, _wanderRandomness, _eatingRate;
 
     public void update() {
         this._metabolismRate = this.metabolismRate / this.world.engine.currentFPS;
@@ -29,6 +30,10 @@ public class BlankConstants {
         this._shadePenalty = this.shadePenalty / this.world.engine.currentFPS;
         this._sproutTime = this.sproutTime / this.world.engine.currentFPS;
         this._decayRate = this.decayRate / this.world.engine.currentFPS;
+        this._maxSpeed = this.maxSpeed / this.world.engine.currentFPS;
+        this._maxAcceleration = this.maxAcceleration / this.world.engine.currentFPS;
+        this._wanderRandomness = this.wanderRandomness / this.world.engine.currentFPS;
+        this._eatingRate = this.eatingRate / this.world.engine.currentFPS;
     }
 
     public BlankConstants(World world) {

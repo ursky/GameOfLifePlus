@@ -4,11 +4,13 @@ import constants.UiConstants;
 import engine.ImageStack;
 import quadsearch.Point;
 import quadsearch.Region;
+import utilities.Random;
 import world.World;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class Thing {
@@ -23,9 +25,11 @@ public class Thing {
     public float currentRotation = 0;
     public float currentOpacity = 255;
     public boolean isSeed = false;
-    public float healthPercent = 100;
+    public float reproductionCoolDown;
     public int coolDownFrames = 1;
     public int coolDown = 0;
+    public float healthPercent;
+    public float biomass;
 
     public void updateCoolDowns() {
         if (this.isInView()) {
@@ -107,21 +111,6 @@ public class Thing {
         return (int) (positionInRendered / threadWidth);
     }
 
-    public Thing makeClone() {
-        Thing clone = makeBlank();
-        clone.currentRotation = this.currentRotation;
-        clone.currentOpacity = this.currentOpacity;
-        clone.itemImage = this.constants.mainImage.getImage(this.currentRotation, this.currentOpacity);
-        clone.constants = this.constants;
-        clone.healthPercent = this.healthPercent;
-        clone.coolDown = this.coolDown;
-        return clone;
-    }
-
-    public Thing makeBlank() {
-        return new Thing(this.xPosition, this.yPosition, this.size, this.world, this.constants);
-    }
-
     public void initImage(ImageStack imageStack) {
         this.itemImage = imageStack.getImage(this.currentRotation, this.currentOpacity);
     }
@@ -131,6 +120,94 @@ public class Thing {
         this.yBin = (int) (this.yPosition / this.world.engine.procedural.binWidthY);
     }
 
+    public Thing makeClone() {
+        Thing clone = makeBlank();
+        clone.currentRotation = this.currentRotation;
+        clone.currentOpacity = this.currentOpacity;
+        clone.itemImage = this.constants.mainImage.getImage(this.currentRotation, this.currentOpacity);
+        clone.constants = this.constants;
+        clone.coolDown = this.coolDown;
+        clone.healthPercent = this.healthPercent;
+        clone.reproductionCoolDown = this.reproductionCoolDown;
+        clone.biomass = this.biomass;
+        clone.size = this.size;
+        return clone;
+    }
+
+    public Thing makeBlank() {
+        if (Objects.equals(this.constants.type, "Animal")) {
+            return new Animal(this.xPosition, this.yPosition, this.size, this.world, this.constants);
+        }
+        else if (Objects.equals(this.constants.type, "Plant")) {
+            return new Plant(this.xPosition, this.yPosition, this.size, this.world, this.constants);
+        }
+        else {
+            return new Thing(this.xPosition, this.yPosition, this.size, this.world, this.constants);
+        }
+    }
+
+    public void grow() {
+        this.healthPercent += this.constants._metabolismRate * this.coolDownFrames;
+        if (this.size < this.constants.maxSize && this.healthPercent >= this.constants.growAtHealth) {
+            float growth = (float)Math.random() * this.constants._maxGrowthRate * this.coolDownFrames;
+            this.size += growth;
+            this.biomass += growth / this.constants.maxSize;
+        }
+        if (this.isSeed) {
+            this.initImage(this.constants.mainImage);
+            this.isSeed = false;
+        }
+        if (this.size > this.constants.maxSize) {
+            this.size = this.constants.maxSize;
+        }
+        if (this.healthPercent < 0) {
+            this.healthPercent = -10000;
+            this.currentOpacity += Math.random() * this.constants._decayRate * this.coolDownFrames;
+            this.initImage(this.constants.deadImage);
+        }
+    }
+
+    public void reproduce() {
+        this.reproductionCoolDown -= 1.0f / this.world.engine.currentFPS;
+        if (this.healthPercent >= this.constants.reproduceAtHealth
+                && this.reproductionCoolDown < 0
+                && this.size >= this.constants.reproduceAtSize) {
+            for (int i=0; i<this.constants.maxOffsprings; i++) {
+                makeYoung();
+            }
+            this.healthPercent *= this.constants.reproductionPenalty;
+            this.reproductionCoolDown = this.constants.reproductionCoolDown;
+        }
+    }
+
+    public void makeYoung() {
+        float seedX = Random.randFloat(this.xPosition - this.constants.dispersalRange,
+                this.xPosition + this.constants.dispersalRange);
+        float seedY = Random.randFloat(this.yPosition - this.constants.dispersalRange,
+                this.yPosition + this.constants.dispersalRange);
+        if (isInBounds(seedX, seedY)
+                && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.constants.dispersalRange) {
+            Thing seedling = makeClone();
+            seedling.size = seedling.constants.startSize;
+            seedling.coolDown = (int) (Math.random() * this.constants.sproutTime * this.coolDownFrames
+                    * this.world.engine.currentFPS);
+            seedling.healthPercent = seedling.constants.startHealth;
+            seedling.xPosition = seedX;
+            seedling.yPosition = seedY;
+            seedling.updateBin();
+            seedling.isSeed = true;
+            seedling.currentRotation = Random.randFloat(0, 360);
+            seedling.initImage(seedling.constants.youngImage);
+            this.world.newThings.add(seedling);
+        }
+    }
+
+    public void live() {
+        this.reproduce();
+        this.grow();
+        this.updateCoolDowns();
+    }
+
     public Thing(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
         this.constants = constants;
         this.initImage(this.constants.mainImage);
@@ -138,6 +215,7 @@ public class Thing {
         this.yPosition = yPosition;
         this.world = world;
         this.size = size;
+        this.biomass = this.constants.maxBiomass * this.size / this.constants.maxSize;
         this.updateBin();
     }
 }

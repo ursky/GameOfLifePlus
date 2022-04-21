@@ -29,8 +29,8 @@ public class ProceduralGeneration {
         this.currentBins = new int[] {
                 (int)(this.currentCoordinates[0] / this.binWidthX),
                 (int)(this.currentCoordinates[1] / this.binWidthY),
-                (int)(this.currentCoordinates[2] / this.binWidthX) + 1,
-                (int)(this.currentCoordinates[3] / this.binWidthY) + 1
+                (int)(this.currentCoordinates[2] / this.binWidthX),
+                (int)(this.currentCoordinates[3] / this.binWidthY)
         };
         this.currentCoordinates = new float[] {
                 this.currentBins[0] * this.binWidthX,

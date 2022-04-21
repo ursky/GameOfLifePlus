@@ -1,0 +1,1 @@
+require(["jquery"],function(a){if(navigator.userAgent.indexOf("MSIE 8.0")>-1){a(function(){var b=a("link[href*='IconThemes/FontAwesome']");b[0].href=b[0].href})}});

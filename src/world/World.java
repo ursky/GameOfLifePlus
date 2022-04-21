@@ -62,7 +62,10 @@ public class World {
                     thingsInRange.add(thing);
                 }
                 else {
-                    this.engine.procedural.archivedThings[thing.xBin][thing.yBin].add(thing);
+                    // if animal moves out of range, it should be deleted to avoid piling up on border
+                    if (!(thing instanceof Animal) || thing.isSeed || this.engine.movingCamera) {
+                        this.engine.procedural.archivedThings[thing.xBin][thing.yBin].add(thing);
+                    }
                 }
             }
         }

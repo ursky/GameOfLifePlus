@@ -1,0 +1,150 @@
+.screen-reader-offscreen {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
+}
+
+#screenReaderSkipDiv, #screenReaderSkipButton {
+  height: 0px;
+  font-size: 0px;
+  background: none;
+}
+
+button[aria-disabled=true] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#removeExceptionButton {
+  border: 1px solid black;
+}
+
+#contentSecurityModal {
+  display: none;
+}
+
+#contentSecurityModalLarge {
+  width: 600px;
+}
+
+#contentSecurityModalExceptionCheckboxText {
+  cursor: pointer;
+}
+
+.modal-title {
+  float: left;
+}
+
+div#modal-close-buttons {
+  text-align: right;
+  padding: 0px 15px 15px 15px;
+  margin-top: -12px;
+}
+
+#addExceptionDiv {
+  text-align: left;
+}
+
+#addExceptionDiv > div {
+  float: left;
+}
+
+#addExceptionCheckBoxDiv {
+  height: 25px;
+}
+
+#addExceptionCheckBoxDiv > label {
+  font-weight: normal;
+}
+
+#addExceptionForm {
+  margin-top: 10px;
+  width: 100%;
+}
+
+#addExceptionForm > input[type=text] {
+  margin-top: 3px;
+  width: 100%;
+}
+
+#addExceptionForm > input[type=text].invalid, #exceptionCategory.invalid {
+  border: 1px solid red;
+}
+
+#exceptionCategoryLabel, #exceptionReasonLabel {
+  font-weight: bold;
+  font-size: 10px;
+}
+
+#invalidExceptionReasonSpan, #invalidExceptionCategorySpan {
+  font-size: 12px;
+  display: none;
+  float: left;
+  color: red;
+}
+
+#reasonCharacterCount {
+  float: right;
+  font-size: 14px;
+  color: black;
+  font-weight: normal;
+}
+
+#currentReasonCharacterCount.invalid {
+  color: red;
+  font-weight: bold;
+}
+
+#exceptionCategory {
+  text-overflow: ellipsis;
+  margin-top: 3px;
+}
+
+#invalidExceptionReasonSpan.invalid, #invalidExceptionCategorySpan.invalid {
+  display: block;
+}
+
+#contentSecurtiyAddExceptionButton {
+  float: right;
+}
+
+.modal-body-message {
+  text-align: left;
+}
+
+#detectedTermsTable {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+#detectedTermsTable > tbody > tr > th {
+  padding: 8px;
+  border: 1px solid #DDD;
+}
+
+#detectedTermsTable > tbody > tr > td {
+  padding: 3px 8px;
+  border: 1px solid #DDD;
+}
+
+.close-modal {
+  float: right;
+  text-shadow: 0 0 0 #000;
+  opacity: 1;
+}
+
+#inclusive-banner-bottom, #inclusive-banner-top, #inclusive-banner-view {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  color: #a94442;
+  box-sizing: border-box;
+}

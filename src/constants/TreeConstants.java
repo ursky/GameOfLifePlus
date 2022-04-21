@@ -16,8 +16,9 @@ public final class TreeConstants extends BlankConstants {
                 0, 3, 1, 300, 20);
         this.deadImage = new ImageStack("dead_tree.png",
                 0, 3, 10, 1000, 0);
-        this.startingDensity = 0.1f; // per 100pixels^2
+        this.startingDensity = 0.2f; // per 100pixels^2
         this.maxSize = 50;
+        this.maxBiomass = 500;
         this.offScreenCoolDown = 10;
         this.onScreenCoolDown = 10;
         this.startSize = 5;
@@ -26,11 +27,11 @@ public final class TreeConstants extends BlankConstants {
         this.metabolismRate = 15.0f; // adjust to FPS and cool down
         this.decayRate = -100; // adjust to FPS and cool down
         this.growAtHealth = 80;
-        this.maxGrowthRate = 15.0f; // adjust to FPS and cool down
+        this.maxGrowthRate = 5.0f; // adjust to FPS and cool down
         this.reproduceAtSize = 0.8f * maxSize;
         this.reproduceAtHealth = 90;
-        this.reproductionPenalty = 0.5f;
-        this.maxOffsprings = 5;
+        this.reproductionPenalty = 0.3f;
+        this.maxOffsprings = 3;
         this.startHealth = 50;
 
         // plant constants

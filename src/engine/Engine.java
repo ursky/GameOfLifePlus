@@ -22,6 +22,7 @@ public class Engine extends JPanel implements ActionListener {
     private long timeOfLastFPS = System.currentTimeMillis();
     private long timeOfLastUpdate = System.nanoTime();
     public int frameCounter = 0;
+    public boolean movingCamera = false;
     public float zoomLevel = UiConstants.startZoom;
     public float zoomSpeed = UiConstants.zoomSpeed;
     public float povDimX = UiConstants.panelWidth / this.zoomLevel;
@@ -109,6 +110,7 @@ public class Engine extends JPanel implements ActionListener {
     }
 
     private void keyboardCheck() {
+        this.movingCamera = false;
         if (Keyboard.isKeyPressed(KeyEvent.VK_W)) {
             this.world.playerPositionY -= this.scrollSpeed / this.currentFPS;
             reAdjustView();
@@ -136,6 +138,7 @@ public class Engine extends JPanel implements ActionListener {
     }
 
     private void reAdjustView() {
+        this.movingCamera = true;
         if (this.zoomLevel < UiConstants.minZoom) {
             this.zoomLevel = UiConstants.minZoom;
         }

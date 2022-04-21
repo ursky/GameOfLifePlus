@@ -1,6 +1,5 @@
 package world;
 
-import things.Organism;
 import things.Thing;
 
 import java.util.ArrayList;
@@ -33,9 +32,7 @@ public class UpdateThingsThread implements Runnable {
         for (int i=this.start; i<this.end; i++) {
             Thing thing = this.things.get(i);
             if (thing.coolDown <= 0 && thing.isRendered()) {
-                if (thing instanceof Organism) {
-                    ((Organism) thing).live();
-                }
+                thing.live();
             } else { thing.coolDown--; }
         }
     }

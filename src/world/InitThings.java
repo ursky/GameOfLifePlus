@@ -1,9 +1,6 @@
 package world;
 
-import constants.BushConstants;
-import constants.GrassConstants;
-import constants.BlankConstants;
-import constants.TreeConstants;
+import constants.*;
 import things.Animal;
 import things.Plant;
 import things.Thing;
@@ -33,8 +30,8 @@ public class InitThings {
             Animal thing = new Animal(randX, randY, size, this.world, constants);
             initThing(thing);
         } else {
-            Thing thing = new Thing(randX, randY, size, this.world, constants);
-            initThing(thing);
+            Thing Thing = new Thing(randX, randY, size, this.world, constants);
+            initThing(Thing);
         }
     }
 
@@ -148,5 +145,8 @@ public class InitThings {
 
         BlankConstants treeConstants = new TreeConstants(this.world);
         this.orderedBlankConstants.add(treeConstants);
+
+        BlankConstants beetleConstants = new BeetleConstants(this.world);
+        this.orderedBlankConstants.add(beetleConstants);
     }
 }

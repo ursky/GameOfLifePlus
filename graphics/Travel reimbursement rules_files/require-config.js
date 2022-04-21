@@ -1,0 +1,3 @@
+/*!
+*/
+require.config({paths:{jsTree:"https://internal-cdn.amazon.com/w.amazon.com/webjars/wiki%3Axwiki/jstree/3.3.8/jstree.min",JobRunner:'https://internal-cdn.amazon.com/w.amazon.com/webjars/wiki%3Axwiki/xwiki-platform-job-webjar/8.4.4/jobRunner.min',"tree-finder":'https://internal-cdn.amazon.com/w.amazon.com/webjars/wiki%3Axwiki/xwiki-platform-tree-webjar/8.4.4/finder.min',tree:'https://internal-cdn.amazon.com/w.amazon.com/webjars/wiki%3Axwiki/xwiki-platform-tree-webjar/8.4.4/tree.min'},shim:{jsTree:{deps:["jquery"]}}});
