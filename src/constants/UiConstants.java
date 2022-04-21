@@ -8,11 +8,13 @@ public final class UiConstants {
     public static final String renderedImageDir = "rendered_images";
 
     public static final int threadCount = 12;
+    public static final int fastPreRenderFrames = 500;
+    public static final float fastPreRenderFPS = 5;
     public static final int fullDimX = 1000000;
     public static final int fullDimY = 1000000;
-    public static final int nProceduralBins = fullDimX / 500;
-    public static int targetFPS = 60;
-    public static int targetFrameTime = 1000 / (targetFPS + 1);
+    public static final int nProceduralBins = fullDimX / 200;
+    public static float targetFPS = 60;
+    public static float targetFrameTime = 1000 / (targetFPS + 1);
 
     public static final float panelWidth = 1200;
     public static final float panelHeight = 800;

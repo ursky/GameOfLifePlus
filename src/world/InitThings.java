@@ -7,6 +7,7 @@ import things.Thing;
 import utilities.Random;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class InitThings {
     public World world;
@@ -44,37 +45,23 @@ public class InitThings {
         this.world.things.add(thing);
     }
 
-    public void initThingsInBin(float minX, float minY, float maxX, float maxY) {
+    public void initPlants(float minX, float minY, float maxX, float maxY) {
         for (BlankConstants blankConstants : this.orderedBlankConstants) {
-            this.initializeThings(minX, minY, maxX, maxY, blankConstants);
-        }
-    }
-
-    public void copyThingsInBin(float minX, float minY, float maxX, float maxY) {
-        if (maxX - minX > this.world.engine.procedural.loadRangeWidth
-                || maxY - minY > this.world.engine.procedural.loadRangeHeight
-                || this.world.engine.frameCounter == 0) {
-            this.initThingsInBin(minX, minY, maxX, maxY);
-        }
-        else {
-            ArrayList<Thing> copiedThings = copyThings(minX, minY, maxX, maxY);
-            if (copiedThings.size() > 0) {
-                this.world.things.addAll(copiedThings);
-            }
-            else {
-                // this can happen then loading a glitched out texture bin, in which case just re-sample
-                // recursive call with 1/10 chance of exiting just in case
-                if (Math.random() < 0.1) {
-                    this.initThingsInBin(minX, minY, maxX, maxY);
-                }
-                else {
-                    this.copyThingsInBin(minX, minY, maxX, maxY);
-                }
+            if (Objects.equals(blankConstants.type, "Plant")) {
+                this.initializeThings(minX, minY, maxX, maxY, blankConstants);
             }
         }
     }
 
-    private ArrayList<Thing> copyThings(float minX, float minY, float maxX, float maxY) {
+    public void initAnimals(float minX, float minY, float maxX, float maxY) {
+        for (BlankConstants blankConstants : this.orderedBlankConstants) {
+            if (Objects.equals(blankConstants.type, "Animal")) {
+                this.initializeThings(minX, minY, maxX, maxY, blankConstants);
+            }
+        }
+    }
+
+    public ArrayList<Thing> copyThings(float minX, float minY, float maxX, float maxY) {
         ArrayList<Thing> copiedThings = new ArrayList<>();
         float[] copyRange = selectRangeToCopy(maxX - minX, maxY - minY);
         for (Thing thing: this.world.things) {
@@ -120,7 +107,7 @@ public class InitThings {
 
     public void updateConstants() {
         for (BlankConstants constants: this.orderedBlankConstants) {
-            constants.update();
+            constants.updateRates();
         }
     }
 

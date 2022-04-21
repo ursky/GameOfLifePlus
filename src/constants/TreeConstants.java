@@ -12,16 +12,15 @@ public final class TreeConstants extends BlankConstants {
         this.type = "Plant";
         this.mainImage = new ImageStack("tree.png",
                 0, 10, 1, 1000, 20);
-        this.youngImage = new ImageStack("seed.png",
+        this.youngImage = new ImageStack("tree_seed.png",
                 0, 3, 1, 300, 20);
         this.deadImage = new ImageStack("dead_tree.png",
                 0, 3, 10, 1000, 0);
-        this.startingDensity = 0.2f; // per 100pixels^2
+        this.startingDensity = InitialSeedConstants.treeStartingDensity; // per 100pixels^2
         this.maxSize = 50;
-        this.maxBiomass = 500;
-        this.offScreenCoolDown = 10;
-        this.onScreenCoolDown = 10;
-        this.startSize = 5;
+        this.maxBiomass = 300;
+        this.frameCoolDown = 10;
+        this.startSize = 3;
 
         // organism constants
         this.metabolismRate = 15.0f; // adjust to FPS and cool down
@@ -40,6 +39,6 @@ public final class TreeConstants extends BlankConstants {
         this.shadePenalty = -30f; // adjust to FPS and cool down
         this.sproutTime = 1f; // adjust to FPS and cool down
 
-        this.update();
+        this.updateRates();
     }
 }

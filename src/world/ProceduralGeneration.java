@@ -87,12 +87,27 @@ public class ProceduralGeneration {
         float maxToInitX = minToInitX + this.binWidthX;
         float minToInitY = j * this.binWidthY;
         float maxToInitY = minToInitY + this.binWidthY;
-        this.world.initThings.copyThingsInBin(minToInitX, minToInitY, maxToInitX, maxToInitY);
+        this.world.things.addAll(this.world.initThings.copyThings(minToInitX, minToInitY, maxToInitX, maxToInitY));
+    }
+
+    private void checkInitThings() {
+        if (this.world.engine.frameCounter == 0) {
+            System.out.println("Initializing plants");
+            this.world.initThings.initPlants(this.currentCoordinates[0], this.currentCoordinates[1],
+                    this.currentCoordinates[2], this.currentCoordinates[3]);
+        }
+        if (this.world.engine.frameCounter == UiConstants.fastPreRenderFrames / 2) {
+            // halfway though preload add animals
+            System.out.println("Initializing animals");
+            this.world.initThings.initAnimals(this.currentCoordinates[0], this.currentCoordinates[1],
+                    this.currentCoordinates[2], this.currentCoordinates[3]);
+        }
     }
 
     public void updateBins() {
         this.updateRenderedRange();
         this.checkRenderedBins();
+        this.checkInitThings();
     }
 
     public ProceduralGeneration(World world) {

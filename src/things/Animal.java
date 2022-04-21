@@ -22,7 +22,6 @@ public class Animal extends Thing {
 
     public void move() {
         if (this.healthPercent < 0) { return; }
-        this.updateIntent();
         this.xVelocity += this.xAcceleration;
         this.yVelocity += this.yAcceleration;
         this.checkSpeedBounds();
@@ -43,26 +42,31 @@ public class Animal extends Thing {
         }
         this.wobble();
         // update the image being used
-        this.itemImage = this.constants.mainImage.getImage(this.currentRotation, 255);
+        this.itemImage = this.constants.mainImage.getImage(this.currentRotation, this.currentOpacity);
     }
 
     private void wobble() {
         // eggs should not wobble
         if (this.isSeed) { return; }
         if (this.wobbleRight) {
-            this.wobble += this.constants.wobbleSpeed;
+            this.wobble += this.constants._wobbleSpeed;
         }
         else {
-            this.wobble -= this.constants.wobbleSpeed;
+            this.wobble -= this.constants._wobbleSpeed;
         }
-        if (this.wobble > this.constants.wobbleMaxDegree || this.wobble < -this.constants.wobbleMaxDegree) {
+        if (this.wobble < -this.constants.wobbleMaxDegree) {
             this.wobbleRight = !this.wobbleRight;
+            this.wobble = -this.constants.wobbleMaxDegree;
+        }
+        if (this.wobble > this.constants.wobbleMaxDegree) {
+            this.wobbleRight = !this.wobbleRight;
+            this.wobble = this.constants.wobbleMaxDegree;
         }
         this.currentRotation += this.wobble;
     }
 
     private void checkSpeedBounds() {
-        float maxSpeed = this.constants._maxSpeed * this.size / this.constants.maxSize;
+        float maxSpeed = this.constants._maxSpeed * this.relativeSize;
         float vectorMax = Math.max(Math.abs(this.xVelocity), Math.abs(this.yVelocity));
         this.xVelocity *= maxSpeed / vectorMax;
         this.yVelocity *= maxSpeed / vectorMax;
@@ -85,7 +89,7 @@ public class Animal extends Thing {
 
     private void wander() {
         // step 1: introduce small % randomness to the acceleration vectors
-        float range = this.constants.maxAcceleration * this.constants._wanderRandomness;
+        float range = this.constants._maxAcceleration * this.constants._wanderRandomness;
         this.xAcceleration += Random.randFloat(this.xAcceleration - range, this.xAcceleration + range);
         this.yAcceleration += Random.randFloat(this.yAcceleration - range, this.yAcceleration + range);
         // step 2: double down (to ensure max speed)
@@ -110,7 +114,8 @@ public class Animal extends Thing {
         // search for a new target
         else {
             this.distanceToInterest = UiConstants.fullDimX;
-            for (Thing otherThing: this.getThingsInRange(this.constants.visionRange)) {
+            float visionRange = this.constants.visionRange * this.relativeSize;
+            for (Thing otherThing: this.getThingsInRange(visionRange)) {
                 if (isInteresting(otherThing)) {
                     float distanceToThing = this.calcDistance(this.xPosition, this.yPosition,
                             otherThing.xPosition, otherThing.yPosition);
@@ -144,17 +149,13 @@ public class Animal extends Thing {
                 && !Objects.isNull(this.thingOfInterest)) {
 
             // special beetle behavior: lay egg when it finds food
-            if (Objects.equals(this.constants.name, "Beetle") && this.size >= this.constants.reproduceAtSize) {
-                for (int i=0; i<this.constants.maxOffsprings; i++) {
-                    this.makeYoung();
-                }
-                this.disinterestedInThings.add(this.thingOfInterest);
-                this.thingOfInterest = null;
+            if (this.constants.asAdultOnlyLayEggs && this.size >= this.constants.reproduceAtSize) {
+                this.layEggsAndForget();
                 return;
             }
 
-            this.thingOfInterest.biomass -= this.constants._eatingRate;
-            this.healthPercent += this.constants._eatingRate * this.constants.foodConversion;
+            this.thingOfInterest.biomass -= this.constants._eatingRate * this.coolDownFrames;
+            this.healthPercent += this.constants._eatingRate  * this.coolDownFrames * this.constants.foodConversion;
             // kill the food item if it's all gone
             if (this.thingOfInterest.biomass <=0) {
                 this.thingOfInterest.healthPercent = -1000;
@@ -168,10 +169,19 @@ public class Animal extends Thing {
         }
     }
 
+    private void layEggsAndForget() {
+        for (int i=0; i<this.constants.maxOffsprings; i++) {
+            this.makeYoung();
+        }
+        this.disinterestedInThings.add(this.thingOfInterest);
+        this.thingOfInterest = null;
+    }
+
     @Override
     public void live() {
-        this.grow();
+        this.updateIntent();
         this.move();
+        this.metabolize();
         this.eat();
         this.reproduce();
     }

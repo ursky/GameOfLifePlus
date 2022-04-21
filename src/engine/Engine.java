@@ -16,7 +16,7 @@ public class Engine extends JPanel implements ActionListener {
     public ProceduralGeneration procedural = new ProceduralGeneration(world);
     public Timer timer;
     private Graphics2D g2D;
-    public int currentFPS = UiConstants.targetFPS;
+    public float currentFPS = UiConstants.targetFPS;
     private long currentTime = System.currentTimeMillis();
     private int framesSinceLastFPS = 0;
     private long timeOfLastFPS = System.currentTimeMillis();
@@ -50,22 +50,29 @@ public class Engine extends JPanel implements ActionListener {
         this.framesSinceLastFPS ++;
         long timeSinceLastFPS = System.currentTimeMillis() - timeOfLastFPS;
         if (timeSinceLastFPS > 100) {
-            this.currentFPS = 1000 * this.framesSinceLastFPS / (int) timeSinceLastFPS;
+            this.currentFPS = 1000f * this.framesSinceLastFPS / (int) timeSinceLastFPS;
             this.currentFPS = Math.min(this.currentFPS, UiConstants.targetFPS);
             this.currentFPS = Math.max(this.currentFPS, 1);
             this.framesSinceLastFPS = 0;
             this.timeOfLastFPS = System.currentTimeMillis();
         }
         g.setColor(Color.white);
-        String strFPS = String.valueOf(currentFPS);
+        String strFPS = String.valueOf((int)currentFPS);
         g.drawString("FPS: " + strFPS + "; #Things: " + world.things.size(), 0, 12);
+    }
+
+    public boolean fastForward(){
+        return this.frameCounter < UiConstants.fastPreRenderFrames || Keyboard.isKeyPressed(KeyEvent.VK_SPACE);
     }
 
     public void throttleFPS() {
         long frameLength = System.currentTimeMillis() - currentTime;
-        if (frameLength < UiConstants.targetFrameTime) {
+        if (this.fastForward()) {
+            this.currentFPS = UiConstants.fastPreRenderFPS;
+        }
+        else if (frameLength < UiConstants.targetFrameTime) {
             try {
-                Thread.sleep(UiConstants.targetFrameTime - frameLength);
+                Thread.sleep((long) (UiConstants.targetFrameTime - frameLength));
             }
             catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
@@ -110,6 +117,7 @@ public class Engine extends JPanel implements ActionListener {
     }
 
     private void keyboardCheck() {
+        if (this.fastForward()) { return; }
         this.movingCamera = false;
         if (Keyboard.isKeyPressed(KeyEvent.VK_W)) {
             this.world.playerPositionY -= this.scrollSpeed / this.currentFPS;

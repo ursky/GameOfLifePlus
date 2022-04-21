@@ -4,11 +4,11 @@ import world.World;
 
 public class Plant extends Thing {
     public void shadeOthers() {
-        float shadeRange = this.constants.maxShadeRange * this.size / this.constants.maxSize;
+        float shadeRange = this.constants.maxShadeRange * this.relativeSize;
         if (shadeRange > 1) {
             for (Thing otherTree : this.getThingsInRange(shadeRange)) {
                 if (otherTree instanceof Plant && this.size >= otherTree.size && !otherTree.isSeed) {
-                    ((Plant) otherTree).healthPercent += this.constants._shadePenalty * this.coolDownFrames;
+                    otherTree.healthPercent += this.constants._shadePenalty * this.coolDownFrames;
                 }
             }
         }
@@ -22,7 +22,7 @@ public class Plant extends Thing {
     @Override
     public void live() {
         this.reproduce();
-        this.grow();
+        this.metabolize();
         this.shadeOthers();
         this.updateCoolDowns();
     }

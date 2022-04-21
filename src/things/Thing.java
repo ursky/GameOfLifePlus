@@ -17,6 +17,7 @@ public class Thing {
     public World world;
     public BlankConstants constants;
     public float size;
+    public float relativeSize;
     public float xPosition;
     public float yPosition;
     public int xBin;
@@ -32,12 +33,7 @@ public class Thing {
     public float biomass;
 
     public void updateCoolDowns() {
-        if (this.isInView()) {
-            this.coolDownFrames = this.constants.onScreenCoolDown;
-        }
-        else {
-            this.coolDownFrames = this.constants.offScreenCoolDown;
-        }
+        this.coolDownFrames = this.constants.frameCoolDown;
         this.coolDown = this.coolDownFrames - 1;
     }
 
@@ -80,24 +76,6 @@ public class Thing {
 
     public boolean isRendered() {
         return this.world.engine.procedural.isRendered[this.xBin][this.yBin];
-    }
-
-    public void printDetails() {
-        System.out.println(
-                "thing:(" + this.xPosition + ", " + this.yPosition + ") "
-                + "thingBin:(" + this.xBin + ", " + this.yBin + ") "
-                + this.world.engine.procedural.isRendered[this.xBin][this.yBin] + " "
-                + "player:(" + this.world.playerPositionX + ", " + this.world.playerPositionY + ") "
-                + "range:(" + this.world.engine.loadRange + ": "
-                    + this.world.engine.procedural.currentCoordinates[0] + ", "
-                    + this.world.engine.procedural.currentCoordinates[1] + ", "
-                    + this.world.engine.procedural.currentCoordinates[2] + ", "
-                    + this.world.engine.procedural.currentCoordinates[3] + ") "
-                + "binRange:(" + this.world.engine.procedural.currentBins[0] + ", "
-                    + this.world.engine.procedural.currentBins[1] + ", "
-                    + this.world.engine.procedural.currentBins[2] + ", "
-                    + this.world.engine.procedural.currentBins[3] + ")"
-        );
     }
 
     public int getThreadSlice() {
@@ -146,24 +124,45 @@ public class Thing {
         }
     }
 
-    public void grow() {
+    public void metabolize() {
         this.healthPercent += this.constants._metabolismRate * this.coolDownFrames;
-        if (this.size < this.constants.maxSize && this.healthPercent >= this.constants.growAtHealth) {
-            float growth = (float)Math.random() * this.constants._maxGrowthRate * this.coolDownFrames;
-            this.size += growth;
-            this.biomass += growth / this.constants.maxSize;
+        if (this.healthPercent < 0) {
+            this.killSelf();
+            return;
         }
+
         if (this.isSeed) {
             this.initImage(this.constants.mainImage);
             this.isSeed = false;
+            return;
         }
+
+        if (this.healthPercent >= this.constants.growAtHealth) {
+            this.grow();
+        }
+        this.sizeCheck();
+    }
+
+    public void killSelf() {
+        this.healthPercent = -10000;
+        this.currentOpacity += Math.random() * this.constants._decayRate * this.coolDownFrames;
+        this.initImage(this.constants.deadImage);
+    }
+
+    public void grow() {
+        float growth = (float)Math.random() * this.constants._maxGrowthRate * this.coolDownFrames;
+        if (this.size < this.constants.maxSize) {
+            this.size += growth;
+        }
+        if (this.biomass < this.constants.maxBiomass) {
+            this.biomass += this.constants.maxBiomass * growth / this.constants.maxSize;
+        }
+    }
+
+    public void sizeCheck() {
+        this.relativeSize = this.size / this.constants.maxSize;
         if (this.size > this.constants.maxSize) {
             this.size = this.constants.maxSize;
-        }
-        if (this.healthPercent < 0) {
-            this.healthPercent = -10000;
-            this.currentOpacity += Math.random() * this.constants._decayRate * this.coolDownFrames;
-            this.initImage(this.constants.deadImage);
         }
     }
 
@@ -185,7 +184,7 @@ public class Thing {
                 this.xPosition + this.constants.dispersalRange);
         float seedY = Random.randFloat(this.yPosition - this.constants.dispersalRange,
                 this.yPosition + this.constants.dispersalRange);
-        if (isInBounds(seedX, seedY)
+        if (this.isInBounds(seedX, seedY)
                 && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.constants.dispersalRange) {
             Thing seedling = makeClone();
             seedling.size = seedling.constants.startSize;
@@ -198,14 +197,14 @@ public class Thing {
             seedling.isSeed = true;
             seedling.currentRotation = Random.randFloat(0, 360);
             seedling.initImage(seedling.constants.youngImage);
-            this.world.newThings.add(seedling);
+            if (seedling.isRendered()) {
+                this.world.newThings.add(seedling);
+            }
         }
     }
 
     public void live() {
-        this.reproduce();
-        this.grow();
-        this.updateCoolDowns();
+        // placeholder
     }
 
     public Thing(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
@@ -215,7 +214,7 @@ public class Thing {
         this.yPosition = yPosition;
         this.world = world;
         this.size = size;
-        this.biomass = this.constants.maxBiomass * this.size / this.constants.maxSize;
+        this.biomass = this.constants.maxBiomass * this.relativeSize;
         this.updateBin();
     }
 }

@@ -3,8 +3,6 @@ package constants;
 import engine.ImageStack;
 import world.World;
 
-import java.awt.*;
-
 public final class BushConstants extends BlankConstants {
     public BushConstants(World world) {
         super(world);
@@ -18,12 +16,11 @@ public final class BushConstants extends BlankConstants {
                 0, 3, 1, 200, 15);
         this.deadImage = new ImageStack("dead_tree.png",
                 0, 3, 10, 500, 0);
-        this.startingDensity = 0.2f; // per 100pixels^2
+        this.startingDensity = InitialSeedConstants.bushStartingDensity; // per 100pixels^2
         this.maxSize = 30;
         this.maxBiomass = 400;
-        this.offScreenCoolDown = 10;
-        this.onScreenCoolDown = 10;
-        this.startSize = 3;
+        this.frameCoolDown = 10;
+        this.startSize = 2;
 
         // organism constants
         this.metabolismRate = 5f; // adjust to FPS and cool down
