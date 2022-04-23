@@ -1,5 +1,6 @@
 package constants;
 
+import engine.AnimationStack;
 import engine.ImageStack;
 import world.World;
 
@@ -18,7 +19,8 @@ public class BlankConstants {
     public float maxSpeed, maxAcceleration, wobbleMaxDegree, wobbleSpeed, wanderRandomness;
     public float visionRange, minFoodSize, eatingRate, foodConversion;
     public String foodName;
-    public boolean eatsSeeds, asAdultOnlyLayEggs;
+    public boolean eatsSeeds, asAdultOnlyLayEggs, flying;
+    public AnimationStack animationStack;
 
     // variables
     public float _metabolismRate, _maxGrowthRate, _shadePenalty, _sproutTime, _decayRate;

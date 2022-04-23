@@ -16,7 +16,7 @@ public final class BeetleConstants extends BlankConstants {
                 0, 3, 1, 200, 15);
         this.deadImage = new ImageStack("splat.png",
                 0, 3, 10, 400, 0);
-        this.startingDensity = InitialSeedConstants.beetleStartingDensity; // per 100pixels^2
+        this.startingDensity = InitialSeedDensities.beetleStartingDensity; // per 100pixels^2
         this.maxSize = 10;
         this.maxBiomass = 50; // adjust to size
         this.startSize = 3;

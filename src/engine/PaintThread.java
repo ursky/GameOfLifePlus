@@ -10,6 +10,7 @@ public class PaintThread implements Runnable {
     private final Engine engine;
     private final float minSize;
     private final float maxSize;
+    private final boolean flying;
 
     public ArrayList<BufferedImage> images = new ArrayList<>();
     public ArrayList<Integer> sizes = new ArrayList<>();
@@ -30,7 +31,8 @@ public class PaintThread implements Runnable {
 
     public void run() {
         for (Thing thing: this.engine.world.things) {
-            if (thing.isInView() && thing.size >= this.minSize && thing.size < this.maxSize) {
+            if (thing.isInView() && thing.size >= this.minSize && thing.size < this.maxSize
+                    && thing.constants.flying == this.flying) {
                 int size = transformSize(thing);
                 int xPos = transformX(thing);
                 int yPos = transformY(thing);
@@ -56,10 +58,11 @@ public class PaintThread implements Runnable {
         return (int)(posY * this.engine.zoomLevel);
     }
 
-    public PaintThread(Engine engine, float minSize, float maxSize) {
+    public PaintThread(Engine engine, float minSize, float maxSize, boolean flying) {
         this.engine = engine;
         this.minSize = minSize;
         this.maxSize = maxSize;
+        this.flying = flying;
         this.t = new Thread(this);
     }
 }

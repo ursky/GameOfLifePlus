@@ -81,7 +81,7 @@ public class ImageStack extends JFrame {
     private void initImageStack() {
         for (int rotation=0; rotation<=360; rotation+=(360 / this.rotationVariety)) {
             this.imageStack.add(new ArrayList<>());
-            for (int opacity=255; opacity>=0; opacity-=(255 / this.opacityVariety)) {
+            for (int opacity=255; opacity>0; opacity-=(255 / this.opacityVariety)) {
                 BufferedImage finalImage = makeOrLoadImage(rotation, opacity);
                 this.imageStack.get(rotation * this.rotationVariety / 360).add(finalImage);
             }

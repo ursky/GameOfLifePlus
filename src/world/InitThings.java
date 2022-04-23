@@ -135,5 +135,8 @@ public class InitThings {
 
         BlankConstants beetleConstants = new BeetleConstants(this.world);
         this.orderedBlankConstants.add(beetleConstants);
+
+        BlankConstants butterflyConstants = new ButterflyConstants(this.world);
+        this.orderedBlankConstants.add(butterflyConstants);
     }
 }

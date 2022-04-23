@@ -16,7 +16,7 @@ public final class BushConstants extends BlankConstants {
                 0, 3, 1, 200, 15);
         this.deadImage = new ImageStack("dead_tree.png",
                 0, 3, 10, 500, 0);
-        this.startingDensity = InitialSeedConstants.bushStartingDensity; // per 100pixels^2
+        this.startingDensity = InitialSeedDensities.bushStartingDensity; // per 100pixels^2
         this.maxSize = 30;
         this.maxBiomass = 400;
         this.frameCoolDown = 10;

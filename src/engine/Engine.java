@@ -107,9 +107,11 @@ public class Engine extends JPanel implements ActionListener {
         float maxSize = (int)this.world.initThings.getBiggestSize() + 1;
         float sizeIncrement = UiConstants.paintSizeIncrement;
         for (float size=minSize; size<maxSize; size+=sizeIncrement) {
-            PaintThread paintThread = new PaintThread(this, size, size + sizeIncrement);
+            PaintThread paintThread = new PaintThread(this, size, size + sizeIncrement, false);
             paintThreads.add(paintThread);
         }
+        PaintThread paintThread = new PaintThread(this, 0, 10000, true);
+        paintThreads.add(paintThread);
         for (PaintThread thread: paintThreads) { thread.start(); }
         for (PaintThread thread: paintThreads) { thread.join(); }
 

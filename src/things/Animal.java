@@ -14,6 +14,7 @@ public class Animal extends Thing {
     float xAcceleration = Random.randFloat(-this.constants._maxAcceleration, this.constants._maxAcceleration);
     float yAcceleration = Random.randFloat(-this.constants._maxAcceleration, this.constants._maxAcceleration);
     float wobble = 0;
+    int flapFrame = 0;
     boolean wobbleRight = true;
     Thing thingOfInterest;
     float distanceToInterest;
@@ -41,8 +42,22 @@ public class Animal extends Thing {
             this.currentRotation += 360;
         }
         this.wobble();
-        // update the image being used
-        this.itemImage = this.constants.mainImage.getImage(this.currentRotation, this.currentOpacity);
+        if (this.constants.flying) {
+            this.animateFrames();
+        }
+        else {
+            // update the image being used
+            this.itemImage = this.constants.mainImage.getImage(this.currentRotation, this.currentOpacity);
+        }
+    }
+
+    private void animateFrames() {
+        this.flapFrame++;
+        if (this.flapFrame >= this.constants.animationStack.orderedImageStacks.size()) {
+            this.flapFrame = 0;
+        }
+        this.itemImage = this.constants.animationStack.orderedImageStacks.get(this.flapFrame).getImage(
+                this.currentRotation, this.currentOpacity);
     }
 
     private void wobble() {
@@ -106,7 +121,8 @@ public class Animal extends Thing {
 
     private boolean foundThingOfInterest() {
         // go after previous target
-        if (!Objects.isNull(this.thingOfInterest) && this.thingOfInterest.healthPercent > 0) {
+        if (!Objects.isNull(this.thingOfInterest) && this.thingOfInterest.healthPercent > 0
+                && this.framesInExistence % 10 != 0) {
             this.distanceToInterest = this.calcDistance(this.xPosition, this.yPosition,
                     this.thingOfInterest.xPosition, this.thingOfInterest.yPosition);
             return true;
@@ -179,6 +195,7 @@ public class Animal extends Thing {
 
     @Override
     public void live() {
+        this.framesInExistence++;
         this.updateIntent();
         this.move();
         this.metabolize();

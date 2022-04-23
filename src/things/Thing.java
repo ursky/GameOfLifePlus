@@ -31,6 +31,7 @@ public class Thing {
     public int coolDown = 0;
     public float healthPercent;
     public float biomass;
+    public int framesInExistence = 0;
 
     public void updateCoolDowns() {
         this.coolDownFrames = this.constants.frameCoolDown;
