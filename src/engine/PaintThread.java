@@ -31,15 +31,17 @@ public class PaintThread implements Runnable {
 
     public void run() {
         for (Thing thing: this.engine.world.things) {
-            if (thing.isInView() && thing.size >= this.minSize && thing.size < this.maxSize
-                    && thing.constants.flying == this.flying) {
-                int size = transformSize(thing);
-                int xPos = transformX(thing);
-                int yPos = transformY(thing);
-                this.images.add(thing.itemImage);
-                this.sizes.add(size);
-                this.xPositions.add(xPos);
-                this.yPositions.add(yPos);
+            if (thing.isInView() && thing.size >= this.minSize && thing.size < this.maxSize) {
+                boolean reallyFlying = (thing.constants.flying && !thing.isSeed);
+                if (reallyFlying == this.flying) {
+                    int size = transformSize(thing);
+                    int xPos = transformX(thing);
+                    int yPos = transformY(thing);
+                    this.images.add(thing.itemImage);
+                    this.sizes.add(size);
+                    this.xPositions.add(xPos);
+                    this.yPositions.add(yPos);
+                }
             }
         }
     }

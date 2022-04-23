@@ -99,6 +99,14 @@ public class Thing {
         this.yBin = (int) (this.yPosition / this.world.engine.procedural.binWidthY);
     }
 
+    public Thing makeLarvae() {
+        Thing clone = makeBlank();
+        clone.currentRotation = this.currentRotation;
+        clone.currentOpacity = this.currentOpacity;
+        clone.constants = this.constants.metamorphosisFrom;
+        return clone;
+    }
+
     public Thing makeClone() {
         Thing clone = makeBlank();
         clone.currentRotation = this.currentRotation;
@@ -161,7 +169,7 @@ public class Thing {
     }
 
     public void sizeCheck() {
-        this.relativeSize = this.size / this.constants.maxSize;
+        this.relativeSize = (this.size + 1) / (this.constants.maxSize + 1);
         if (this.size > this.constants.maxSize) {
             this.size = this.constants.maxSize;
         }
@@ -187,11 +195,19 @@ public class Thing {
                 this.yPosition + this.constants.dispersalRange);
         if (this.isInBounds(seedX, seedY)
                 && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.constants.dispersalRange) {
-            Thing seedling = makeClone();
+            Thing seedling;
+            if (this.constants.metamorphosisIsAdult) {
+                seedling = makeLarvae();
+            }
+            else {
+                seedling = makeClone();
+            }
             seedling.size = seedling.constants.startSize;
-            seedling.coolDown = (int) (Math.random() * this.constants.sproutTime * this.coolDownFrames
-                    * this.world.engine.currentFPS);
+            seedling.relativeSize = (1 + seedling.size) / (seedling.constants.maxSize + 1);
+            seedling.biomass = seedling.constants.maxBiomass * seedling.relativeSize;
             seedling.healthPercent = seedling.constants.startHealth;
+            seedling.coolDown = (int) (Math.random() * seedling.constants.sproutTime * seedling.coolDownFrames
+                    * seedling.world.engine.currentFPS);
             seedling.xPosition = seedX;
             seedling.yPosition = seedY;
             seedling.updateBin();

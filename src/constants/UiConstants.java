@@ -19,7 +19,7 @@ public final class UiConstants {
     public static final float panelWidth = 1200;
     public static final float panelHeight = 800;
     public static final float startZoom = 1f;
-    public static final float minZoom = 0.25f;
+    public static final float minZoom = 0.5f;
     public static final float maxZoom = 20f;
     public static final float loadRangeMultiplier = 1.5f;
     public static final float minLoadRange = 400;

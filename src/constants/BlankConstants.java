@@ -19,8 +19,9 @@ public class BlankConstants {
     public float maxSpeed, maxAcceleration, wobbleMaxDegree, wobbleSpeed, wanderRandomness;
     public float visionRange, minFoodSize, eatingRate, foodConversion;
     public String foodName;
-    public boolean eatsSeeds, asAdultOnlyLayEggs, flying;
+    public boolean eatsSeeds, asAdultOnlyLayEggs, flying, animate, metamorphosisIsAdult, metamorphosisIsLarvae;
     public AnimationStack animationStack;
+    public BlankConstants metamorphosisFrom, metamorphosisTo;
 
     // variables
     public float _metabolismRate, _maxGrowthRate, _shadePenalty, _sproutTime, _decayRate;

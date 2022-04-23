@@ -23,13 +23,13 @@ public final class BeetleConstants extends BlankConstants {
         this.frameCoolDown = 1;
 
         // growth constants
-        this.metabolismRate = -5; // adjust to FPS and cool down
+        this.metabolismRate = -10; // adjust to FPS and cool down
         this.decayRate = -200; // adjust to FPS and cool down
         this.growAtHealth = 100;
         this.maxGrowthRate = 5; // adjust to FPS and cool down
 
         // reproduction constants
-        this.maxOffsprings = 1;
+        this.maxOffsprings = 3;
         this.reproduceAtSize = maxSize;
         this.reproduceAtHealth = 1000; // this is intentionally impossible - reproduce only when at tree
         this.reproductionPenalty = 1f;
@@ -47,10 +47,10 @@ public final class BeetleConstants extends BlankConstants {
 
         // foraging constants
         this.foodName = "Tree";
-        this.visionRange = 50;
+        this.visionRange = 30;
         this.minFoodSize = 5;
         this.eatsSeeds = false;
-        this.eatingRate = 50; // biomass per second; adjust to FPS and cool down
-        this.foodConversion = 0.5f; // biomass to health
+        this.eatingRate = 100; // biomass per second; adjust to FPS and cool down
+        this.foodConversion = 0.8f; // biomass to health
     }
 }

@@ -34,7 +34,7 @@ public final class TreeConstants extends BlankConstants {
         this.startHealth = 50;
 
         // plant constants
-        this.dispersalRange = 50;
+        this.dispersalRange = 40;
         this.maxShadeRange = 1.2f * this.maxSize / 2;
         this.shadePenalty = -30f; // adjust to FPS and cool down
         this.sproutTime = 1f; // adjust to FPS and cool down

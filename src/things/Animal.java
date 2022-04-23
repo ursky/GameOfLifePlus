@@ -42,7 +42,7 @@ public class Animal extends Thing {
             this.currentRotation += 360;
         }
         this.wobble();
-        if (this.constants.flying) {
+        if (this.constants.animate) {
             this.animateFrames();
         }
         else {
@@ -82,6 +82,7 @@ public class Animal extends Thing {
 
     private void checkSpeedBounds() {
         float maxSpeed = this.constants._maxSpeed * this.relativeSize;
+        maxSpeed = Math.max(maxSpeed, this.constants._maxSpeed * 2 / this.constants.maxSize);
         float vectorMax = Math.max(Math.abs(this.xVelocity), Math.abs(this.yVelocity));
         this.xVelocity *= maxSpeed / vectorMax;
         this.yVelocity *= maxSpeed / vectorMax;
@@ -130,7 +131,7 @@ public class Animal extends Thing {
         // search for a new target
         else {
             this.distanceToInterest = UiConstants.fullDimX;
-            float visionRange = this.constants.visionRange * this.relativeSize;
+            float visionRange = this.constants.visionRange * Math.max(0.25f, this.relativeSize);
             for (Thing otherThing: this.getThingsInRange(visionRange)) {
                 if (isInteresting(otherThing)) {
                     float distanceToThing = this.calcDistance(this.xPosition, this.yPosition,
@@ -161,10 +162,9 @@ public class Animal extends Thing {
     }
 
     private void eat() {
-        if (this.distanceToInterest <= this.size / 2 && this.healthPercent < 100
+        if (this.distanceToInterest <= 1 + this.size / 2 && this.healthPercent < 100
                 && !Objects.isNull(this.thingOfInterest)) {
-
-            // special beetle behavior: lay egg when it finds food
+            // special behavior: lay egg when it finds food
             if (this.constants.asAdultOnlyLayEggs && this.size >= this.constants.reproduceAtSize) {
                 this.layEggsAndForget();
                 return;
@@ -185,6 +185,19 @@ public class Animal extends Thing {
         }
     }
 
+    private void metamorphosis() {
+        if (this.constants.metamorphosisIsLarvae && this.size >= this.constants.maxSize
+                && this.healthPercent >= 100) {
+            this.constants = this.constants.metamorphosisTo;
+            this.isSeed = true;
+            this.itemImage = this.constants.youngImage.getImage(this.currentRotation, this.currentOpacity);
+            this.size = constants.startSize;
+            this.biomass = constants.maxBiomass;
+            this.coolDown = (int) (Math.random() * this.constants.sproutTime * this.coolDownFrames
+                    * this.world.engine.currentFPS);
+        }
+    }
+
     private void layEggsAndForget() {
         for (int i=0; i<this.constants.maxOffsprings; i++) {
             this.makeYoung();
@@ -201,6 +214,7 @@ public class Animal extends Thing {
         this.metabolize();
         this.eat();
         this.reproduce();
+        this.metamorphosis();
     }
 
     public Animal(float xPosition, float yPosition, float size, World world, BlankConstants constants) {

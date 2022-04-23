@@ -124,19 +124,30 @@ public class InitThings {
     public InitThings(World world) {
         this.world = world;
 
+        System.out.println("Initializing grass");
         BlankConstants grassConstants = new GrassConstants(this.world);
         this.orderedBlankConstants.add(grassConstants);
 
+        System.out.println("Initializing bushes");
         BlankConstants bushConstants = new BushConstants(this.world);
         this.orderedBlankConstants.add(bushConstants);
 
+        System.out.println("Initializing trees");
         BlankConstants treeConstants = new TreeConstants(this.world);
         this.orderedBlankConstants.add(treeConstants);
 
+        System.out.println("Initializing beetles");
         BlankConstants beetleConstants = new BeetleConstants(this.world);
         this.orderedBlankConstants.add(beetleConstants);
 
+        System.out.println("Initializing butterflies");
         BlankConstants butterflyConstants = new ButterflyConstants(this.world);
+        BlankConstants caterpillarConstants = new CaterpillarConstants(this.world);
+        butterflyConstants.metamorphosisFrom = caterpillarConstants;
+        butterflyConstants.metamorphosisTo = butterflyConstants;
+        caterpillarConstants.metamorphosisFrom = caterpillarConstants;
+        caterpillarConstants.metamorphosisTo = butterflyConstants;
         this.orderedBlankConstants.add(butterflyConstants);
+        this.orderedBlankConstants.add(caterpillarConstants);
     }
 }

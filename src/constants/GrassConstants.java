@@ -23,18 +23,18 @@ public final class GrassConstants extends BlankConstants {
         this.frameCoolDown = 10;
 
         // organism constants
-        this.metabolismRate = 5f; // adjust to FPS and cool down
+        this.metabolismRate = 8f; // adjust to FPS and cool down
         this.decayRate = -500; // adjust to FPS and cool down
         this.growAtHealth = 50;
-        this.maxGrowthRate = 15; // adjust to FPS and cool down
+        this.maxGrowthRate = 10; // adjust to FPS and cool down
         this.reproduceAtSize = maxSize;
         this.reproduceAtHealth = 90;
         this.reproductionPenalty = 0.1f;
-        this.maxOffsprings = 10;
-        this.startHealth = 60;
+        this.maxOffsprings = 5;
+        this.startHealth = 5;
 
         // plant constants
-        this.dispersalRange = 30;
+        this.dispersalRange = 50;
         this.maxShadeRange = 1.3f * this.maxSize / 2;
         this.shadePenalty = -10f; // adjust to FPS and cool down
         this.sproutTime = 1f; // adjust to FPS and cool down

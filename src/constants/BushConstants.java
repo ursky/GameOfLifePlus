@@ -18,7 +18,7 @@ public final class BushConstants extends BlankConstants {
                 0, 3, 10, 500, 0);
         this.startingDensity = InitialSeedDensities.bushStartingDensity; // per 100pixels^2
         this.maxSize = 30;
-        this.maxBiomass = 400;
+        this.maxBiomass = 200;
         this.frameCoolDown = 10;
         this.startSize = 2;
 
@@ -34,9 +34,9 @@ public final class BushConstants extends BlankConstants {
         this.startHealth = 50;
 
         // plant constants
-        this.dispersalRange = 30;
+        this.dispersalRange = 40;
         this.maxShadeRange = 1.1f * this.maxSize / 2;
         this.shadePenalty = -20f; // adjust to FPS and cool down
-        this.sproutTime = 1f; // adjust to FPS and cool down
+        this.sproutTime = 10f; // adjust to FPS and cool down
     }
 }
