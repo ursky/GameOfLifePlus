@@ -149,5 +149,9 @@ public class InitThings {
         caterpillarConstants.metamorphosisTo = butterflyConstants;
         this.orderedBlankConstants.add(butterflyConstants);
         this.orderedBlankConstants.add(caterpillarConstants);
+
+        System.out.println("Initializing elephants");
+        BlankConstants herbivoreConstants = new ElephantConstants(this.world);
+        this.orderedBlankConstants.add(herbivoreConstants);
     }
 }

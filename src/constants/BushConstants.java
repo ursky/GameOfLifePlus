@@ -26,17 +26,17 @@ public final class BushConstants extends BlankConstants {
         this.metabolismRate = 5f; // adjust to FPS and cool down
         this.decayRate = -200; // adjust to FPS and cool down
         this.growAtHealth = 50;
-        this.maxGrowthRate = 10.0f; // adjust to FPS and cool down
-        this.reproduceAtSize = 0.6f * maxSize;
-        this.reproduceAtHealth = 90;
-        this.reproductionPenalty = 0.6f;
-        this.maxOffsprings = 5;
+        this.maxGrowthRate = 2.0f; // adjust to FPS and cool down
+        this.reproduceAtSize = 0.9f * maxSize;
+        this.reproduceAtHealth = 100;
+        this.reproductionPenalty = 0.3f;
+        this.maxOffsprings = 3;
         this.startHealth = 50;
 
         // plant constants
         this.dispersalRange = 40;
         this.maxShadeRange = 1.1f * this.maxSize / 2;
-        this.shadePenalty = -20f; // adjust to FPS and cool down
+        this.shadePenalty = -10f; // adjust to FPS and cool down
         this.sproutTime = 10f; // adjust to FPS and cool down
     }
 }

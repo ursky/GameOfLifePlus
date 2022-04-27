@@ -158,24 +158,34 @@ public class Animal extends Thing {
             }
             return true;
         }
-        return false;
+        else if (otherThing.isSeed && this.constants.eatsSeeds && otherThing.constants.type == "Plant") {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private void eat() {
         if (this.distanceToInterest <= 1 + this.size / 2 && this.healthPercent < 100
-                && !Objects.isNull(this.thingOfInterest)) {
+                && !Objects.isNull(this.thingOfInterest) && this.thingOfInterest.biomass > 0) {
             // special behavior: lay egg when it finds food
             if (this.constants.asAdultOnlyLayEggs && this.size >= this.constants.reproduceAtSize) {
                 this.layEggsAndForget();
                 return;
             }
 
-            this.thingOfInterest.biomass -= this.constants._eatingRate * this.coolDownFrames;
-            this.healthPercent += this.constants._eatingRate  * this.coolDownFrames * this.constants.foodConversion;
+            float eatenBiomass = Math.min(this.thingOfInterest.biomass + 1,
+                    this.constants._eatingRate * this.coolDownFrames);
+
+            this.thingOfInterest.biomass -= eatenBiomass;
+            this.healthPercent += eatenBiomass * this.constants.foodConversion;
+
             // kill the food item if it's all gone
-            if (this.thingOfInterest.biomass <=0) {
-                this.thingOfInterest.healthPercent = -1000;
-                this.thingOfInterest = null;
+            if (this.thingOfInterest.biomass <= 0) {
+                this.thingOfInterest.coolDown = 0;
+                this.thingOfInterest.killSelf();
+                this.aimLess = true;
             }
             // lose interest in target if full
             if (this.healthPercent > 100) {
@@ -209,9 +219,10 @@ public class Animal extends Thing {
     @Override
     public void live() {
         this.framesInExistence++;
+        this.metabolize();
+        if (this.healthPercent <= 0) {return; }
         this.updateIntent();
         this.move();
-        this.metabolize();
         this.eat();
         this.reproduce();
         this.metamorphosis();

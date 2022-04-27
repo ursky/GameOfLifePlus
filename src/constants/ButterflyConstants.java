@@ -44,14 +44,14 @@ public final class ButterflyConstants extends BlankConstants {
 
         // reproduction constants
         this.metamorphosisIsAdult = true;
-        this.maxOffsprings = 3;
+        this.maxOffsprings = 1;
         this.reproduceAtSize = maxSize;
         this.reproduceAtHealth = 10;
-        this.reproductionPenalty = 0.5f; // die after reproducing
+        this.reproductionPenalty = 0.9f; // die after reproducing
         this.dispersalRange = 1f;
         this.startHealth = 100;
         this.reproductionCoolDown = 10;
-        this.sproutTime = 20f; // adjust to FPS and cool down
+        this.sproutTime = 5f; // adjust to FPS and cool down
         this.asAdultOnlyLayEggs = true;
 
         // movement constants
@@ -65,7 +65,7 @@ public final class ButterflyConstants extends BlankConstants {
         // foraging constants
         this.foodName = "Bush";
         this.visionRange = 20;
-        this.minFoodSize = 15;
+        this.minFoodSize = 1;
         this.eatsSeeds = false;
         this.eatingRate = 0; // biomass per second; adjust to FPS and cool down
         this.foodConversion = 0f; // biomass to health

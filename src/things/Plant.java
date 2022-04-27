@@ -21,8 +21,9 @@ public class Plant extends Thing {
 
     @Override
     public void live() {
-        this.reproduce();
         this.metabolize();
+        if (this.healthPercent <= 0) {return; }
+        this.reproduce();
         this.shadeOthers();
         this.updateCoolDowns();
     }

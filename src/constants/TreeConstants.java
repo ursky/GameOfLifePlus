@@ -18,7 +18,7 @@ public final class TreeConstants extends BlankConstants {
                 0, 3, 10, 1000, 0);
         this.startingDensity = InitialSeedDensities.treeStartingDensity; // per 100pixels^2
         this.maxSize = 50;
-        this.maxBiomass = 300;
+        this.maxBiomass = 500;
         this.frameCoolDown = 10;
         this.startSize = 3;
 
@@ -26,7 +26,7 @@ public final class TreeConstants extends BlankConstants {
         this.metabolismRate = 15.0f; // adjust to FPS and cool down
         this.decayRate = -100; // adjust to FPS and cool down
         this.growAtHealth = 80;
-        this.maxGrowthRate = 5.0f; // adjust to FPS and cool down
+        this.maxGrowthRate = 2.0f; // adjust to FPS and cool down
         this.reproduceAtSize = 0.8f * maxSize;
         this.reproduceAtHealth = 90;
         this.reproductionPenalty = 0.3f;

@@ -31,27 +31,27 @@ public final class CaterpillarConstants extends BlankConstants {
         this.name = "Caterpillar";
         this.type = "Animal";
         this.startingDensity = 0; // per 100pixels^2
-        this.maxSize = 5;
+        this.maxSize = 6;
         this.maxBiomass = 50; // adjust to size
-        this.startSize = 1;
+        this.startSize = 2;
         this.frameCoolDown = 1;
 
         // growth constants
-        this.metabolismRate = -5; // adjust to FPS and cool down
-        this.decayRate = -200; // adjust to FPS and cool down
-        this.growAtHealth = 30;
-        this.maxGrowthRate = 4f; // adjust to FPS and cool down
+        this.metabolismRate = -10; // adjust to FPS and cool down
+        this.decayRate = -400; // adjust to FPS and cool down
+        this.growAtHealth = 100;
+        this.maxGrowthRate = 8f; // adjust to FPS and cool down
 
         // reproduction constants
         this.metamorphosisIsLarvae = true;
-        this.startHealth = 20;
+        this.startHealth = 25;
         this.reproduceAtSize = 1000; // intentionally impossible
         this.reproduceAtHealth = 1000; // intentionally impossible
-        this.sproutTime = 10; // adjust to FPS
+        this.sproutTime = 5; // adjust to FPS
 
         // movement constants
         this.animate = true;
-        this.maxSpeed = 2; // adjust to FPS but not cool down
+        this.maxSpeed = 4; // adjust to FPS but not cool down
         this.maxAcceleration = 6f; // adjust to FPS^2 but not cool down
         this.wobbleMaxDegree = 0;
         this.wobbleSpeed = 0; // adjust to FPS but not cool down
@@ -60,9 +60,9 @@ public final class CaterpillarConstants extends BlankConstants {
         // foraging constants
         this.foodName = "Bush";
         this.visionRange = 20;
-        this.minFoodSize = 2;
+        this.minFoodSize = 1;
         this.eatsSeeds = false;
         this.eatingRate = 50; // biomass per second; adjust to FPS and cool down
-        this.foodConversion = 0.5f; // biomass to health
+        this.foodConversion = 0.9f; // biomass to health
     }
 }
