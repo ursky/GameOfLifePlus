@@ -7,9 +7,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import constants.UiConstants;
-import utilities.Keyboard;
-import world.ProceduralGeneration;
-import world.World;
+import engine.utilities.Keyboard;
+import engine.visuals.PaintingGroupThread;
+import engine.world.ProceduralGeneration;
+import engine.world.UpdateThingsThread;
 
 public class Engine extends JPanel implements ActionListener {
     public World world = new World(this);
@@ -27,16 +28,18 @@ public class Engine extends JPanel implements ActionListener {
     public float zoomSpeed = UiConstants.zoomSpeed;
     public float povDimX = UiConstants.panelWidth / this.zoomLevel;
     public float povDimY = UiConstants.panelHeight / this.zoomLevel;
+    public float playerPositionX = UiConstants.startPositionX;
+    public float playerPositionY = UiConstants.startPositionY;
     public float[] positionsInView = {
-            this.world.playerPositionX - this.povDimX / 2,
-            this.world.playerPositionX + this.povDimX / 2,
-            this.world.playerPositionY - this.povDimY / 2,
-            this.world.playerPositionY + this.povDimY / 2};
+            this.playerPositionX - this.povDimX / 2,
+            this.playerPositionX + this.povDimX / 2,
+            this.playerPositionY - this.povDimY / 2,
+            this.playerPositionY + this.povDimY / 2};
     public float loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
     private float scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
     public float threadBuffer = 0;
 
-    public void timeUpdate(String stepName) {
+    public void printUpdate(String stepName) {
         long currentTime = System.nanoTime();
         long timeDelta = currentTime - this.timeOfLastUpdate;
         this.timeOfLastUpdate = currentTime;
@@ -84,57 +87,63 @@ public class Engine extends JPanel implements ActionListener {
     public void paint(Graphics g) {
         super.paint(g);
         this.g2D = (Graphics2D) g;
-        ArrayList<PaintThread> paintGroups = initializePaintGroups();
-        for (PaintThread paintGroup: paintGroups) {
-            for (int i=0; i<paintGroup.images.size(); i++) {
-                paintImage(
-                        paintGroup.images.get(i),
-                        paintGroup.xPositions.get(i),
-                        paintGroup.yPositions.get(i),
-                        paintGroup.sizes.get(i));
-            }
-        }
-        updateFPS(g);
+        ArrayList<PaintingGroupThread> paintGroups = initializePaintGroups();
+        this.printUpdate("Prepare painting");
+        this.paintPaintGroup(paintGroups);
+        this.updateFPS(g);
+        this.printUpdate("Add paint objects");
     }
 
     public void paintImage(BufferedImage image, int xPos, int yPos, int size) {
         this.g2D.drawImage(image, xPos, yPos, size, size, null);
     }
 
-    private ArrayList<PaintThread> initializePaintGroups() {
-        ArrayList<PaintThread> paintThreads = new ArrayList<>();
+    private ArrayList<PaintingGroupThread> initializePaintGroups() {
+        ArrayList<PaintingGroupThread> paintThreads = new ArrayList<>();
         float minSize = 0;
         float maxSize = (int)this.world.initThings.getBiggestSize() + 1;
         float sizeIncrement = UiConstants.paintSizeIncrement;
         for (float size=minSize; size<maxSize; size+=sizeIncrement) {
-            PaintThread paintThread = new PaintThread(this, size, size + sizeIncrement, false);
+            PaintingGroupThread paintThread = new PaintingGroupThread(this, size, size + sizeIncrement, false);
             paintThreads.add(paintThread);
         }
-        PaintThread paintThread = new PaintThread(this, 0, 10000, true);
+        PaintingGroupThread paintThread = new PaintingGroupThread(this, 0, 10000, true);
         paintThreads.add(paintThread);
-        for (PaintThread thread: paintThreads) { thread.start(); }
-        for (PaintThread thread: paintThreads) { thread.join(); }
+        for (PaintingGroupThread thread: paintThreads) { thread.start(); }
+        for (PaintingGroupThread thread: paintThreads) { thread.join(); }
 
         return paintThreads;
+    }
+
+    private void paintPaintGroup(ArrayList<PaintingGroupThread> paintGroups) {
+        for (PaintingGroupThread paintGroup: paintGroups) {
+            for (int i=0; i<paintGroup.images.size(); i++) {
+                this.paintImage(
+                        paintGroup.images.get(i),
+                        paintGroup.xPositions.get(i),
+                        paintGroup.yPositions.get(i),
+                        paintGroup.sizes.get(i));
+            }
+        }
     }
 
     private void keyboardCheck() {
         if (this.fastForward()) { return; }
         this.movingCamera = false;
         if (Keyboard.isKeyPressed(KeyEvent.VK_W)) {
-            this.world.playerPositionY -= this.scrollSpeed / this.currentFPS;
+            this.playerPositionY -= this.scrollSpeed / this.currentFPS;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_S)) {
-            this.world.playerPositionY += this.scrollSpeed / this.currentFPS;
+            this.playerPositionY += this.scrollSpeed / this.currentFPS;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_A)) {
-            this.world.playerPositionX -= this.scrollSpeed / this.currentFPS;
+            this.playerPositionX -= this.scrollSpeed / this.currentFPS;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_D)) {
-            this.world.playerPositionX += this.scrollSpeed / this.currentFPS;
+            this.playerPositionX += this.scrollSpeed / this.currentFPS;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_EQUALS)) {
@@ -160,10 +169,10 @@ public class Engine extends JPanel implements ActionListener {
         this.povDimY = UiConstants.panelHeight / this.zoomLevel;
         this.loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
         this.loadRange = Math.max(this.loadRange, UiConstants.minLoadRange);
-        this.positionsInView[0] = this.world.playerPositionX - this.povDimX / 2;
-        this.positionsInView[1] =  this.world.playerPositionX + this.povDimX / 2;
-        this.positionsInView[2] =  this.world.playerPositionY - this.povDimY / 2;
-        this.positionsInView[3] =  this.world.playerPositionY + this.povDimY / 2;
+        this.positionsInView[0] = this.playerPositionX - this.povDimX / 2;
+        this.positionsInView[1] =  this.playerPositionX + this.povDimX / 2;
+        this.positionsInView[2] =  this.playerPositionY - this.povDimY / 2;
+        this.positionsInView[3] =  this.playerPositionY + this.povDimY / 2;
     }
 
     private void updateFrames() {
@@ -173,19 +182,19 @@ public class Engine extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        this.printUpdate("Paint");
         this.world.updateWorld();
-        this.timeUpdate("Update world");
 
         this.repaint();
         this.keyboardCheck();
-        this.timeUpdate("Keyboard");
+        this.printUpdate("Keyboard");
 
         this.procedural.updateBins();
-        this.timeUpdate("Update bins");
+        this.printUpdate("Update bins");
 
         this.world.initThings.updateConstants();
         this.updateFrames();
-        this.timeUpdate("Update frames");
+        this.printUpdate("\nUpdate frames");
     }
 
     Engine() {

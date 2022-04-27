@@ -1,8 +1,8 @@
 package constants;
 
-import engine.AnimationStack;
-import engine.ImageStack;
-import world.World;
+import engine.visuals.AnimationStack;
+import engine.visuals.ImageStack;
+import engine.World;
 
 public class BlankConstants {
     public World world;
