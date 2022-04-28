@@ -23,6 +23,10 @@ public class Utils {
         return positions;
     }
 
+    public static boolean inBounds(float value, float lowBound, float highBound) {
+        return (value >= lowBound && value < highBound);
+    }
+
     private Utils() {
         // restricted
     }

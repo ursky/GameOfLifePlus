@@ -70,8 +70,8 @@ public class InitThings {
         ArrayList<Thing> copiedThings = new ArrayList<>();
         float[] copyRange = selectRangeToCopy(maxX - minX, maxY - minY);
         for (Thing thing: this.world.things) {
-            if (thing.xPosition >= copyRange[0] && thing.xPosition < copyRange[1]
-                    && thing.yPosition >= copyRange[2] && thing.yPosition < copyRange[3]) {
+            if (Utils.inBounds(thing.xPosition, copyRange[0], copyRange[1])
+                    && Utils.inBounds(thing.yPosition, copyRange[2], copyRange[3])) {
                 float newXPos = minX + (thing.xPosition - copyRange[0]);
                 float newYPos = minY + (thing.yPosition - copyRange[2]);
                 Thing newThing = copyThingTo(thing, newXPos, newYPos);
@@ -82,11 +82,11 @@ public class InitThings {
     }
 
     private float[] selectRangeToCopy(float widthX, float widthY) {
-        float copyStartX = Utils.randFloat(this.world.engine.positionsInView[0],
-                this.world.engine.positionsInView[1] - widthX);
+        float copyStartX = Utils.randFloat(this.world.engine.userIO.positionsInView[0],
+                this.world.engine.userIO.positionsInView[1] - widthX);
         float copyEndX = copyStartX + widthX;
-        float copyStartY = Utils.randFloat(this.world.engine.positionsInView[2],
-                this.world.engine.positionsInView[3] - widthY);
+        float copyStartY = Utils.randFloat(this.world.engine.userIO.positionsInView[2],
+                this.world.engine.userIO.positionsInView[3] - widthY);
         float copyEndY = copyStartY + widthY;
         return new float[] {copyStartX, copyEndX, copyStartY, copyEndY};
     }

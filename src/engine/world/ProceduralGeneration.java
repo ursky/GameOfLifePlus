@@ -5,14 +5,16 @@ import things.Classes.ThingArchive;
 import things.Classes.Thing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ProceduralGeneration {
+    public World world;
     public final int nBins = UiConstants.nProceduralBins;
     public final float binWidthX = UiConstants.fullDimX / (float)nBins;
     public final float binWidthY = UiConstants.fullDimY / (float)nBins;
     public boolean[][] wasRendered = new boolean[nBins][nBins];
     public boolean[][] isRendered = new boolean[nBins][nBins];
-    World world;
+    public int[][][] cloneOfBin = new int[nBins][nBins][2];
     public float[] currentCoordinates;
     public int[] currentBins;
     public float loadRangeWidth;
@@ -20,12 +22,14 @@ public class ProceduralGeneration {
     public ThingArchive[][] archivedThings = new ThingArchive[nBins][nBins];
     public int safetyScanRange = 10;
 
+
+
     private void updateRenderedRange() {
         this.currentCoordinates = new float[] {
-                this.world.engine.playerPositionX - this.world.engine.loadRange,
-                this.world.engine.playerPositionY - this.world.engine.loadRange,
-                this.world.engine.playerPositionX + this.world.engine.loadRange,
-                this.world.engine.playerPositionY + this.world.engine.loadRange
+                this.world.engine.userIO.playerPositionX - this.world.engine.userIO.loadRange,
+                this.world.engine.userIO.playerPositionY - this.world.engine.userIO.loadRange,
+                this.world.engine.userIO.playerPositionX + this.world.engine.userIO.loadRange,
+                this.world.engine.userIO.playerPositionY + this.world.engine.userIO.loadRange
         };
         this.currentBins = new int[] {
                 (int)(this.currentCoordinates[0] / this.binWidthX),
@@ -44,7 +48,7 @@ public class ProceduralGeneration {
     }
 
     private void checkRenderedBins() {
-        int scanRange = this.safetyScanRange + (int) (this.safetyScanRange * this.world.engine.zoomLevel);
+        int scanRange = this.safetyScanRange + (int) (this.safetyScanRange * this.world.engine.userIO.zoomLevel);
         for (int i=this.currentBins[0]-scanRange; i<=this.currentBins[2]+scanRange; i++) {
             for (int j=this.currentBins[1]-scanRange; j<=this.currentBins[3]+scanRange; j++) {
                 if (this.binIsRendered(i, j)) {
@@ -88,7 +92,9 @@ public class ProceduralGeneration {
         float maxToInitX = minToInitX + this.binWidthX;
         float minToInitY = j * this.binWidthY;
         float maxToInitY = minToInitY + this.binWidthY;
-        this.world.things.addAll(this.world.initThings.copyThings(minToInitX, minToInitY, maxToInitX, maxToInitY));
+        ArrayList<Thing> clonedThings = this.world.initThings.copyThings(
+                minToInitX, minToInitY, maxToInitX, maxToInitY);
+        this.world.things.addAll(clonedThings);
     }
 
     private void checkInitThings() {
@@ -118,6 +124,8 @@ public class ProceduralGeneration {
                 this.isRendered[i][j] = false;
                 this.wasRendered[i][j] = false;
                 this.archivedThings[i][j] = new ThingArchive();
+                this.cloneOfBin[i][j][0] = 0;
+                this.cloneOfBin[i][j][1] = 0;
             }
         }
     }

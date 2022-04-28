@@ -40,10 +40,10 @@ public class Thing {
 
     public boolean isInView() {
         float halfSize = this.size / 2;
-        return (this.xPosition + halfSize > this.world.engine.positionsInView[0]
-                && this.xPosition - halfSize < this.world.engine.positionsInView[1]
-                && this.yPosition + halfSize > this.world.engine.positionsInView[2]
-                && this.yPosition - halfSize < this.world.engine.positionsInView[3]);
+        return (this.xPosition + halfSize > this.world.engine.userIO.positionsInView[0]
+                && this.xPosition - halfSize < this.world.engine.userIO.positionsInView[1]
+                && this.yPosition + halfSize > this.world.engine.userIO.positionsInView[2]
+                && this.yPosition - halfSize < this.world.engine.userIO.positionsInView[3]);
     }
 
     public boolean isInBounds(float xPos, float yPos) {

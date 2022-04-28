@@ -50,7 +50,7 @@ public class World {
                 }
                 else {
                     // if animal moves out of range, it should be deleted to avoid piling up on border
-                    if (!(thing instanceof Animal) || thing.isSeed || this.engine.movingCamera) {
+                    if (!(thing instanceof Animal) || thing.isSeed || this.engine.userIO.movingCamera) {
                         this.engine.procedural.archivedThings[thing.xBin][thing.yBin].add(thing);
                     }
                 }

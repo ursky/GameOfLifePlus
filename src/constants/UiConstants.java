@@ -12,7 +12,8 @@ public final class UiConstants {
     public static final float fastPreRenderFPS = 5;
     public static final int fullDimX = 1000000;
     public static final int fullDimY = 1000000;
-    public static final int nProceduralBins = fullDimX / 200;
+    public static final int nProceduralBins = fullDimX / 500;
+    public static final float fuzzyBinBorderFrac = 0.2f;
     public static float targetFPS = 60;
     public static float targetFrameTime = 1000 / (targetFPS + 1);
 

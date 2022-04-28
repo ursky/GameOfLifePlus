@@ -48,17 +48,19 @@ public class PaintingGroupThread implements Runnable {
     }
 
     private int transformSize(Thing thing) {
-        return (int)(thing.size * this.engine.zoomLevel);
+        return (int)(thing.size * this.engine.userIO.zoomLevel);
     }
 
     private int transformX(Thing thing) {
-        float posX = thing.xPosition - (this.engine.playerPositionX - this.engine.povDimX / 2) - thing.size / 2;
-        return (int)(posX * this.engine.zoomLevel);
+        float posX = thing.xPosition - (this.engine.userIO.playerPositionX - this.engine.userIO.povDimX / 2)
+                - thing.size / 2;
+        return (int)(posX * this.engine.userIO.zoomLevel);
     }
 
     private int transformY(Thing thing) {
-        float posY = thing.yPosition - (this.engine.playerPositionY - this.engine.povDimY / 2) - thing.size / 2;
-        return (int)(posY * this.engine.zoomLevel);
+        float posY = thing.yPosition - (this.engine.userIO.playerPositionY - this.engine.userIO.povDimY / 2)
+                - thing.size / 2;
+        return (int)(posY * this.engine.userIO.zoomLevel);
     }
 
     public PaintingGroupThread(Engine engine, float minSize, float maxSize, boolean flying) {

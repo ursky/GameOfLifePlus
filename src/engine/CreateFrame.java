@@ -3,12 +3,12 @@ package engine;
 import javax.swing.*;
 
 public class CreateFrame extends JFrame {
-    Engine panel;
+    Engine engine;
 
     public CreateFrame() {
-        panel = new Engine();
+        engine = new Engine();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.add(panel);
+        this.add(engine);
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
