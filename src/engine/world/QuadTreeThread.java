@@ -30,6 +30,7 @@ public class QuadTreeThread implements Runnable {
     public void run() {
         for (int i=0; i<this.things.size(); i++) {
             Thing thing = things.get(i);
+            if (thing.isSeed) {continue;}
             if (thing.getThreadSlice() == this.thread) {
                 engine.quadsearch.Point point = new engine.quadsearch.Point(i, thing.xPosition, thing.yPosition);
                 thing.world.quadTreeSearchGroups.getQuadTree(thing).addPoint(point);

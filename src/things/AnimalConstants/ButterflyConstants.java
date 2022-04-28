@@ -66,7 +66,7 @@ public final class ButterflyConstants extends BlankConstants {
 
         // foraging constants
         this.foodName = "Bush";
-        this.visionRange = 20;
+        this.visionRange = 50;
         this.minFoodSize = 1;
         this.eatsSeeds = false;
         this.eatingRate = 0; // biomass per second; adjust to FPS and cool down

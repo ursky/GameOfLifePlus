@@ -26,7 +26,7 @@ public final class BeetleConstants extends BlankConstants {
 
         // growth constants
         this.metabolismRate = -5; // adjust to FPS and cool down
-        this.decayRate = -200; // adjust to FPS and cool down
+        this.decayRate = -400; // adjust to FPS and cool down
         this.growAtHealth = 100;
         this.maxGrowthRate = 3; // adjust to FPS and cool down
 

@@ -1,6 +1,8 @@
 package engine.visuals;
 
 import constants.UiConstants;
+import engine.quadsearch.SearchAreas;
+import engine.world.QuadTreeThread;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -79,16 +81,25 @@ public class ImageStack extends JFrame {
     }
 
     private void initImageStack() {
+        // load in the images first, but don't add them yet to prevent threading exceptions
+        ArrayList<ImageLoadThread> threads = new ArrayList<>();
         for (int rotation=0; rotation<=360; rotation+=(360 / this.rotationVariety)) {
             this.imageStack.add(new ArrayList<>());
             for (int opacity=255; opacity>0; opacity-=(255 / this.opacityVariety)) {
-                BufferedImage finalImage = makeOrLoadImage(rotation, opacity);
-                this.imageStack.get(rotation * this.rotationVariety / 360).add(finalImage);
+                ImageLoadThread thread = new ImageLoadThread(this, rotation, opacity);
+                threads.add(thread);
             }
+        }
+        for (ImageLoadThread thread: threads) { thread.start(); }
+        for (ImageLoadThread thread: threads) { thread.join(); }
+
+        // once everything is loaded, save the images in correct locations
+        for (ImageLoadThread thread: threads) {
+            this.imageStack.get(thread.rotation * this.rotationVariety / 360).add(thread.finalImage);
         }
     }
 
-    private BufferedImage makeOrLoadImage(int rotation, int opacity) {
+    public BufferedImage makeOrLoadImage(int rotation, int opacity) {
         String imageFile = this.origImageName.substring(0, this.origImageName.lastIndexOf('.'))
                 + "_" + this.imageResolution + "_" + this.imagePadding + "_" + rotation + "_" + opacity + ".png";
         Path imagePath = Paths.get(UiConstants.renderedImageDir + "/" + imageFile);
