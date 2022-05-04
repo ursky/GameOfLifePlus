@@ -8,7 +8,7 @@ public final class UiConstants {
     public static final String renderedImageDir = "rendered_images";
 
     public static final int threadCount = 12;
-    public static final int fastPreRenderFrames = 300;
+    public static final int fastPreRenderFrames = 100;
     public static final float fastPreRenderFPS = 5;
     public static final int fullDimX = 1000000;
     public static final int fullDimY = 1000000;

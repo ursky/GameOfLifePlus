@@ -87,7 +87,16 @@ public class Thing {
         if (positionInRendered >= this.world.engine.procedural.loadRangeWidth) {
             positionInRendered -= this.world.engine.procedural.loadRangeWidth;
         }
-        return (int) (positionInRendered / threadWidth);
+        int thread = (int) (positionInRendered / threadWidth);
+        if (thread < 0) {
+            return 0;
+        }
+        else if (thread >= UiConstants.threadCount) {
+            return UiConstants.threadCount - 1;
+        }
+        else {
+            return thread;
+        }
     }
 
     public void initImage(ImageStack imageStack) {

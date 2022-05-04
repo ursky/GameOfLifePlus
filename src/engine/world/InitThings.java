@@ -66,39 +66,6 @@ public class InitThings {
         }
     }
 
-    public ArrayList<Thing> copyThings(float minX, float minY, float maxX, float maxY) {
-        ArrayList<Thing> copiedThings = new ArrayList<>();
-        float[] copyRange = selectRangeToCopy(maxX - minX, maxY - minY);
-        for (Thing thing: this.world.things) {
-            if (Utils.inBounds(thing.xPosition, copyRange[0], copyRange[1])
-                    && Utils.inBounds(thing.yPosition, copyRange[2], copyRange[3])) {
-                float newXPos = minX + (thing.xPosition - copyRange[0]);
-                float newYPos = minY + (thing.yPosition - copyRange[2]);
-                Thing newThing = copyThingTo(thing, newXPos, newYPos);
-                copiedThings.add(newThing);
-            }
-        }
-        return copiedThings;
-    }
-
-    private float[] selectRangeToCopy(float widthX, float widthY) {
-        float copyStartX = Utils.randFloat(this.world.engine.userIO.positionsInView[0],
-                this.world.engine.userIO.positionsInView[1] - widthX);
-        float copyEndX = copyStartX + widthX;
-        float copyStartY = Utils.randFloat(this.world.engine.userIO.positionsInView[2],
-                this.world.engine.userIO.positionsInView[3] - widthY);
-        float copyEndY = copyStartY + widthY;
-        return new float[] {copyStartX, copyEndX, copyStartY, copyEndY};
-    }
-
-    private Thing copyThingTo(Thing thing, float newXPos, float newYPos) {
-        Thing newThing = thing.makeClone();
-        newThing.xPosition = newXPos;
-        newThing.yPosition = newYPos;
-        newThing.updateBin();
-        return newThing;
-    }
-
     private int seedDensityToCount(float densityPer1000, float minX, float minY, float maxX, float maxY) {
         float area = (maxX - minX) * (maxY - minY);
         float expectedCount = densityPer1000 * area / 10000;
