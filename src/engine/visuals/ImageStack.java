@@ -1,8 +1,6 @@
 package engine.visuals;
 
 import constants.UiConstants;
-import engine.quadsearch.SearchAreas;
-import engine.world.QuadTreeThread;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

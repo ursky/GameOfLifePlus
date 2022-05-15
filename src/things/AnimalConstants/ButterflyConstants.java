@@ -6,6 +6,7 @@ import engine.visuals.AnimationStack;
 import engine.visuals.ImageStack;
 import engine.World;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,9 +18,9 @@ public final class ButterflyConstants extends BlankConstants {
         this.mainImage = new ImageStack("butterfly_1.png",
                 0, 90, 1, 300, 10);
         this.youngImage = new ImageStack("pupae.png",
-                0, 3, 1, 200, 15);
+                0, 20, 1, 200, 15);
         this.deadImage = new ImageStack("butterfly_8.png",
-                0, 3, 10, 300, 0);
+                0, 90, 10, 300, 0);
         ArrayList<String> animationImages = new ArrayList<>(Arrays.asList(
                 "butterfly_1.png", "butterfly_1.png", "butterfly_1.png", "butterfly_2.png", "butterfly_2.png",
                 "butterfly_3.png", "butterfly_4.png", "butterfly_5.png",
@@ -32,10 +33,12 @@ public final class ButterflyConstants extends BlankConstants {
         // thing constants
         this.name = "Butterfly";
         this.type = "Animal";
+        this.color = Color.blue;
+
         this.startingDensity = InitialSeedDensities.butterflyStartingDensity; // per 100pixels^2
         this.maxSize = 10;
-        this.maxBiomass = 30; // adjust to size
-        this.startSize = 5;
+        this.maxBiomass = 50; // adjust to size
+        this.startSize = 6;
         this.frameCoolDown = 1;
 
         // growth constants
@@ -65,7 +68,7 @@ public final class ButterflyConstants extends BlankConstants {
         this.animate = true;
 
         // foraging constants
-        this.foodName = "Bush";
+        this.foodNames.add("Bush");
         this.visionRange = 50;
         this.minFoodSize = 1;
         this.eatsSeeds = false;

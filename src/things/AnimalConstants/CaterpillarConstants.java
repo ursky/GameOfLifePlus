@@ -5,6 +5,7 @@ import engine.visuals.AnimationStack;
 import engine.visuals.ImageStack;
 import engine.World;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -15,10 +16,10 @@ public final class CaterpillarConstants extends BlankConstants {
         // image and animation constants
         this.mainImage = new ImageStack("caterpillar_1.png",
                 0, 90, 1, 300, 10);
-        this.youngImage = new ImageStack("egg_spotted.png",
-                0, 3, 1, 50, 15);
+        this.youngImage = new ImageStack("egg.png",
+                0, 20, 1, 50, 15);
         this.deadImage = new ImageStack("splat.png",
-                0, 3, 10, 300, 0);
+                0, 20, 10, 300, 0);
         ArrayList<String> animationImages = new ArrayList<>(Arrays.asList(
                 "caterpillar_1.png", "caterpillar_1.png", "caterpillar_1.png", "caterpillar_1.png",
                 "caterpillar_2.png", "caterpillar_2.png", "caterpillar_2.png", "caterpillar_2.png",
@@ -31,9 +32,11 @@ public final class CaterpillarConstants extends BlankConstants {
         // thing constants
         this.name = "Caterpillar";
         this.type = "Animal";
+        this.color = Color.blue;
+
         this.startingDensity = 0; // per 100pixels^2
-        this.maxSize = 6;
-        this.maxBiomass = 50; // adjust to size
+        this.maxSize = 10;
+        this.maxBiomass = 80; // adjust to size
         this.startSize = 2;
         this.frameCoolDown = 1;
 
@@ -59,7 +62,7 @@ public final class CaterpillarConstants extends BlankConstants {
         this.wanderRandomness = 0.3f; // adjust to FPS but not cool down
 
         // foraging constants
-        this.foodName = "Bush";
+        this.foodNames.add("Bush");
         this.visionRange = 20;
         this.minFoodSize = 1;
         this.eatsSeeds = false;

@@ -19,7 +19,15 @@ public class InitThings {
     public ArrayList<BlankConstants> orderedBlankConstants = new ArrayList<>();
 
     private void initializeThings(float minX, float minY, float maxX, float maxY, BlankConstants constants) {
-        int count = seedDensityToCount(constants.startingDensity, minX, minY, maxX, maxY);
+        int count;
+        if (this.world.engine.tracker.frameCounter > UiConstants.fastPreRenderFrames) {
+            // if this is later in the simulation things should be copied, so include only small amount of new things
+            count = seedDensityToCount(constants.startingDensity * UiConstants.postStartSpawnPenalty,
+                    minX, minY, maxX, maxY);
+        }
+        else {
+            count = seedDensityToCount(constants.startingDensity, minX, minY, maxX, maxY);
+        }
         for (int i = 0; i<count; i++) {
             float randX = Utils.randFloat(minX, maxX);
             float randY = Utils.randFloat(minY, maxY);
@@ -64,6 +72,39 @@ public class InitThings {
                 this.initializeThings(minX, minY, maxX, maxY, blankConstants);
             }
         }
+    }
+
+    public ArrayList<Thing> copyThings(float minX, float minY, float maxX, float maxY) {
+        ArrayList<Thing> copiedThings = new ArrayList<>();
+        float[] copyRange = selectRangeToCopy(maxX - minX, maxY - minY);
+        for (Thing thing: this.world.things) {
+            if (Utils.inBounds(thing.xPosition, copyRange[0], copyRange[1])
+                    && Utils.inBounds(thing.yPosition, copyRange[2], copyRange[3])) {
+                float newXPos = minX + (thing.xPosition - copyRange[0]);
+                float newYPos = minY + (thing.yPosition - copyRange[2]);
+                Thing newThing = copyThingTo(thing, newXPos, newYPos);
+                copiedThings.add(newThing);
+            }
+        }
+        return copiedThings;
+    }
+
+    private float[] selectRangeToCopy(float widthX, float widthY) {
+        float copyStartX = Utils.randFloat(this.world.engine.userIO.positionsInView[0],
+                this.world.engine.userIO.positionsInView[1] - widthX);
+        float copyEndX = copyStartX + widthX;
+        float copyStartY = Utils.randFloat(this.world.engine.userIO.positionsInView[2],
+                this.world.engine.userIO.positionsInView[3] - widthY);
+        float copyEndY = copyStartY + widthY;
+        return new float[] {copyStartX, copyEndX, copyStartY, copyEndY};
+    }
+
+    private Thing copyThingTo(Thing thing, float newXPos, float newYPos) {
+        Thing newThing = thing.makeClone();
+        newThing.xPosition = newXPos;
+        newThing.yPosition = newYPos;
+        newThing.updateBin();
+        return newThing;
     }
 
     private int seedDensityToCount(float densityPer1000, float minX, float minY, float maxX, float maxY) {
@@ -121,6 +162,10 @@ public class InitThings {
         caterpillarConstants.metamorphosisTo = butterflyConstants;
         this.orderedBlankConstants.add(butterflyConstants);
         this.orderedBlankConstants.add(caterpillarConstants);
+
+        System.out.println("Initializing turtles");
+        BlankConstants insectivoreConstants = new TurtleConstants(this.world);
+        this.orderedBlankConstants.add(insectivoreConstants);
 
         System.out.println("Initializing elephants");
         BlankConstants herbivoreConstants = new ElephantConstants(this.world);

@@ -1,5 +1,6 @@
 package engine.visuals;
 
+import constants.PlotConstants;
 import constants.UiConstants;
 import engine.Engine;
 import engine.utilities.Keyboard;
@@ -13,7 +14,7 @@ public class UserIO {
     public float zoomLevel = UiConstants.startZoom;
     public float zoomSpeed = UiConstants.zoomSpeed;
     public float povDimX = UiConstants.panelWidth / this.zoomLevel;
-    public float povDimY = UiConstants.panelHeight / this.zoomLevel;
+    public float povDimY = (UiConstants.panelHeight - PlotConstants.dashboardHeight) / this.zoomLevel;
     public float playerPositionX = UiConstants.startPositionX;
     public float playerPositionY = UiConstants.startPositionY;
     public float[] positionsInView = {
@@ -29,27 +30,27 @@ public class UserIO {
         if (this.fastForward()) { return; }
         this.movingCamera = false;
         if (Keyboard.isKeyPressed(KeyEvent.VK_W)) {
-            this.playerPositionY -= this.scrollSpeed / this.engine.currentFPS;
+            this.playerPositionY -= this.scrollSpeed / this.engine.tracker.currentFPS;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_S)) {
-            this.playerPositionY += this.scrollSpeed / this.engine.currentFPS;
+            this.playerPositionY += this.scrollSpeed / this.engine.tracker.currentFPS;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_A)) {
-            this.playerPositionX -= this.scrollSpeed / this.engine.currentFPS;
+            this.playerPositionX -= this.scrollSpeed / this.engine.tracker.currentFPS;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_D)) {
-            this.playerPositionX += this.scrollSpeed / this.engine.currentFPS;
+            this.playerPositionX += this.scrollSpeed / this.engine.tracker.currentFPS;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_EQUALS)) {
-            this.zoomLevel += this.zoomLevel * this.zoomSpeed / this.engine.currentFPS;
+            this.zoomLevel += this.zoomLevel * this.zoomSpeed / this.engine.tracker.currentFPS;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_MINUS)) {
-            this.zoomLevel -= this.zoomLevel * this.zoomSpeed / this.engine.currentFPS;
+            this.zoomLevel -= this.zoomLevel * this.zoomSpeed / this.engine.tracker.currentFPS;
             reAdjustView();
         }
     }
@@ -64,7 +65,7 @@ public class UserIO {
         }
         this.scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
         this.povDimX = UiConstants.panelWidth / this.zoomLevel;
-        this.povDimY = UiConstants.panelHeight / this.zoomLevel;
+        this.povDimY = (UiConstants.panelHeight - PlotConstants.dashboardHeight) / this.zoomLevel;
         this.loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
         this.loadRange = Math.max(this.loadRange, UiConstants.minLoadRange);
         this.positionsInView[0] = this.playerPositionX - this.povDimX / 2;
@@ -74,7 +75,8 @@ public class UserIO {
     }
 
     public boolean fastForward(){
-        return this.engine.frameCounter < UiConstants.fastPreRenderFrames || Keyboard.isKeyPressed(KeyEvent.VK_SPACE);
+        return this.engine.tracker.frameCounter < UiConstants.fastPreRenderFrames
+                || Keyboard.isKeyPressed(KeyEvent.VK_SPACE);
     }
 
     public UserIO(Engine engine) {

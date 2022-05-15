@@ -10,4 +10,5 @@ public final class InitialSeedDensities {
     public final static float beetleStartingDensity = 1f; // per 100pixels^2
     public final static float butterflyStartingDensity = 0.5f; // per 100pixels^2
     public final static float seedEaterStartingDensity = 0.2f; // per 100pixels^2
+    public final static float turtleStartingDensity = 0.05f; // per 100pixels^2
 }

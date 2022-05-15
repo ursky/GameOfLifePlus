@@ -32,6 +32,7 @@ public class Thing {
     public float healthPercent;
     public float biomass;
     public int framesInExistence = 0;
+    public float maxSpeed = 0;
 
     public void updateCoolDowns() {
         this.coolDownFrames = this.constants.frameCoolDown;
@@ -81,7 +82,7 @@ public class Thing {
 
     public int getThreadSlice() {
         float renderedLeftX = this.world.engine.procedural.currentCoordinates[0];
-        float positionInRendered = this.xPosition - renderedLeftX + this.world.engine.threadBuffer;
+        float positionInRendered = this.xPosition - renderedLeftX + this.world.engine.tracker.threadBuffer;
         float threadWidth = this.world.engine.procedural.loadRangeWidth / UiConstants.threadCount;
 
         if (positionInRendered >= this.world.engine.procedural.loadRangeWidth) {
@@ -185,7 +186,7 @@ public class Thing {
     }
 
     public void reproduce() {
-        this.reproductionCoolDown -= 1.0f / this.world.engine.currentFPS;
+        this.reproductionCoolDown -= 1.0f / this.world.engine.tracker.currentFPS;
         if (this.healthPercent >= this.constants.reproduceAtHealth
                 && this.reproductionCoolDown < 0
                 && this.size >= this.constants.reproduceAtSize) {
@@ -215,8 +216,10 @@ public class Thing {
             seedling.relativeSize = (1 + seedling.size) / (seedling.constants.maxSize + 1);
             seedling.biomass = seedling.constants.maxBiomass * seedling.relativeSize;
             seedling.healthPercent = seedling.constants.startHealth;
-            seedling.coolDown = (int) (Math.random() * seedling.constants.sproutTime * seedling.coolDownFrames
-                    * seedling.world.engine.currentFPS);
+            float maxHatchTime = seedling.constants.sproutTime * seedling.coolDownFrames
+                    * seedling.world.engine.tracker.currentFPS;
+            float minHatchTime = maxHatchTime / 2;
+            seedling.coolDown = (int) (Math.random() * (maxHatchTime - minHatchTime) + minHatchTime);
             seedling.xPosition = seedX;
             seedling.yPosition = seedY;
             seedling.updateBin();

@@ -1,7 +1,6 @@
 package engine.world;
 import constants.UiConstants;
 import engine.World;
-import engine.utilities.Utils;
 import things.Classes.ThingArchive;
 import things.Classes.Thing;
 
@@ -17,11 +16,12 @@ public class ProceduralGeneration {
     public int[][][] cloneOfBin = new int[nBins][nBins][2];
     public float[] currentCoordinates;
     public int[] currentBins;
-    public int[] initialBins;
     public float loadRangeWidth;
     public float loadRangeHeight;
     public ThingArchive[][] archivedThings = new ThingArchive[nBins][nBins];
-    public int safetyScanRange = 1;
+    public int safetyScanRange = 10;
+
+
 
     private void updateRenderedRange() {
         this.currentCoordinates = new float[] {
@@ -44,25 +44,13 @@ public class ProceduralGeneration {
         };
         this.loadRangeWidth = this.currentCoordinates[2] - this.currentCoordinates[0];
         this.loadRangeHeight = this.currentCoordinates[3] - this.currentCoordinates[1];
-        if (this.world.engine.frameCounter % 100 == 0) {
-            this.saveInitialBins();
-        }
-    }
-
-    private void saveInitialBins() {
-        this.initialBins = new int[] {
-                this.currentBins[0],
-                this.currentBins[1],
-                this.currentBins[2],
-                this.currentBins[3]
-        };
     }
 
     private void checkRenderedBins() {
         int scanRange = this.safetyScanRange + (int) (this.safetyScanRange * this.world.engine.userIO.zoomLevel);
         for (int i=this.currentBins[0]-scanRange; i<=this.currentBins[2]+scanRange; i++) {
             for (int j=this.currentBins[1]-scanRange; j<=this.currentBins[3]+scanRange; j++) {
-                if (this.binRenderedUpdate(i, j)) {
+                if (this.binIsRendered(i, j)) {
                     this.updateRenderedBin(i, j);
                 }
             }
@@ -71,7 +59,7 @@ public class ProceduralGeneration {
 
     private void updateRenderedBin(int i, int j) {
         if (!this.wasRendered[i][j]) {
-            this.cloneToNewBin(i, j);
+            this.initNewBin(i, j);
             this.wasRendered[i][j] = true;
         }
 
@@ -83,139 +71,48 @@ public class ProceduralGeneration {
         this.isRendered[i][j] = true;
     }
 
-    private void cloneToNewBin(int binX, int binY) {
-        if (this.world.engine.frameCounter == 0) {
-            return;
-        }
-
-        int[] sourceBin = chooseSourceBin(binX, binY);
-        float[] sourceCoordinates = new float[] {
-                Math.abs(sourceBin[0]) * this.binWidthX,
-                Math.abs(sourceBin[0]) * this.binWidthX + this.binWidthX,
-                Math.abs(sourceBin[1]) * this.binWidthY,
-                Math.abs(sourceBin[1]) * this.binWidthY + this.binWidthY
-        };
-        ArrayList<Thing> thingsToScan;
-
-        if (this.binIsRendered(sourceBin[0], sourceBin[1])) {
-            System.out.println("scanning world");
-            thingsToScan = this.world.things;
-        }
-        else {
-            System.out.println("scanning archive");
-            thingsToScan = this.archivedThings[Math.abs(sourceBin[0])][Math.abs(sourceBin[1])].get();
-        }
-
-        ArrayList<Thing> copiedThings = new ArrayList<>();
-        for (Thing thing : thingsToScan) {
-            if (Utils.inBounds(thing.xPosition, sourceCoordinates[0], sourceCoordinates[1])
-                    && Utils.inBounds(thing.yPosition, sourceCoordinates[2], sourceCoordinates[3])) {
-                float[] newPositions = transposeCoordinate(thing, binX, binY, sourceBin, sourceCoordinates);
-                Thing newThing = this.copyThingTo(thing, newPositions[0], newPositions[1]);
-                copiedThings.add(newThing);
-            }
-        }
-        this.world.things.addAll(copiedThings);
-    }
-
-    private boolean binIsRendered(int binX, int binY) {
-        binX = Math.abs(binX);
-        binY = Math.abs(binY);
-        return binX >= this.currentBins[0] && binX <= this.currentBins[2]
-                && binY >= this.currentBins[1] && binY <= this.currentBins[3];
-    }
-
-    private boolean binRenderedUpdate(int x, int y) {
+    private boolean binIsRendered(int x, int y) {
         if (x < 0 || y < 0 || x >= this.nBins || y >= this.nBins) {
             return false;
         }
-        if (this.binIsRendered(x, y)) {
-            this.isRendered[x][y] = true;
-            return true;
-        }
-        else {
+        if (x < this.currentBins[0] || x > this.currentBins[2] || y < this.currentBins[1] || y > this.currentBins[3])
+        {
             this.isRendered[x][y] = false;
             return false;
         }
-    }
-
-    private int[] chooseSourceBin(int binX, int binY) {
-        int sourceX = transformCopyRange(binX, this.initialBins[0], this.initialBins[2]);
-        int sourceY = transformCopyRange(binY, this.initialBins[1], this.initialBins[3]);
-        return new int[]{ sourceX, sourceY };
-    }
-
-    private int transformCopyRange(int binPosition, int initRangeSt, int initRangeFi) {
-        int sourceBin;
-        if (binPosition > initRangeFi) {
-            sourceBin = initRangeFi;
-            for (int i = initRangeFi + 1; i <= binPosition; i++) {
-                sourceBin++;
-                if (sourceBin > 0 && sourceBin > initRangeFi) {
-                    sourceBin = -initRangeFi;
-                }
-                if (sourceBin < 0 && -sourceBin < initRangeSt) {
-                    sourceBin = initRangeSt;
-                }
-            }
-        }
-        else if (binPosition < initRangeSt) {
-            sourceBin = initRangeSt;
-            for (int i = initRangeSt - 1; i >= binPosition; i--) {
-                sourceBin--;
-                if (sourceBin > 0 && sourceBin < initRangeSt) {
-                    sourceBin = -initRangeSt;
-                }
-                if (sourceBin < 0 && -sourceBin > initRangeFi) {
-                    sourceBin = initRangeFi;
-                }
-            }
-        }
         else {
-            sourceBin = binPosition;
+            this.isRendered[x][y] = true;
+            return true;
         }
-        System.out.println(initRangeSt+" "+initRangeFi+" "+binPosition+" "+sourceBin);
-        return sourceBin;
     }
 
-    private float[] transposeCoordinate(Thing thing, int binX, int binY, int[] sourceBin, float[] sourceCoordinates) {
-        float newXPos, newYPos;
-        if (sourceBin[0] > 0) {
-            newXPos = binX * this.binWidthX + (thing.xPosition - sourceCoordinates[0]);
+    private void initNewBin(int i, int j) {
+        if (this.world.engine.tracker.frameCounter == 0) {
+            return;
         }
-        else {
-            newXPos = binX * this.binWidthX + this.binWidthX - (thing.xPosition - sourceCoordinates[0]);
-        }
-        if (sourceBin[1] > 0) {
-            newYPos = binY * this.binWidthY + (thing.yPosition - sourceCoordinates[2]);
-        }
-        else {
-            newYPos = binY * this.binWidthY + this.binWidthY - (thing.yPosition - sourceCoordinates[2]);
-        }
-        return new float[]{ newXPos, newYPos };
-    }
-
-    private Thing copyThingTo(Thing thing, float newXPos, float newYPos) {
-        Thing newThing = thing.makeClone();
-        newThing.xPosition = newXPos;
-        newThing.yPosition = newYPos;
-        newThing.updateBin();
-        return newThing;
+        float minToInitX = i * this.binWidthX;
+        float maxToInitX = minToInitX + this.binWidthX;
+        float minToInitY = j * this.binWidthY;
+        float maxToInitY = minToInitY + this.binWidthY;
+        ArrayList<Thing> clonedThings = this.world.initThings.copyThings(
+                minToInitX, minToInitY, maxToInitX, maxToInitY);
+        this.world.things.addAll(clonedThings);
+        this.world.initThings.initAnimals(minToInitX, minToInitY, maxToInitX, maxToInitY);
+        this.world.initThings.initPlants(minToInitX, minToInitY, maxToInitX, maxToInitY);
     }
 
     private void checkInitThings() {
-        if (this.world.engine.frameCounter == 0) {
+        if (this.world.engine.tracker.frameCounter == 0) {
             System.out.println("Initializing plants");
             this.world.initThings.initPlants(this.currentCoordinates[0], this.currentCoordinates[1],
                     this.currentCoordinates[2], this.currentCoordinates[3]);
         }
-        if (this.world.engine.frameCounter == UiConstants.fastPreRenderFrames / 2) {
+        if (this.world.engine.tracker.frameCounter == UiConstants.fastPreRenderFrames / 2) {
             // halfway though preload add animals
             System.out.println("Initializing animals");
             this.world.initThings.initAnimals(this.currentCoordinates[0], this.currentCoordinates[1],
                     this.currentCoordinates[2], this.currentCoordinates[3]);
         }
-
     }
 
     public void updateBins() {

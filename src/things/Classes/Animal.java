@@ -81,11 +81,11 @@ public class Animal extends Thing {
     }
 
     private void checkSpeedBounds() {
-        float maxSpeed = this.constants._maxSpeed * this.relativeSize;
-        maxSpeed = Math.max(maxSpeed, this.constants._maxSpeed * 2 / this.constants.maxSize);
+        this.maxSpeed = this.constants._maxSpeed * this.relativeSize;
+        this.maxSpeed = Math.max(this.maxSpeed, this.constants._maxSpeed * 2 / this.constants.maxSize);
         float vectorMax = Math.max(Math.abs(this.xVelocity), Math.abs(this.yVelocity));
-        this.xVelocity *= maxSpeed / vectorMax;
-        this.yVelocity *= maxSpeed / vectorMax;
+        this.xVelocity *= this.maxSpeed / vectorMax;
+        this.yVelocity *= this.maxSpeed / vectorMax;
     }
 
     private void checkAccelerationBounds() {
@@ -96,7 +96,12 @@ public class Animal extends Thing {
 
     private void updateIntent() {
         if (this.healthPercent < 100 && this.foundThingOfInterest()) {
-            this.goTowardsInterest();
+            if (this.isPredator(this.thingOfInterest)) {
+                this.goAwayFromInterest();
+            }
+            else {
+                this.goTowardsInterest();
+            }
         }
         else {
             this.wander();
@@ -120,6 +125,12 @@ public class Animal extends Thing {
         this.checkAccelerationBounds();
     }
 
+    private void goAwayFromInterest() {
+        this.xAcceleration = -(this.thingOfInterest.xPosition - this.xPosition) - this.xVelocity;
+        this.yAcceleration = -(this.thingOfInterest.yPosition - this.yPosition) - this.yVelocity;
+        this.checkAccelerationBounds();
+    }
+
     private boolean foundThingOfInterest() {
         // go after previous target
         if (!Objects.isNull(this.thingOfInterest) && this.thingOfInterest.healthPercent > 0
@@ -133,6 +144,11 @@ public class Animal extends Thing {
             this.distanceToInterest = UiConstants.fullDimX;
             float visionRange = this.constants.visionRange * Math.max(0.25f, this.relativeSize);
             for (Thing otherThing: this.getThingsInRange(visionRange)) {
+                if (isPredator(otherThing)) {
+                    // predator alert - stop everything and run
+                    this.thingOfInterest = otherThing;
+                    return true;
+                }
                 if (isInteresting(otherThing)) {
                     float distanceToThing = this.calcDistance(this.xPosition, this.yPosition,
                             otherThing.xPosition, otherThing.yPosition);
@@ -146,11 +162,21 @@ public class Animal extends Thing {
         }
     }
 
+    private boolean isFood(Thing potentialFood) {
+        for (String foodName: this.constants.foodNames) {
+            if (Objects.equals(potentialFood.constants.name, foodName)) {
+                return (potentialFood.size >= this.constants.minFoodSize * this.relativeSize
+                        && potentialFood.isSeed == this.constants.eatsSeeds
+                        && potentialFood.healthPercent > 0
+                        && potentialFood.maxSpeed < this.maxSpeed
+                        && !(potentialFood.constants.flying && !potentialFood.isSeed));
+            }
+        }
+        return false;
+    }
+
     private boolean isInteresting(Thing otherThing) {
-        if (Objects.equals(otherThing.constants.name, this.constants.foodName)
-                    && otherThing.size >= this.constants.minFoodSize
-                    && otherThing.isSeed == this.constants.eatsSeeds
-                    && otherThing.healthPercent > 0) {
+        if (this.isFood(otherThing)) {
             for (Thing uninterestingThing: this.disinterestedInThings) {
                 if (uninterestingThing == otherThing) {
                     return false;
@@ -158,17 +184,26 @@ public class Animal extends Thing {
             }
             return true;
         }
-        else if (otherThing.isSeed && this.constants.eatsSeeds && otherThing.constants.type == "Plant") {
-            return true;
-        }
-        else {
+        else return otherThing.isSeed && this.constants.eatsSeeds
+                && Objects.equals(otherThing.constants.type, "Plant");
+    }
+
+    private boolean isPredator(Thing otherThing) {
+        if (otherThing.size < this.size) {
             return false;
         }
+        for (String foodItEats: otherThing.constants.foodNames) {
+            if (Objects.equals(foodItEats, this.constants.name)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void eat() {
         if (this.distanceToInterest <= 1 + this.size / 2 && this.healthPercent < 100
-                && !Objects.isNull(this.thingOfInterest) && this.thingOfInterest.biomass > 0) {
+                && !Objects.isNull(this.thingOfInterest) && this.thingOfInterest.biomass > 0
+                && this.isFood(this.thingOfInterest)) {
             // special behavior: lay egg when it finds food
             if (this.constants.asAdultOnlyLayEggs && this.size >= this.constants.reproduceAtSize) {
                 this.layEggsAndForget();
@@ -204,7 +239,7 @@ public class Animal extends Thing {
             this.size = constants.startSize;
             this.biomass = constants.maxBiomass;
             this.coolDown = (int) (Math.random() * this.constants.sproutTime * this.coolDownFrames
-                    * this.world.engine.currentFPS);
+                    * this.world.engine.tracker.currentFPS);
         }
     }
 

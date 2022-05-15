@@ -2,7 +2,6 @@ package engine.visuals;
 
 import things.Classes.Thing;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 

@@ -5,6 +5,8 @@ import constants.InitialSeedDensities;
 import engine.visuals.ImageStack;
 import engine.World;
 
+import java.awt.*;
+
 public final class ElephantConstants extends BlankConstants {
     public ElephantConstants(World world) {
         super(world);
@@ -12,12 +14,14 @@ public final class ElephantConstants extends BlankConstants {
         // thing constants
         this.name = "Elephant";
         this.type = "Animal";
+        this.color = Color.gray;
+
         this.mainImage = new ImageStack("elephant.png",
-                0, 90, 1, 400, 0);
+                0, 90, 1, 200, 0);
         this.youngImage = new ImageStack("elephant.png",
-                0, 90, 1, 400, 0);
+                0, 90, 1, 200, 0);
         this.deadImage = new ImageStack("dead_mouse.png",
-                90, 5, 10, 200, 0);
+                90, 30, 10, 100, 0);
         this.startingDensity = InitialSeedDensities.seedEaterStartingDensity; // per 100pixels^2
         this.maxSize = 15;
         this.maxBiomass = 100; // adjust to size
@@ -33,7 +37,7 @@ public final class ElephantConstants extends BlankConstants {
         // reproduction constants
         this.maxOffsprings = 1;
         this.reproduceAtSize = maxSize;
-        this.reproduceAtHealth = 100; // this is intentionally impossible - reproduce only when at tree
+        this.reproduceAtHealth = 100;
         this.reproductionPenalty = 0.5f;
         this.dispersalRange = 0.1f;
         this.startHealth = 50;
@@ -48,7 +52,7 @@ public final class ElephantConstants extends BlankConstants {
         this.wanderRandomness = 20f; // adjust to FPS but not cool down
 
         // foraging constants
-        this.foodName = "Grass";
+        this.foodNames.add("Grass");
         this.visionRange = 100;
         this.minFoodSize = 1;
         this.eatsSeeds = false;

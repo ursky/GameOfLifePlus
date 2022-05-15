@@ -5,6 +5,8 @@ import constants.InitialSeedDensities;
 import engine.visuals.ImageStack;
 import engine.World;
 
+import java.awt.*;
+
 public final class BushConstants extends BlankConstants {
     public BushConstants(World world) {
         super(world);
@@ -12,12 +14,14 @@ public final class BushConstants extends BlankConstants {
         // thing constants
         this.name = "Bush";
         this.type = "Plant";
+        this.color = Color.cyan;
+
         this.mainImage = new ImageStack("bush.png",
-                0, 10, 1, 500, 50);
+                0, 10, 1, 300, 50);
         this.youngImage = new ImageStack("seed.png",
                 0, 3, 1, 200, 15);
         this.deadImage = new ImageStack("dead_tree.png",
-                0, 3, 10, 500, 0);
+                0, 3, 10, 300, 0);
         this.startingDensity = InitialSeedDensities.bushStartingDensity; // per 100pixels^2
         this.maxSize = 30;
         this.maxBiomass = 200;

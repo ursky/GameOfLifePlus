@@ -5,6 +5,7 @@ import engine.quadsearch.SearchAreas;
 import engine.utilities.Utils;
 import engine.world.InitThings;
 import engine.world.QuadTreeThread;
+import engine.world.ThingCounter;
 import engine.world.UpdateThingsThread;
 import things.Classes.Animal;
 import things.Classes.Thing;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 
 public class World {
     public Engine engine;
+    public ThingCounter counter;
     public ArrayList<Thing> things = new ArrayList<>();
     public ArrayList<Thing> newThings = new ArrayList<>();
     public SearchAreas quadTreeSearchGroups;
@@ -30,7 +32,7 @@ public class World {
     }
 
     public void updateThingsMultithreading() {
-        if (this.engine.frameCounter < 30) { return; }
+        if (this.engine.tracker.frameCounter < 30) { return; }
         ArrayList<UpdateThingsThread> threads = new ArrayList<>();
         int[][] positions = Utils.breakIntoChunks(this.things.size());
         for (int i = 0; i<UiConstants.threadCount; i++) {
@@ -43,8 +45,14 @@ public class World {
 
     private void removeDeadOrOffscreen() {
         ArrayList<Thing> thingsInRange = new ArrayList<>();
+        if (this.engine.tracker.timeToUpdateCounts()) {
+            this.counter.initializeCounts();
+        }
         for (Thing thing: this.things) {
             if (thing != null && thing.size > 0 && thing.currentOpacity > 0) {
+                if (this.engine.tracker.timeToUpdateCounts()) {
+                    this.counter.countThing(thing);
+                }
                 if (thing.isRendered()) {
                     thingsInRange.add(thing);
                 }
@@ -62,21 +70,22 @@ public class World {
 
     public void updateWorld() {
         this.calcDistancesMultithreading();
-        this.engine.printUpdate("QuadTree");
+        this.engine.tracker.printStepNanoseconds("QuadTree");
 
         this.updateThingsMultithreading();
-        this.engine.printUpdate("Update things");
+        this.engine.tracker.printStepNanoseconds("Update things");
 
         this.things.addAll(this.newThings);
         this.newThings.clear();
-        this.engine.printUpdate("Add new things");
+        this.engine.tracker.printStepNanoseconds("Add new things");
 
         this.removeDeadOrOffscreen();
-        this.engine.printUpdate("Remove dead");
+        this.engine.tracker.printStepNanoseconds("Remove dead");
     }
 
     public World(Engine engine) {
-        this.engine = engine;
         this.initThings = new InitThings(this);
+        this.engine = engine;
+        this.counter = new ThingCounter(this);
     }
 }

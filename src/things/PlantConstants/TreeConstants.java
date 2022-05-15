@@ -5,6 +5,8 @@ import constants.InitialSeedDensities;
 import engine.visuals.ImageStack;
 import engine.World;
 
+import java.awt.*;
+
 public final class TreeConstants extends BlankConstants {
     public TreeConstants(World world) {
         super(world);
@@ -12,12 +14,14 @@ public final class TreeConstants extends BlankConstants {
         // thing constants
         this.name = "Tree";
         this.type = "Plant";
+        this.color = Color.orange;
+
         this.mainImage = new ImageStack("tree.png",
-                0, 10, 1, 1000, 20);
+                0, 10, 1, 500, 20);
         this.youngImage = new ImageStack("tree_seed.png",
-                0, 3, 1, 300, 20);
+                0, 3, 1, 100, 20);
         this.deadImage = new ImageStack("dead_tree.png",
-                0, 3, 10, 1000, 0);
+                0, 3, 10, 300, 0);
         this.startingDensity = InitialSeedDensities.treeStartingDensity; // per 100pixels^2
         this.maxSize = 50;
         this.maxBiomass = 500;
@@ -40,7 +44,5 @@ public final class TreeConstants extends BlankConstants {
         this.maxShadeRange = 1.2f * this.maxSize / 2;
         this.shadePenalty = -30f; // adjust to FPS and cool down
         this.sproutTime = 1f; // adjust to FPS and cool down
-
-        this.updateRates();
     }
 }
