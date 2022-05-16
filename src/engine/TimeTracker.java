@@ -1,18 +1,18 @@
 package engine;
 
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 
 import java.util.ArrayList;
 
 public class TimeTracker {
     public Engine engine;
     public float currentFPS = UiConstants.targetFPS;
-    private long currentTime = System.currentTimeMillis();
+    public long currentTime = System.currentTimeMillis();
     private int framesSinceLastFPS = 0;
     private long timeOfLastFPS = this.currentTime;
     private long timeOfLastUpdate = System.nanoTime();
     private long timeOfLastPrint = this.currentTime;
-    private long timeOfLastCount = this.currentTime;
+    public long timeOfLastCount = this.currentTime;
     public int frameCounter = 0;
     private boolean printThisFrame = false;
     public float threadBuffer = 0;
@@ -30,31 +30,20 @@ public class TimeTracker {
         }
     }
 
-    public void printCounts() {
-        if (timeToUpdateCounts() && UiConstants.doPrintCounts) {
-            String message = this.engine.world.counter.generateCountsMessage();
-            System.out.println(message);
-            this.timeOfLastCount = this.currentTime;
-        }
-    }
-
     public boolean timeToUpdateCounts() {
         return this.currentTime - this.timeOfLastCount >= UiConstants.infoUpdateMs;
     }
 
-    public void updateFrames() {
+    public void updateFPS() {
         this.frameCounter++;
         this.threadBuffer = this.frameCounter % (this.engine.procedural.loadRangeWidth);
-    }
-
-    public String updateFPS() {
         this.throttleFPS();
         this.framesSinceLastFPS ++;
         long time = System.currentTimeMillis();
         long timeSinceLastFPS = time - this.timeOfLastFPS;
         long timeSinceLastPrint = time - this.timeOfLastPrint;
 
-        if (timeSinceLastFPS > UiConstants.fpsDisplayUpdateMs) {
+        if (timeSinceLastFPS > UiConstants.infoUpdateMs) {
             this.currentFPS = 1000f * this.framesSinceLastFPS / (int) timeSinceLastFPS;
             this.currentFPS = Math.min(this.currentFPS, UiConstants.targetFPS);
             this.currentFPS = Math.max(this.currentFPS, 1);
@@ -68,8 +57,6 @@ public class TimeTracker {
         else {
             this.printThisFrame = false;
         }
-        String strFPS = String.valueOf((int)currentFPS);
-        return "FPS: " + strFPS + "; #Things: " + this.engine.world.things.size();
     }
 
     public void throttleFPS() {
@@ -83,8 +70,11 @@ public class TimeTracker {
                 Thread.currentThread().interrupt();
             }
         }
-        this.latencyList.add(this.latency);
-        this.fpsList.add(1000 / (this.sleepDelay + this.latency));
+        if (this.timeToUpdateCounts()) {
+            this.latencyList.add(this.latency);
+            this.fpsList.add(1000 / (this.sleepDelay + this.latency));
+            this.timeOfLastCount = this.currentTime;
+        }
         this.currentTime = System.currentTimeMillis();
     }
     TimeTracker(Engine engine) {

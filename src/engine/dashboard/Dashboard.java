@@ -1,15 +1,14 @@
 package engine.dashboard;
 
-import constants.BashboardConstants;
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 import engine.Engine;
 
 import java.awt.*;
 
-public class infoDashboard {
+public class Dashboard {
     Engine engine;
     StackedLinePlot countsPlot;
-    Buttons buttons;
+    public Buttons buttons;
     LinePlot latencyPlot, fpsPlot, totalCountPlot;
     int minY, maxY, minX, maxX;
 
@@ -36,50 +35,49 @@ public class infoDashboard {
 
     public void paintBar() {
         // paint blank info bar
-        this.engine.g2D.setColor(Color.darkGray);
+        this.engine.g2D.setColor(DashboardConstants.backgroundColor);
         this.engine.g2D.fillRect(
                 0, this.minY, (this.maxX - this.minX), (this.maxY - this.minY));
     }
 
-    public infoDashboard(Engine engine) {
+    public Dashboard(Engine engine) {
         this.engine = engine;
         this.countsPlot = new StackedLinePlot(
                 this.engine,
-                BashboardConstants.stackedPlotXStart,
-                BashboardConstants.stackedPlotXEnd,
-                BashboardConstants.stackedPlotIncrement,
+                DashboardConstants.stackedPlotXStart,
+                DashboardConstants.stackedPlotXEnd,
+                DashboardConstants.xPixelIncrement,
                 "Relative abundance");
 
         this.latencyPlot = new LinePlot(
                 this.engine,
-                BashboardConstants.latencyPlotXStart,
-                BashboardConstants.latencyPlotXEnd,
-                BashboardConstants.latencyPlotIncrement,
+                DashboardConstants.latencyPlotXStart,
+                DashboardConstants.latencyPlotXEnd,
+                DashboardConstants.xPixelIncrement,
                 "Latency (ms)");
 
         this.fpsPlot = new LinePlot(
                 this.engine,
-                BashboardConstants.fpsPlotXStart,
-                BashboardConstants.fpsPlotXEnd,
-                BashboardConstants.fpsPlotIncrement,
+                DashboardConstants.fpsPlotXStart,
+                DashboardConstants.fpsPlotXEnd,
+                DashboardConstants.xPixelIncrement,
                 "FPS");
 
         this.totalCountPlot = new LinePlot(
                 this.engine,
-                BashboardConstants.countPlotXStart,
-                BashboardConstants.countPlotXEnd,
-                BashboardConstants.countPlotIncrement,
+                DashboardConstants.countPlotXStart,
+                DashboardConstants.countPlotXEnd,
+                DashboardConstants.xPixelIncrement,
                 "Rendered things #");
 
         this.buttons = new Buttons(
                 this.engine,
-                BashboardConstants.buttonsPlotXStart,
-                BashboardConstants.buttonsPlotXEnd,
-                0,
+                DashboardConstants.buttonsPlotXStart,
+                DashboardConstants.buttonsPlotXEnd,
                 "Critter buttons and counts");
 
         // useful pre-computed bounds
-        this.minY = UiConstants.panelHeight - BashboardConstants.dashboardHeight;
+        this.minY = UiConstants.panelHeight - DashboardConstants.dashboardHeight;
         this.maxY = UiConstants.panelHeight;
         this.minX = 0;
         this.maxX = UiConstants.panelWidth;

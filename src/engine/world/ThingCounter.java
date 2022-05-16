@@ -1,6 +1,6 @@
 package engine.world;
 
-import constants.BlankConstants;
+import things.Classes.CreatureConstants;
 import engine.World;
 import things.Classes.Thing;
 
@@ -22,14 +22,14 @@ public class ThingCounter {
             this.saveFractions();
             // then append new values
             int totalCount = 0;
-            for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
+            for (CreatureConstants constants: this.world.initThings.orderedCreatureConstants) {
                 totalCount += this.classCounters.get(constants.name).get(this.currentIndex);
                 this.classCounters.get(constants.name).add(0);
             }
             this.totalCounts.add(totalCount);
         }
         else {
-            for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
+            for (CreatureConstants constants: this.world.initThings.orderedCreatureConstants) {
                 this.classCounters.get(constants.name).add(0);
             }
         }
@@ -51,7 +51,7 @@ public class ThingCounter {
 
     private void getCurrentValues() {
         this.thingCounts = new ArrayList<>();
-        for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
+        for (CreatureConstants constants: this.world.initThings.orderedCreatureConstants) {
             int value = this.classCounters.get(constants.name).get(this.currentIndex);
             this.thingCounts.add(value);
         }
@@ -66,7 +66,7 @@ public class ThingCounter {
 
     public String generateCountsMessage() {
         StringBuilder message = new StringBuilder();
-        for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
+        for (CreatureConstants constants: this.world.initThings.orderedCreatureConstants) {
             message.append(constants.name)
                     .append(":\t")
                     .append(this.classCounters.get(constants.name).get(this.currentIndex))
@@ -82,7 +82,7 @@ public class ThingCounter {
         this.thingCounts = new ArrayList<>();
         this.classFractions = new ArrayList<>();
         this.colors = new ArrayList<>();
-        for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
+        for (CreatureConstants constants: this.world.initThings.orderedCreatureConstants) {
             this.classCounters.put(constants.name, new ArrayList<>());
             this.classFractions.add(new ArrayList<>());
             this.colors.add(constants.color);

@@ -1,9 +1,7 @@
-package engine.visuals;
+package engine.userIO;
 
-import constants.BashboardConstants;
-import constants.UiConstants;
+import engine.dashboard.DashboardConstants;
 import engine.Engine;
-import engine.utilities.Keyboard;
 
 import java.awt.event.KeyEvent;
 
@@ -14,7 +12,7 @@ public class UserIO {
     public float zoomLevel = UiConstants.startZoom;
     public float zoomSpeed = UiConstants.zoomSpeed;
     public float povDimX = UiConstants.panelWidth / this.zoomLevel;
-    public float povDimY = (UiConstants.panelHeight - BashboardConstants.dashboardHeight) / this.zoomLevel;
+    public float povDimY = (UiConstants.panelHeight - DashboardConstants.dashboardHeight) / this.zoomLevel;
     public float playerPositionX = UiConstants.startPositionX;
     public float playerPositionY = UiConstants.startPositionY;
     public float[] positionsInView = {
@@ -65,7 +63,7 @@ public class UserIO {
         }
         this.scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
         this.povDimX = UiConstants.panelWidth / this.zoomLevel;
-        this.povDimY = (UiConstants.panelHeight - BashboardConstants.dashboardHeight) / this.zoomLevel;
+        this.povDimY = (UiConstants.panelHeight - DashboardConstants.dashboardHeight) / this.zoomLevel;
         this.loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
         this.loadRange = Math.max(this.loadRange, UiConstants.minLoadRange);
         this.positionsInView[0] = this.playerPositionX - this.povDimX / 2;
@@ -77,6 +75,16 @@ public class UserIO {
     public boolean fastForward(){
         return this.engine.tracker.frameCounter < UiConstants.fastPreRenderFrames
                 || Keyboard.isKeyPressed(KeyEvent.VK_SPACE);
+    }
+
+    public float reverseTransformX(int x) {
+        return x / this.engine.userIO.zoomLevel + this.engine.userIO.playerPositionX
+                - this.engine.userIO.povDimX / 2;
+    }
+
+    public float reverseTransformY(int y) {
+        return y / this.engine.userIO.zoomLevel + this.engine.userIO.playerPositionY
+                - this.engine.userIO.povDimY / 2;
     }
 
     public UserIO(Engine engine) {

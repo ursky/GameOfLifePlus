@@ -1,13 +1,11 @@
 package engine.dashboard;
 
-import constants.BashboardConstants;
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 import engine.Engine;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
-import java.util.function.DoubleToIntFunction;
 
 public class LinePlot {
     Engine engine;
@@ -17,7 +15,7 @@ public class LinePlot {
     int[] yValues;
     int xIncrement;
     String label;
-    Color color = Color.white;
+    Color color = DashboardConstants.mainColor;
     AffineTransform affineTransform;
     Font font, font90;
     int maxValue = 1;
@@ -85,14 +83,16 @@ public class LinePlot {
 
     public String asString(int value) {
         // add comma to large numbers for cleaner presentation
-        String output;
-        if (value >= 1000) {
-            output = value / 1000 + "," + (value - (value / 1000));
+        String original = String.valueOf(value);
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < original.length(); i++) {
+            char c = original.charAt(i);
+            output.append(c);
+            if (original.length()-i-1 == 3 || original.length()-i-1 == 6) {
+                output.append(',');
+            }
         }
-        else {
-            output = value + "";
-        }
-        return output;
+        return output.toString();
     }
 
     public void paintVerticalLine(int xPosition, int width) {
@@ -106,7 +106,7 @@ public class LinePlot {
 
     public void drawString(String text, int xPos, int yPos, Font font) {
         int width = getStringWidth(text);
-        this.engine.g2D.setColor(Color.white);
+        this.engine.g2D.setColor(this.color);
         this.engine.g2D.setFont(font);
         // adjust positions to account for string length
         if (font == this.font) {
@@ -128,9 +128,9 @@ public class LinePlot {
     public LinePlot(Engine engine, int startX, int endX, int xIncrement, String label) {
         this.engine = engine;
         this.label = label;
-        this.minX = startX;
+        this.minX = startX + 4;
         this.maxX = endX;
-        this.minY = UiConstants.panelHeight - BashboardConstants.dashboardHeight;
+        this.minY = UiConstants.panelHeight - DashboardConstants.dashboardHeight;
         this.maxY = UiConstants.panelHeight;
         this.midPointY = (this.minY + this.maxY) / 2;
         this.height = this.maxY - this.minY;

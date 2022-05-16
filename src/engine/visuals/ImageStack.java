@@ -1,6 +1,6 @@
 package engine.visuals;
 
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

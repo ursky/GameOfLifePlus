@@ -1,5 +1,5 @@
 package engine.world;
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 import engine.World;
 import things.Classes.ThingArchive;
 import things.Classes.Thing;
@@ -87,7 +87,7 @@ public class ProceduralGeneration {
     }
 
     private void initNewBin(int i, int j) {
-        if (this.world.engine.tracker.frameCounter == 0) {
+        if (this.world.engine.tracker.frameCounter < UiConstants.fastPreRenderFrames) {
             return;
         }
         float minToInitX = i * this.binWidthX;
@@ -102,7 +102,7 @@ public class ProceduralGeneration {
     }
 
     private void checkInitThings() {
-        if (this.world.engine.tracker.frameCounter == 0) {
+        if (this.world.engine.tracker.frameCounter == 1) {
             System.out.println("Initializing plants");
             this.world.initThings.initPlants(this.currentCoordinates[0], this.currentCoordinates[1],
                     this.currentCoordinates[2], this.currentCoordinates[3]);

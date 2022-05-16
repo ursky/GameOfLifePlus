@@ -1,6 +1,5 @@
 package things.Classes;
-import constants.BlankConstants;
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 import engine.visuals.ImageStack;
 import engine.quadsearch.Point;
 import engine.quadsearch.Region;
@@ -15,7 +14,7 @@ import java.util.Objects;
 
 public class Thing {
     public World world;
-    public BlankConstants constants;
+    public CreatureConstants constants;
     public float size;
     public float relativeSize;
     public float xPosition;
@@ -235,7 +234,7 @@ public class Thing {
         // placeholder
     }
 
-    public Thing(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
+    public Thing(float xPosition, float yPosition, float size, World world, CreatureConstants constants) {
         this.constants = constants;
         this.initImage(this.constants.mainImage);
         this.xPosition = xPosition;

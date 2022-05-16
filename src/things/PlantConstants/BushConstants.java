@@ -1,13 +1,13 @@
 package things.PlantConstants;
 
-import constants.BlankConstants;
-import constants.InitialSeedDensities;
+import things.Classes.CreatureConstants;
+import things.Classes.InitialSeedDensities;
 import engine.visuals.ImageStack;
 import engine.World;
 
 import java.awt.*;
 
-public final class BushConstants extends BlankConstants {
+public final class BushConstants extends CreatureConstants {
     public BushConstants(World world) {
         super(world);
 

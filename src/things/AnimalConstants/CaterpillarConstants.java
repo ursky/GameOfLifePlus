@@ -1,6 +1,6 @@
 package things.AnimalConstants;
 
-import constants.BlankConstants;
+import things.Classes.CreatureConstants;
 import engine.visuals.AnimationStack;
 import engine.visuals.ImageStack;
 import engine.World;
@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public final class CaterpillarConstants extends BlankConstants {
+public final class CaterpillarConstants extends CreatureConstants {
     public CaterpillarConstants(World world) {
         super(world);
 

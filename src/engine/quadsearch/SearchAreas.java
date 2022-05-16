@@ -1,6 +1,6 @@
 package engine.quadsearch;
 
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 import things.Classes.Thing;
 
 import java.util.ArrayList;

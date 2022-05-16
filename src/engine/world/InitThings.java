@@ -1,9 +1,10 @@
 package engine.world;
 
-import constants.*;
 import engine.World;
+import engine.userIO.UiConstants;
 import things.Classes.Animal;
 import things.AnimalConstants.*;
+import things.Classes.CreatureConstants;
 import things.Classes.Plant;
 import things.PlantConstants.BushConstants;
 import things.PlantConstants.GrassConstants;
@@ -16,9 +17,9 @@ import java.util.Objects;
 
 public class InitThings {
     public World world;
-    public ArrayList<BlankConstants> orderedBlankConstants = new ArrayList<>();
+    public ArrayList<CreatureConstants> orderedCreatureConstants = new ArrayList<>();
 
-    private void initializeThings(float minX, float minY, float maxX, float maxY, BlankConstants constants) {
+    private void initializeThings(float minX, float minY, float maxX, float maxY, CreatureConstants constants) {
         int count;
         if (this.world.engine.tracker.frameCounter > UiConstants.fastPreRenderFrames) {
             // if this is later in the simulation things should be copied, so include only small amount of new things
@@ -32,11 +33,11 @@ public class InitThings {
             float randX = Utils.randFloat(minX, maxX);
             float randY = Utils.randFloat(minY, maxY);
             float size = Utils.randFloat(constants.maxSize / 2, constants.maxSize);
-            createThing(randX, randY, size, constants);
+            this.createThing(randX, randY, size, constants);
         }
     }
 
-    private void createThing(float randX, float randY, float size, BlankConstants constants) {
+    public void createThing(float randX, float randY, float size, CreatureConstants constants) {
         if (constants.type.equals("Plant")) {
             Plant thing = new Plant(randX, randY, size, this.world, constants);
             initThing(thing);
@@ -44,8 +45,8 @@ public class InitThings {
             Animal thing = new Animal(randX, randY, size, this.world, constants);
             initThing(thing);
         } else {
-            Thing Thing = new Thing(randX, randY, size, this.world, constants);
-            initThing(Thing);
+            Thing thing = new Thing(randX, randY, size, this.world, constants);
+            initThing(thing);
         }
     }
 
@@ -59,17 +60,17 @@ public class InitThings {
     }
 
     public void initPlants(float minX, float minY, float maxX, float maxY) {
-        for (BlankConstants blankConstants : this.orderedBlankConstants) {
-            if (Objects.equals(blankConstants.type, "Plant")) {
-                this.initializeThings(minX, minY, maxX, maxY, blankConstants);
+        for (CreatureConstants creatureConstants : this.orderedCreatureConstants) {
+            if (Objects.equals(creatureConstants.type, "Plant")) {
+                this.initializeThings(minX, minY, maxX, maxY, creatureConstants);
             }
         }
     }
 
     public void initAnimals(float minX, float minY, float maxX, float maxY) {
-        for (BlankConstants blankConstants : this.orderedBlankConstants) {
-            if (Objects.equals(blankConstants.type, "Animal")) {
-                this.initializeThings(minX, minY, maxX, maxY, blankConstants);
+        for (CreatureConstants creatureConstants : this.orderedCreatureConstants) {
+            if (Objects.equals(creatureConstants.type, "Animal")) {
+                this.initializeThings(minX, minY, maxX, maxY, creatureConstants);
             }
         }
     }
@@ -119,14 +120,14 @@ public class InitThings {
     }
 
     public void updateConstants() {
-        for (BlankConstants constants: this.orderedBlankConstants) {
+        for (CreatureConstants constants: this.orderedCreatureConstants) {
             constants.updateRates();
         }
     }
 
     public float getBiggestSize() {
         float biggest = 0;
-        for (BlankConstants constants: this.orderedBlankConstants) {
+        for (CreatureConstants constants: this.orderedCreatureConstants) {
             if (constants.maxSize > biggest) {
                 biggest = constants.maxSize;
             }
@@ -138,37 +139,37 @@ public class InitThings {
         this.world = world;
 
         System.out.println("Initializing grass");
-        BlankConstants grassConstants = new GrassConstants(this.world);
-        this.orderedBlankConstants.add(grassConstants);
+        CreatureConstants grassConstants = new GrassConstants(this.world);
+        this.orderedCreatureConstants.add(grassConstants);
 
         System.out.println("Initializing bushes");
-        BlankConstants bushConstants = new BushConstants(this.world);
-        this.orderedBlankConstants.add(bushConstants);
+        CreatureConstants bushConstants = new BushConstants(this.world);
+        this.orderedCreatureConstants.add(bushConstants);
 
         System.out.println("Initializing trees");
-        BlankConstants treeConstants = new TreeConstants(this.world);
-        this.orderedBlankConstants.add(treeConstants);
+        CreatureConstants treeConstants = new TreeConstants(this.world);
+        this.orderedCreatureConstants.add(treeConstants);
 
         System.out.println("Initializing beetles");
-        BlankConstants beetleConstants = new BeetleConstants(this.world);
-        this.orderedBlankConstants.add(beetleConstants);
+        CreatureConstants beetleConstants = new BeetleConstants(this.world);
+        this.orderedCreatureConstants.add(beetleConstants);
 
         System.out.println("Initializing butterflies");
-        BlankConstants butterflyConstants = new ButterflyConstants(this.world);
-        BlankConstants caterpillarConstants = new CaterpillarConstants(this.world);
+        CreatureConstants butterflyConstants = new ButterflyConstants(this.world);
+        CreatureConstants caterpillarConstants = new CaterpillarConstants(this.world);
         butterflyConstants.metamorphosisFrom = caterpillarConstants;
         butterflyConstants.metamorphosisTo = butterflyConstants;
         caterpillarConstants.metamorphosisFrom = caterpillarConstants;
         caterpillarConstants.metamorphosisTo = butterflyConstants;
-        this.orderedBlankConstants.add(butterflyConstants);
-        this.orderedBlankConstants.add(caterpillarConstants);
+        this.orderedCreatureConstants.add(butterflyConstants);
+        this.orderedCreatureConstants.add(caterpillarConstants);
 
         System.out.println("Initializing turtles");
-        BlankConstants insectivoreConstants = new TurtleConstants(this.world);
-        this.orderedBlankConstants.add(insectivoreConstants);
+        CreatureConstants insectivoreConstants = new TurtleConstants(this.world);
+        this.orderedCreatureConstants.add(insectivoreConstants);
 
         System.out.println("Initializing elephants");
-        BlankConstants herbivoreConstants = new ElephantConstants(this.world);
-        this.orderedBlankConstants.add(herbivoreConstants);
+        CreatureConstants herbivoreConstants = new ElephantConstants(this.world);
+        this.orderedCreatureConstants.add(herbivoreConstants);
     }
 }

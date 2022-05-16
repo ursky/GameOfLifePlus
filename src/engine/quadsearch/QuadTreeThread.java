@@ -1,4 +1,4 @@
-package engine.world;
+package engine.quadsearch;
 
 import things.Classes.Thing;
 

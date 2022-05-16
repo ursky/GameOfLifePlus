@@ -1,6 +1,6 @@
 package engine.utilities;
 
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 
 public class Utils {
     public static float randFloat(float min, float max) {

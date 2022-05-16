@@ -1,5 +1,4 @@
 package things.Classes;
-import constants.BlankConstants;
 import engine.World;
 
 public class Plant extends Thing {
@@ -28,7 +27,7 @@ public class Plant extends Thing {
         this.updateCoolDowns();
     }
 
-    public Plant(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
+    public Plant(float xPosition, float yPosition, float size, World world, CreatureConstants constants) {
         super(xPosition, yPosition, size, world, constants);
     }
 }

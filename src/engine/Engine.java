@@ -6,11 +6,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import constants.UiConstants;
+import engine.userIO.UiConstants;
+import engine.userIO.Mouse;
 import engine.visuals.PaintingGroupThread;
-import engine.visuals.UserIO;
+import engine.userIO.UserIO;
 import engine.world.ProceduralGeneration;
-import engine.dashboard.infoDashboard;
+import engine.dashboard.Dashboard;
 
 public class Engine extends JPanel implements ActionListener {
     public World world = new World(this);
@@ -18,7 +19,7 @@ public class Engine extends JPanel implements ActionListener {
     public Timer timer;
     public TimeTracker tracker;
     public Graphics2D g2D;
-    public final infoDashboard dashboard;
+    public final Dashboard dashboard;
     public UserIO userIO;
 
     public void paintFPS(String message) {
@@ -32,7 +33,7 @@ public class Engine extends JPanel implements ActionListener {
         ArrayList<PaintingGroupThread> paintGroups = initializePaintGroups();
         this.tracker.printStepNanoseconds("Prepare painting");
         this.paintPaintGroup(paintGroups);
-        String fpsMessage = this.tracker.updateFPS();
+        String fpsMessage = "FPS: " + String.valueOf((int) this.tracker.currentFPS);
         this.paintFPS(fpsMessage);
         this.tracker.printStepNanoseconds("\nAdd paint objects");
         this.dashboard.paint();
@@ -74,6 +75,7 @@ public class Engine extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         this.tracker.printStepNanoseconds("Paint");
+        this.tracker.updateFPS();
         this.world.updateWorld();
         this.dashboard.update();
 
@@ -85,12 +87,11 @@ public class Engine extends JPanel implements ActionListener {
         this.tracker.printStepNanoseconds("Update bins");
 
         this.world.initThings.updateConstants();
-        this.tracker.updateFrames();
-        this.tracker.printCounts();
         this.tracker.printStepNanoseconds("Update frames");
     }
 
     Engine() {
+        this.addMouseListener(new Mouse(this));
         this.setPreferredSize(new Dimension(UiConstants.panelWidth, UiConstants.panelHeight));
         this.setBackground(Color.black);
         this.procedural = new ProceduralGeneration(world);
@@ -98,6 +99,6 @@ public class Engine extends JPanel implements ActionListener {
         this.timer = new Timer(0, this);
         this.timer.start();
         this.tracker = new TimeTracker(this);
-        this.dashboard = new infoDashboard(this);
+        this.dashboard = new Dashboard(this);
     }
 }

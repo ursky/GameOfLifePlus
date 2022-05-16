@@ -1,6 +1,5 @@
 package things.Classes;
-import constants.BlankConstants;
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 import engine.utilities.Utils;
 import engine.World;
 
@@ -263,7 +262,7 @@ public class Animal extends Thing {
         this.metamorphosis();
     }
 
-    public Animal(float xPosition, float yPosition, float size, World world, BlankConstants constants) {
+    public Animal(float xPosition, float yPosition, float size, World world, CreatureConstants constants) {
         super(xPosition, yPosition, size, world, constants);
     }
 }

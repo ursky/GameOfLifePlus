@@ -1,13 +1,13 @@
 package things.AnimalConstants;
 
-import constants.BlankConstants;
-import constants.InitialSeedDensities;
+import things.Classes.CreatureConstants;
+import things.Classes.InitialSeedDensities;
 import engine.World;
 import engine.visuals.ImageStack;
 
 import java.awt.*;
 
-public final class TurtleConstants extends BlankConstants {
+public final class TurtleConstants extends CreatureConstants {
     public TurtleConstants(World world) {
         super(world);
 

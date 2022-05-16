@@ -1,4 +1,4 @@
-package engine.utilities;
+package engine.userIO;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -7,7 +7,6 @@ import java.util.Map;
 
 public class Keyboard {
     private static final Map<Integer, Boolean> pressedKeys = new HashMap<>();
-
     static {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(event -> {
             synchronized (Keyboard.class) {
@@ -18,7 +17,7 @@ public class Keyboard {
         });
     }
 
-    public static boolean isKeyPressed(int keyCode) { // Any key code from the KeyEvent class
+    public static boolean isKeyPressed(int keyCode) {
         return pressedKeys.getOrDefault(keyCode, false);
     }
 }

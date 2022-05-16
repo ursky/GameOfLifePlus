@@ -1,10 +1,10 @@
 package engine;
 
-import constants.UiConstants;
+import engine.userIO.UiConstants;
 import engine.quadsearch.SearchAreas;
 import engine.utilities.Utils;
 import engine.world.InitThings;
-import engine.world.QuadTreeThread;
+import engine.quadsearch.QuadTreeThread;
 import engine.world.ThingCounter;
 import engine.world.UpdateThingsThread;
 import things.Classes.Animal;

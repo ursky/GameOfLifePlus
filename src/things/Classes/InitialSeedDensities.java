@@ -1,4 +1,4 @@
-package constants;
+package things.Classes;
 
 public final class InitialSeedDensities {
     private InitialSeedDensities() {

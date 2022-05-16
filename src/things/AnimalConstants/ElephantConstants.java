@@ -1,13 +1,13 @@
 package things.AnimalConstants;
 
-import constants.BlankConstants;
-import constants.InitialSeedDensities;
+import things.Classes.CreatureConstants;
+import things.Classes.InitialSeedDensities;
 import engine.visuals.ImageStack;
 import engine.World;
 
 import java.awt.*;
 
-public final class ElephantConstants extends BlankConstants {
+public final class ElephantConstants extends CreatureConstants {
     public ElephantConstants(World world) {
         super(world);
 

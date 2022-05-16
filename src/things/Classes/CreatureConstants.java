@@ -1,5 +1,6 @@
-package constants;
+package things.Classes;
 
+import engine.userIO.UiConstants;
 import engine.visuals.AnimationStack;
 import engine.visuals.ImageStack;
 import engine.World;
@@ -7,7 +8,7 @@ import engine.World;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class BlankConstants {
+public class CreatureConstants {
     public World world;
 
     // thing constants
@@ -25,7 +26,7 @@ public class BlankConstants {
     public ArrayList<String> foodNames = new ArrayList<>();
     public boolean eatsSeeds, asAdultOnlyLayEggs, flying, animate, metamorphosisIsAdult, metamorphosisIsLarvae;
     public AnimationStack animationStack;
-    public BlankConstants metamorphosisFrom, metamorphosisTo;
+    public CreatureConstants metamorphosisFrom, metamorphosisTo;
 
     // variables
     public float _metabolismRate, _maxGrowthRate, _shadePenalty, _sproutTime, _decayRate, _reproductionCoolDown;
@@ -51,7 +52,7 @@ public class BlankConstants {
         this._hatchRate = this.sproutTime / speedUp;
     }
 
-    public BlankConstants(World world) {
+    public CreatureConstants(World world) {
         this.world = world;
     }
 }
