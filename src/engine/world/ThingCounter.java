@@ -11,46 +11,50 @@ import java.util.HashMap;
 public class ThingCounter {
     World world;
     HashMap<String, ArrayList<Integer>> classCounters;
+    public ArrayList<Integer> totalCounts, thingCounts;
     public ArrayList<ArrayList<Float>> classFractions;
     public ArrayList<Color> colors;
     int currentIndex = -1;
-    boolean logCounts = false;
 
     public void initializeCounts() {
         // save fraction values
         if (this.currentIndex >= 0) {
             this.saveFractions();
+            // then append new values
+            int totalCount = 0;
+            for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
+                totalCount += this.classCounters.get(constants.name).get(this.currentIndex);
+                this.classCounters.get(constants.name).add(0);
+            }
+            this.totalCounts.add(totalCount);
         }
-        // then append new values
+        else {
+            for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
+                this.classCounters.get(constants.name).add(0);
+            }
+        }
         this.currentIndex ++;
-        for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
-            this.classCounters.get(constants.name).add(0);
-        }
     }
 
     private void saveFractions() {
-        ArrayList<Float> values = this.getCurrentValues();
+        this.getCurrentValues();
         float totalCount = 0;
-        for (float value: values) {
+        for (float value: this.thingCounts) {
             totalCount += value;
         }
-        for (int i=0; i<values.size(); i++) {
-            float value = values.get(i);
+        for (int i=0; i<this.thingCounts.size(); i++) {
+            float value = this.thingCounts.get(i);
             float fraction = value / totalCount;
             this.classFractions.get(i).add(fraction);
         }
     }
 
-    private ArrayList<Float> getCurrentValues() {
-        ArrayList<Float> values = new ArrayList<>();
+    private void getCurrentValues() {
+        this.thingCounts = new ArrayList<>();
         for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
-            float value = this.classCounters.get(constants.name).get(this.currentIndex);
-            if (this.logCounts) {
-                value = (float) (Math.log(value) / Math.log(2));
-            }
-            values.add(value);
+            int value = this.classCounters.get(constants.name).get(this.currentIndex);
+            this.thingCounts.add(value);
         }
-        return values;
     }
 
     public void countThing(Thing thing) {
@@ -61,16 +65,21 @@ public class ThingCounter {
     }
 
     public String generateCountsMessage() {
-        String message = "";
+        StringBuilder message = new StringBuilder();
         for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {
-            message += constants.name + ":\t" + this.classCounters.get(constants.name).get(this.currentIndex) + "\n";
+            message.append(constants.name)
+                    .append(":\t")
+                    .append(this.classCounters.get(constants.name).get(this.currentIndex))
+                    .append("\n");
         }
-        return message;
+        return message.toString();
     }
 
     public ThingCounter(World world) {
         this.world = world;
         this.classCounters = new HashMap<>();
+        this.totalCounts = new ArrayList<>();
+        this.thingCounts = new ArrayList<>();
         this.classFractions = new ArrayList<>();
         this.colors = new ArrayList<>();
         for (BlankConstants constants: this.world.initThings.orderedBlankConstants) {

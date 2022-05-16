@@ -39,7 +39,7 @@ public class TimeTracker {
     }
 
     public boolean timeToUpdateCounts() {
-        return this.currentTime - this.timeOfLastCount >= UiConstants.printDisplayUpdateMs;
+        return this.currentTime - this.timeOfLastCount >= UiConstants.infoUpdateMs;
     }
 
     public void updateFrames() {
@@ -61,7 +61,7 @@ public class TimeTracker {
             this.framesSinceLastFPS = 0;
             this.timeOfLastFPS = time;
         }
-        if (timeSinceLastPrint > UiConstants.printDisplayUpdateMs) {
+        if (timeSinceLastPrint > UiConstants.infoUpdateMs) {
             this.printThisFrame = true;
             this.timeOfLastPrint = time;
         }

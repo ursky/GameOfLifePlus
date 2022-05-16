@@ -7,14 +7,15 @@ public final class UiConstants {
     public static final int threadCount = 12;
     public static final int fastPreRenderFrames = 100;
     public static final float postStartSpawnPenalty = 0.1f;
-    public static final float fastForward = 8; // no more than 10x
+    public static final float fastForward = 8;
+    public static final float maxRateFactor = 1f / 5; // no less than 1/7
     public static final int fullDimX = 1000000;
     public static final int fullDimY = 1000000;
     public static final int nProceduralBins = fullDimX / 500;
     public static float targetFPS = 60;
     public static float targetFrameTime = 1000 / (targetFPS + 1);
     public static final int fpsDisplayUpdateMs = 100;
-    public static final int printDisplayUpdateMs = 100;
+    public static final int infoUpdateMs = 100;
     public static final boolean doPrintStepNanoseconds = false;
     public static final boolean doPrintCounts = false;
 

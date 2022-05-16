@@ -1,12 +1,13 @@
 package engine.dashboard;
 
-import constants.PlotConstants;
+import constants.BashboardConstants;
 import constants.UiConstants;
 import engine.Engine;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.function.DoubleToIntFunction;
 
 public class LinePlot {
     Engine engine;
@@ -20,7 +21,7 @@ public class LinePlot {
     AffineTransform affineTransform;
     Font font, font90;
     int maxValue = 1;
-    int minValue = 0;
+    int yStart, yEnd;
 
     public void update(ArrayList<Integer> values) {
         this.anticipatedSize = Math.min(
@@ -42,14 +43,12 @@ public class LinePlot {
             return;
         }
         this.maxValue = this.getMax(this.yValues);
-        this.minValue = this.getMin(this.yValues);
-        int yStart, yEnd;
         this.engine.g2D.setStroke(new BasicStroke(1));
         for (int i=0; i<this.xValues.length-1; i++) {
             this.engine.g2D.setColor(this.color);
-            yStart = this.maxY - (this.maxY - this.minY) * this.yValues[i] / maxValue;
-            yEnd = this.maxY - (this.maxY - this.minY) * this.yValues[i+1] / maxValue;
-            this.engine.g2D.drawLine(this.xValues[i], yStart, this.xValues[i+1], yEnd);
+            this.yStart = this.maxY - (this.maxY - this.minY) * this.yValues[i] / this.maxValue;
+            this.yEnd = this.maxY - (this.maxY - this.minY) * this.yValues[i+1] / this.maxValue;
+            this.engine.g2D.drawLine(this.xValues[i], this.yStart, this.xValues[i+1], this.yEnd);
         }
         this.postProcess();
     }
@@ -64,16 +63,6 @@ public class LinePlot {
         return maxValue;
     }
 
-    private int getMin(int[] values) {
-        int minValue = values[0];
-        for (int value : values) {
-            if (value < minValue) {
-                minValue = value;
-            }
-        }
-        return minValue;
-    }
-
     public void postProcess() {
         this.paintSeparationLines();
         this.paintLabels();
@@ -82,17 +71,31 @@ public class LinePlot {
     private void paintSeparationLines() {
         // draw division lines
         this.engine.g2D.setColor(Color.black);
-        this.paintVerticalLine(this.minX - 3, 12);
+        this.paintVerticalLine(this.minX - 3, 13);
         this.paintVerticalLine(this.maxX, 3);
     }
 
     private void paintLabels() {
-        this.drawString(this.label, this.minX + 5, this.midPointY, this.font90);
-        this.drawString(String.valueOf(this.minValue), this.maxX + 3, this.maxY - 5, this.font);
-        this.drawString(String.valueOf(this.maxValue), this.maxX + 3, this.minY + 5, this.font);
+        this.drawString(this.label, this.minX + 9, this.midPointY, this.font90);
+        this.drawString("0", this.maxX + 8, this.maxY - 6, this.font);
+        String upperValue = this.asString(this.maxValue);
+        this.drawString(upperValue, this.maxX + this.getStringWidth(upperValue) / 2 + 4,
+                this.minY + 7, this.font);
     }
 
-    private void paintVerticalLine(int xPosition, int width) {
+    public String asString(int value) {
+        // add comma to large numbers for cleaner presentation
+        String output;
+        if (value >= 1000) {
+            output = value / 1000 + "," + (value - (value / 1000));
+        }
+        else {
+            output = value + "";
+        }
+        return output;
+    }
+
+    public void paintVerticalLine(int xPosition, int width) {
         this.engine.g2D.setStroke(new BasicStroke(width));
         this.engine.g2D.drawLine(
                 xPosition + width / 2,
@@ -102,9 +105,24 @@ public class LinePlot {
     }
 
     public void drawString(String text, int xPos, int yPos, Font font) {
+        int width = getStringWidth(text);
         this.engine.g2D.setColor(Color.white);
         this.engine.g2D.setFont(font);
-        this.engine.g2D.drawString(text, xPos, yPos + text.length() * 2.5f);
+        // adjust positions to account for string length
+        if (font == this.font) {
+            xPos -= width / 2;
+            yPos += 3;
+        }
+        if (font == this.font90) {
+            yPos += width / 2;
+            xPos -= 3;
+        }
+        this.engine.g2D.drawString(text, xPos, yPos);
+    }
+
+    private int getStringWidth(String text) {
+        this.engine.g2D.setFont(this.font);
+        return this.engine.g2D.getFontMetrics().stringWidth(text);
     }
 
     public LinePlot(Engine engine, int startX, int endX, int xIncrement, String label) {
@@ -112,7 +130,7 @@ public class LinePlot {
         this.label = label;
         this.minX = startX;
         this.maxX = endX;
-        this.minY = UiConstants.panelHeight - PlotConstants.dashboardHeight;
+        this.minY = UiConstants.panelHeight - BashboardConstants.dashboardHeight;
         this.maxY = UiConstants.panelHeight;
         this.midPointY = (this.minY + this.maxY) / 2;
         this.height = this.maxY - this.minY;

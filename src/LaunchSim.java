@@ -1,8 +1,8 @@
 
 // Coding ToDo's:
-// todo: add total count line plot - 2h
 // todo: add a sidebar with thing icons I can click on with thing counts - 5h
 // todo: add insert thing feature by selecting and clicking - 3h
+// todo: investigate strange occurrences during fast-forward
 
 // Post-coding ToDo's:
 // todo: add advanced README on github with GIFs - 2h

@@ -48,7 +48,7 @@ public final class BeetleConstants extends BlankConstants {
         this.maxAcceleration = 60f; // adjust to FPS^2 but not cool down
         this.wobbleMaxDegree = 8;
         this.wobbleSpeed = 180; // adjust to FPS but not cool down
-        this.wanderRandomness = 0.5f; // adjust to FPS but not cool down
+        this.wanderRandomness = 5f; // adjust to FPS but not cool down
 
         // foraging constants
         this.foodNames.add("Tree");

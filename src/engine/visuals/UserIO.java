@@ -1,6 +1,6 @@
 package engine.visuals;
 
-import constants.PlotConstants;
+import constants.BashboardConstants;
 import constants.UiConstants;
 import engine.Engine;
 import engine.utilities.Keyboard;
@@ -14,7 +14,7 @@ public class UserIO {
     public float zoomLevel = UiConstants.startZoom;
     public float zoomSpeed = UiConstants.zoomSpeed;
     public float povDimX = UiConstants.panelWidth / this.zoomLevel;
-    public float povDimY = (UiConstants.panelHeight - PlotConstants.dashboardHeight) / this.zoomLevel;
+    public float povDimY = (UiConstants.panelHeight - BashboardConstants.dashboardHeight) / this.zoomLevel;
     public float playerPositionX = UiConstants.startPositionX;
     public float playerPositionY = UiConstants.startPositionY;
     public float[] positionsInView = {
@@ -65,7 +65,7 @@ public class UserIO {
         }
         this.scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
         this.povDimX = UiConstants.panelWidth / this.zoomLevel;
-        this.povDimY = (UiConstants.panelHeight - PlotConstants.dashboardHeight) / this.zoomLevel;
+        this.povDimY = (UiConstants.panelHeight - BashboardConstants.dashboardHeight) / this.zoomLevel;
         this.loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
         this.loadRange = Math.max(this.loadRange, UiConstants.minLoadRange);
         this.positionsInView[0] = this.playerPositionX - this.povDimX / 2;

@@ -32,24 +32,23 @@ public class BlankConstants {
     public float _maxSpeed, _maxAcceleration, _wanderRandomness, _eatingRate, _wobbleSpeed, _hatchRate;
 
     public void updateRates() {
-        float speedUp = 1;
+        float speedUp = 1 / this.world.engine.tracker.currentFPS;
         if (this.world.engine.userIO.fastForward()) {
-            speedUp = UiConstants.fastForward;
+            speedUp = Math.min(UiConstants.fastForward * speedUp, UiConstants.maxRateFactor);
         }
-        this._metabolismRate = speedUp * this.metabolismRate / this.world.engine.tracker.currentFPS;
-        this._maxGrowthRate = speedUp * this.maxGrowthRate / this.world.engine.tracker.currentFPS;
-        this._shadePenalty = speedUp * this.shadePenalty / this.world.engine.tracker.currentFPS;
-        this._sproutTime = speedUp * this.sproutTime / this.world.engine.tracker.currentFPS;
-        this._decayRate = speedUp * this.decayRate / this.world.engine.tracker.currentFPS;
+        this._metabolismRate = speedUp * this.metabolismRate;
+        this._maxGrowthRate = speedUp * this.maxGrowthRate;
+        this._shadePenalty = speedUp * this.shadePenalty;
+        this._sproutTime = speedUp * this.sproutTime;
+        this._decayRate = speedUp * this.decayRate;
 
-        this._maxSpeed = speedUp * this.maxSpeed / this.world.engine.tracker.currentFPS;
-        this._wobbleSpeed = speedUp * this.wobbleSpeed / this.world.engine.tracker.currentFPS;
-        this._maxAcceleration = speedUp * speedUp * this.maxAcceleration / (this.world.engine.tracker.currentFPS
-                * this.world.engine.tracker.currentFPS);
-        this._wanderRandomness = speedUp * this.wanderRandomness / this.world.engine.tracker.currentFPS;
-        this._eatingRate = speedUp * this.eatingRate / this.world.engine.tracker.currentFPS;
-        this._reproductionCoolDown = speedUp / this.world.engine.tracker.currentFPS;
-        this._hatchRate = this.sproutTime * this.world.engine.tracker.currentFPS / speedUp;
+        this._maxSpeed = speedUp * this.maxSpeed;
+        this._wobbleSpeed = speedUp * this.wobbleSpeed;
+        this._maxAcceleration = speedUp * speedUp * this.maxAcceleration;
+        this._wanderRandomness = speedUp * this.wanderRandomness;
+        this._eatingRate = speedUp * this.eatingRate;
+        this._reproductionCoolDown = speedUp;
+        this._hatchRate = this.sproutTime / speedUp;
     }
 
     public BlankConstants(World world) {
