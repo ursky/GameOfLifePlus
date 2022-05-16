@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class LinePlot {
     Engine engine;
-    int minX, minY, maxX, maxY, midPointY;
+    int minX, minY, maxX, maxY, midPointY, height;
     int anticipatedSize;
     int[] xValues;
     int[] yValues;
@@ -38,6 +38,9 @@ public class LinePlot {
     }
 
     public void draw() {
+        if (this.yValues.length < 2) {
+            return;
+        }
         this.maxValue = this.getMax(this.yValues);
         this.minValue = this.getMin(this.yValues);
         int yStart, yEnd;
@@ -112,7 +115,10 @@ public class LinePlot {
         this.minY = UiConstants.panelHeight - PlotConstants.dashboardHeight;
         this.maxY = UiConstants.panelHeight;
         this.midPointY = (this.minY + this.maxY) / 2;
+        this.height = this.maxY - this.minY;
         this.xIncrement = xIncrement;
+        this.xValues = new int[0];
+        this.yValues = new int[0];
 
         // pre-make rotated text fonts for labels
         this.affineTransform = new AffineTransform();

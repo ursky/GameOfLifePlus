@@ -17,6 +17,7 @@ public class TimeTracker {
     private boolean printThisFrame = false;
     public float threadBuffer = 0;
     public int latency;
+    public int sleepDelay;
     public ArrayList<Integer> latencyList;
     public ArrayList<Integer> fpsList;
 
@@ -30,7 +31,7 @@ public class TimeTracker {
     }
 
     public void printCounts() {
-        if (timeToUpdateCounts()) {
+        if (timeToUpdateCounts() && UiConstants.doPrintCounts) {
             String message = this.engine.world.counter.generateCountsMessage();
             System.out.println(message);
             this.timeOfLastCount = this.currentTime;
@@ -53,7 +54,7 @@ public class TimeTracker {
         long timeSinceLastFPS = time - this.timeOfLastFPS;
         long timeSinceLastPrint = time - this.timeOfLastPrint;
 
-        if (timeSinceLastFPS > UiConstants.fpsDisplayUpdateMs && !this.engine.userIO.fastForward()) {
+        if (timeSinceLastFPS > UiConstants.fpsDisplayUpdateMs) {
             this.currentFPS = 1000f * this.framesSinceLastFPS / (int) timeSinceLastFPS;
             this.currentFPS = Math.min(this.currentFPS, UiConstants.targetFPS);
             this.currentFPS = Math.max(this.currentFPS, 1);
@@ -67,25 +68,23 @@ public class TimeTracker {
         else {
             this.printThisFrame = false;
         }
-        this.fpsList.add((int) this.currentFPS);
         String strFPS = String.valueOf((int)currentFPS);
         return "FPS: " + strFPS + "; #Things: " + this.engine.world.things.size();
     }
 
     public void throttleFPS() {
         this.latency = (int) (System.currentTimeMillis() - currentTime);
-        this.latencyList.add(this.latency);
-        if (this.engine.userIO.fastForward()) {
-            this.currentFPS = UiConstants.fastPreRenderFPS;
-        }
-        else if (this.latency < UiConstants.targetFrameTime) {
+        if (this.latency < UiConstants.targetFrameTime) {
             try {
-                Thread.sleep((long) (UiConstants.targetFrameTime - this.latency));
+                this.sleepDelay = (int) (UiConstants.targetFrameTime - this.latency);
+                Thread.sleep(this.sleepDelay);
             }
             catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
         }
+        this.latencyList.add(this.latency);
+        this.fpsList.add(1000 / (this.sleepDelay + this.latency));
         this.currentTime = System.currentTimeMillis();
     }
     TimeTracker(Engine engine) {

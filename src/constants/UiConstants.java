@@ -5,9 +5,9 @@ public final class UiConstants {
     public static final String renderedImageDir = "rendered_images";
 
     public static final int threadCount = 12;
-    public static final int fastPreRenderFrames = 300;
+    public static final int fastPreRenderFrames = 100;
     public static final float postStartSpawnPenalty = 0.1f;
-    public static final float fastPreRenderFPS = 5;
+    public static final float fastForward = 8; // no more than 10x
     public static final int fullDimX = 1000000;
     public static final int fullDimY = 1000000;
     public static final int nProceduralBins = fullDimX / 500;
@@ -16,6 +16,7 @@ public final class UiConstants {
     public static final int fpsDisplayUpdateMs = 100;
     public static final int printDisplayUpdateMs = 100;
     public static final boolean doPrintStepNanoseconds = false;
+    public static final boolean doPrintCounts = false;
 
     public static final int panelWidth = 1600;
     public static final int panelHeight = 900;

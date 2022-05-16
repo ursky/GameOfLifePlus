@@ -28,22 +28,28 @@ public class BlankConstants {
     public BlankConstants metamorphosisFrom, metamorphosisTo;
 
     // variables
-    public float _metabolismRate, _maxGrowthRate, _shadePenalty, _sproutTime, _decayRate;
-    public float _maxSpeed, _maxAcceleration, _wanderRandomness, _eatingRate, _wobbleSpeed;
+    public float _metabolismRate, _maxGrowthRate, _shadePenalty, _sproutTime, _decayRate, _reproductionCoolDown;
+    public float _maxSpeed, _maxAcceleration, _wanderRandomness, _eatingRate, _wobbleSpeed, _hatchRate;
 
     public void updateRates() {
-        this._metabolismRate = this.metabolismRate / this.world.engine.tracker.currentFPS;
-        this._maxGrowthRate = this.maxGrowthRate / this.world.engine.tracker.currentFPS;
-        this._shadePenalty = this.shadePenalty / this.world.engine.tracker.currentFPS;
-        this._sproutTime = this.sproutTime / this.world.engine.tracker.currentFPS;
-        this._decayRate = this.decayRate / this.world.engine.tracker.currentFPS;
+        float speedUp = 1;
+        if (this.world.engine.userIO.fastForward()) {
+            speedUp = UiConstants.fastForward;
+        }
+        this._metabolismRate = speedUp * this.metabolismRate / this.world.engine.tracker.currentFPS;
+        this._maxGrowthRate = speedUp * this.maxGrowthRate / this.world.engine.tracker.currentFPS;
+        this._shadePenalty = speedUp * this.shadePenalty / this.world.engine.tracker.currentFPS;
+        this._sproutTime = speedUp * this.sproutTime / this.world.engine.tracker.currentFPS;
+        this._decayRate = speedUp * this.decayRate / this.world.engine.tracker.currentFPS;
 
-        this._maxSpeed = this.maxSpeed / this.world.engine.tracker.currentFPS;
-        this._wobbleSpeed = this.wobbleSpeed / this.world.engine.tracker.currentFPS;
-        this._maxAcceleration = this.maxAcceleration / (this.world.engine.tracker.currentFPS
+        this._maxSpeed = speedUp * this.maxSpeed / this.world.engine.tracker.currentFPS;
+        this._wobbleSpeed = speedUp * this.wobbleSpeed / this.world.engine.tracker.currentFPS;
+        this._maxAcceleration = speedUp * speedUp * this.maxAcceleration / (this.world.engine.tracker.currentFPS
                 * this.world.engine.tracker.currentFPS);
-        this._wanderRandomness = this.wanderRandomness / this.world.engine.tracker.currentFPS;
-        this._eatingRate = this.eatingRate / this.world.engine.tracker.currentFPS;
+        this._wanderRandomness = speedUp * this.wanderRandomness / this.world.engine.tracker.currentFPS;
+        this._eatingRate = speedUp * this.eatingRate / this.world.engine.tracker.currentFPS;
+        this._reproductionCoolDown = speedUp / this.world.engine.tracker.currentFPS;
+        this._hatchRate = this.sproutTime * this.world.engine.tracker.currentFPS / speedUp;
     }
 
     public BlankConstants(World world) {

@@ -68,7 +68,10 @@ public class StackedLinePlot extends LinePlot {
             currentMax = this.minY;
             for (int set=0; set<values.size(); set++) {
                 currentMin = currentMax;
-                yIncrement = values.get(set).get(dataPosition) * (maxY - minY);
+                yIncrement = values.get(set).get(dataPosition) * this.height;
+                if (yIncrement != yIncrement) {
+                    yIncrement = 0;
+                }
                 currentMax = currentMin + yIncrement;
                 // save min and max y values
                 yFloatPolygonCoordinates[set][pointsToPlot - pointPosition - 1] = currentMin;

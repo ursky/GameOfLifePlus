@@ -16,5 +16,5 @@ public final class PlotConstants {
     // counts stacked plot constants
     public static final int stackedPlotXStart = (int) (UiConstants.panelWidth * 0.5f);
     public static final int stackedPlotXEnd = stackedPlotXStart + (int) (UiConstants.panelWidth * 0.2f);
-    public static final int stackedPlotIncrement = 3;
+    public static final int stackedPlotIncrement = 1;
 }

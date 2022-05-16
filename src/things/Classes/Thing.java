@@ -186,7 +186,7 @@ public class Thing {
     }
 
     public void reproduce() {
-        this.reproductionCoolDown -= 1.0f / this.world.engine.tracker.currentFPS;
+        this.reproductionCoolDown -= constants._reproductionCoolDown;
         if (this.healthPercent >= this.constants.reproduceAtHealth
                 && this.reproductionCoolDown < 0
                 && this.size >= this.constants.reproduceAtSize) {
@@ -216,8 +216,7 @@ public class Thing {
             seedling.relativeSize = (1 + seedling.size) / (seedling.constants.maxSize + 1);
             seedling.biomass = seedling.constants.maxBiomass * seedling.relativeSize;
             seedling.healthPercent = seedling.constants.startHealth;
-            float maxHatchTime = seedling.constants.sproutTime * seedling.coolDownFrames
-                    * seedling.world.engine.tracker.currentFPS;
+            float maxHatchTime = seedling.constants._hatchRate * seedling.coolDownFrames;
             float minHatchTime = maxHatchTime / 2;
             seedling.coolDown = (int) (Math.random() * (maxHatchTime - minHatchTime) + minHatchTime);
             seedling.xPosition = seedX;
