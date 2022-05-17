@@ -23,6 +23,7 @@ hs_err_pid*
 
 .idea
 rendered_images/*
+saved_images/*
 .DS_store
 */.DS_store
 */*/.DS_store
