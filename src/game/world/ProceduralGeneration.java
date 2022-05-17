@@ -3,10 +3,12 @@ import game.constants.UiConstants;
 import game.quadsearch.Region;
 import game.world.things.Classes.ThingArchive;
 import game.world.things.Classes.Thing;
-import game.quadsearch.Region;
 
 import java.util.ArrayList;
 
+/**
+ * This class handles which things are rendered at any given point in time based on the camera movement
+ */
 public class ProceduralGeneration {
     public World world;
     public final int nBins = UiConstants.nProceduralBins;
@@ -20,6 +22,9 @@ public class ProceduralGeneration {
     public ThingArchive[][] archivedThings = new ThingArchive[nBins][nBins];
     public int safetyScanRange = 10;
 
+    /**
+     * Update the rendered range and active bin range based on current camera position
+     */
     private void updateRenderedRange() {
         this.currentCoordinates = new Region(
                 this.world.game.userIO.playerPositionX - this.world.game.userIO.loadRange,
@@ -40,17 +45,26 @@ public class ProceduralGeneration {
         );
     }
 
+    /**
+     * Go over the bins of the field and check if they are in view. If not, turn them off.
+     */
     private void checkRenderedBins() {
         int scanRange = this.safetyScanRange + (int) (this.safetyScanRange * this.world.game.userIO.zoomLevel);
         for (int i=this.currentBins[0]-scanRange; i<=this.currentBins[2]+scanRange; i++) {
             for (int j=this.currentBins[1]-scanRange; j<=this.currentBins[3]+scanRange; j++) {
                 if (this.binIsRendered(i, j)) {
+                    // if the bin is in view it needs to be updated
                     this.updateRenderedBin(i, j);
                 }
             }
         }
     }
 
+    /**
+     * Store in the class memory that this given bin is, in fact, active.
+     * @param i: x-index of active bin
+     * @param j: y-index of active bin
+     */
     private void updateRenderedBin(int i, int j) {
         if (!this.wasRendered[i][j]) {
             this.initNewBin(i, j);
@@ -65,21 +79,32 @@ public class ProceduralGeneration {
         this.isRendered[i][j] = true;
     }
 
-    private boolean binIsRendered(int x, int y) {
-        if (x < 0 || y < 0 || x >= this.nBins || y >= this.nBins) {
+    /**
+     * Check if a given bin should be active (is close to the player FOV)
+     * @param i: x-index of active bin
+     * @param j: y-index of active bin
+     * @return: true if the bin should be active
+     */
+    private boolean binIsRendered(int i, int j) {
+        if (i < 0 || j < 0 || i >= this.nBins || j >= this.nBins) {
             return false;
         }
-        if (x < this.currentBins[0] || x > this.currentBins[2] || y < this.currentBins[1] || y > this.currentBins[3])
+        if (i < this.currentBins[0] || i > this.currentBins[2] || j < this.currentBins[1] || j > this.currentBins[3])
         {
-            this.isRendered[x][y] = false;
+            this.isRendered[i][j] = false;
             return false;
         }
         else {
-            this.isRendered[x][y] = true;
+            this.isRendered[i][j] = true;
             return true;
         }
     }
 
+    /**
+     * Initialize a bin that was turned on for the first time
+     * @param i: x-index of active bin
+     * @param j: y-index of active bin
+     */
     private void initNewBin(int i, int j) {
         if (this.world.game.tracker.frameCounter < UiConstants.fastPreRenderFrames) {
             return;
@@ -95,6 +120,9 @@ public class ProceduralGeneration {
         this.world.initThings.initPlants(region);
     }
 
+    /**
+     * Check if this is a good moment to first animals and plants to the game (happens in the firs loading period)
+     */
     private void checkInitThings() {
         if (this.world.game.tracker.frameCounter == 1) {
             System.out.println("Initializing plants");
@@ -107,12 +135,22 @@ public class ProceduralGeneration {
         }
     }
 
+    /**
+     * Run the bin update pipeline above
+     */
     public void updateBins() {
+        // update which bins are active or not
         this.updateRenderedRange();
+        // turn on appropriate bins
         this.checkRenderedBins();
+        // initialize creatures if this is just the start of the simulatiton
         this.checkInitThings();
     }
 
+    /**
+     * Create object
+     * @param world: game world
+     */
     public ProceduralGeneration(World world) {
         this.world = world;
         for (int i=0; i<this.nBins; i++) {

@@ -49,6 +49,12 @@ public class InitThings {
         }
     }
 
+    /**
+     * Create new thing of a give constants type
+     * @param coordinate: new creature coordinate
+     * @param size: new creature size
+     * @param constants: new creature constants
+     */
     public void createThing(Point coordinate, float size, CreatureConstants constants) {
         if (constants.type.equals("Plant")) {
             Plant thing = new Plant(coordinate, size, this.world, constants);
@@ -62,6 +68,10 @@ public class InitThings {
         }
     }
 
+    /**
+     * Initialize life vitals of new creature
+     * @param thing: new creature
+     */
     private void initThing(Thing thing) {
         float health = Random.randFloat(20, 100);
         thing.currentRotation = Random.randFloat(0, 360);
@@ -71,6 +81,10 @@ public class InitThings {
         this.world.things.add(thing);
     }
 
+    /**
+     * Create and initialize new plants in a given region
+     * @param region: region to initialize in
+     */
     public void initPlants(Region region) {
         for (CreatureConstants creatureConstants : this.orderedCreatureConstants) {
             if (Objects.equals(creatureConstants.type, "Plant")) {
@@ -79,6 +93,10 @@ public class InitThings {
         }
     }
 
+    /**
+     * Create and initialize new animals in a given region
+     * @param region: region to initialize in
+     */
     public void initAnimals(Region region) {
         for (CreatureConstants creatureConstants : this.orderedCreatureConstants) {
             if (Objects.equals(creatureConstants.type, "Animal")) {
@@ -87,6 +105,11 @@ public class InitThings {
         }
     }
 
+    /**
+     * Copy things into a newly initialized region
+     * @param region: newly initialized region
+     * @return: list of copied creatures
+     */
     public ArrayList<Thing> copyThings(Region region) {
         ArrayList<Thing> copiedThings = new ArrayList<>();
         if (UiConstants.blankCanvas) {
@@ -105,6 +128,12 @@ public class InitThings {
         return copiedThings;
     }
 
+    /**
+     * Choose a random range that is already initialized on screen to copy from
+     * @param widthX: desired region width
+     * @param widthY: desired region height
+     * @return: region to copy from
+     */
     private Region selectRangeToCopy(float widthX, float widthY) {
         float copyStartX = Random.randFloat(this.world.game.userIO.positionsInView[0],
                 this.world.game.userIO.positionsInView[1] - widthX);
@@ -115,6 +144,12 @@ public class InitThings {
         return new Region(copyStartX, copyStartY, copyEndX, copyEndY);
     }
 
+    /**
+     * Clone a thing/creature and place into a new location
+     * @param thing: creature to clone
+     * @param newCoordinate: new location to put the clone in
+     * @return: new creature clone
+     */
     private Thing copyThingTo(Thing thing, Point newCoordinate) {
         Thing newThing = thing.makeClone();
         newThing.coordinate = newCoordinate;
@@ -122,12 +157,18 @@ public class InitThings {
         return newThing;
     }
 
-    private int seedDensityToCount(float densityPer1000, Region region) {
+    /**
+     * Calculate how many things to create in a given region based on the target density
+     * @param densityPer10000: target density per 100^2 pixels
+     * @param region: region to populate
+     * @return: number of things to create
+     */
+    private int seedDensityToCount(float densityPer10000, Region region) {
         if (UiConstants.blankCanvas) {
             return 0;
         }
         float area = region.getArea();
-        float expectedCount = densityPer1000 * area / 10000;
+        float expectedCount = densityPer10000 * area / 10000;
         int countInt = (int)expectedCount;
         float remainder = expectedCount - countInt;
         if (Math.random() < remainder) {
@@ -136,12 +177,19 @@ public class InitThings {
         return countInt;
     }
 
+    /**
+     * Update rates of a given creature constants set
+     */
     public void updateConstants() {
         for (CreatureConstants constants: this.orderedCreatureConstants) {
             constants.updateRates();
         }
     }
 
+    /**
+     * Find the largest size thing in view
+     * @return: biggest size
+     */
     public float getBiggestSize() {
         float biggest = 0;
         for (CreatureConstants constants: this.orderedCreatureConstants) {
@@ -152,6 +200,10 @@ public class InitThings {
         return biggest;
     }
 
+    /**
+     * Initialize the constants of all the creatures. Important to add new creature constants here!
+     * @param world: game world
+     */
     public InitThings(World world) {
         this.world = world;
 

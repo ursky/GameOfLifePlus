@@ -19,6 +19,10 @@ import game.dashboard.Dashboard;
 import game.utilities.Random;
 import game.world.World;
 
+/**
+ * This is the main GameOfLife+ game class. This class focuses on orchestrating the visualizations and presentation
+ * of the game, while the World class handles the actual game world and the creatures within it.
+ */
 public class Game extends JPanel implements ActionListener {
     public World world = new World(this);
     public ProceduralGeneration procedural;
@@ -30,28 +34,46 @@ public class Game extends JPanel implements ActionListener {
     private String randomID;
     public boolean recording;
 
-    public void paintFPS(String message) {
+    /**
+     * Add a FPS counter to the top left corner
+     */
+    public void paintFPS() {
+        String fpsMessage = "FPS: " + (int) this.tracker.currentFPS;
         this.g2D.setColor(Color.white);
-        this.g2D.drawString(message, 0, 12);
+        this.g2D.drawString(fpsMessage, 0, 12);
     }
 
+    /**
+     * This is the main paint function!
+     * Paint all the creatures currently in view, the dashboard, and other things on screen.
+     * @param g  the <code>Graphics</code> context in which to paint
+     */
     public void paint(Graphics g) {
         super.paint(g);
         this.g2D = (Graphics2D) g;
+        // paint creatures and main screen
         if (UiConstants.doPaintThings) {
             ArrayList<PaintingGroupThread> paintGroups = initializePaintGroups();
             this.tracker.printStepNanoseconds("Prepare painting");
             this.paintPaintGroup(paintGroups);
+            this.paintFPS();
+            this.tracker.printStepNanoseconds("\nAdd paint objects");
         }
-        String fpsMessage = "FPS: " + (int) this.tracker.currentFPS;
-        this.paintFPS(fpsMessage);
-        this.tracker.printStepNanoseconds("\nAdd paint objects");
+
+        // paint dashboard
         this.dashboard.paint();
+        this.tracker.printStepNanoseconds("Paint dashboard");
+
         if (this.recording) {
             this.saveFrame();
+            this.tracker.printStepNanoseconds("Save frames");
         }
     }
 
+    /**
+     * Screen capture the current frame and save it to a file. This is how the game does screen caps and frame
+     * capture to make GIFs with later.
+     */
     private void saveFrame() {
         // where to save capture?
         StringBuilder frameName = new StringBuilder(String.valueOf(this.tracker.frameCounter));
@@ -79,6 +101,10 @@ public class Game extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Initialize the groups of creatures that will be painted in parallel with threads.
+     * @return: the grouped things ready for painting onto canvas
+     */
     private ArrayList<PaintingGroupThread> initializePaintGroups() {
         ArrayList<PaintingGroupThread> paintThreads = new ArrayList<>();
         float minSize = 0;
@@ -97,6 +123,10 @@ public class Game extends JPanel implements ActionListener {
         return paintThreads;
     }
 
+    /**
+     * Paint creature images things from a given paint group onto screen
+     * @param paintGroups: paint group with images from creatures
+     */
     private void paintPaintGroup(ArrayList<PaintingGroupThread> paintGroups) {
         for (PaintingGroupThread paintGroup: paintGroups) {
             for (int i=0; i<paintGroup.images.size(); i++) {
@@ -109,10 +139,21 @@ public class Game extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Paint a single image onto the canvas
+     * @param image: the image to paint
+     * @param xPos: x position of image
+     * @param yPos: y position of image
+     * @param size: size of image
+     */
     public void paintImage(BufferedImage image, int xPos, int yPos, int size) {
         this.g2D.drawImage(image, xPos, yPos, size, size, null);
     }
 
+    /**
+     * Activate screen capture for just this frame. If this is the first screen capture this run then make a randomly
+     * generated run name and make a directory for all the images from this run
+     */
     public void startRecording() {
         this.recording = true;
         // this is purely for saving frames to make GIFs later
@@ -128,6 +169,10 @@ public class Game extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Update all aspects of the game, including the visualizations as well as the world itself
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         this.tracker.printStepNanoseconds("Paint");
@@ -146,6 +191,9 @@ public class Game extends JPanel implements ActionListener {
         this.tracker.printStepNanoseconds("Update frames");
     }
 
+    /**
+     * Initialize the game!
+     */
     public Game() {
         this.addMouseListener(new Mouse(this));
         this.setPreferredSize(new Dimension(UiConstants.panelWidth, UiConstants.panelHeight));

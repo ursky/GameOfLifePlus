@@ -7,6 +7,9 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * This class keeps track of how many of each creature there was and is. Primarily for the dashboard display.
+ */
 public class ThingCounter {
     World world;
     HashMap<String, ArrayList<Integer>> classCounters;
@@ -15,7 +18,10 @@ public class ThingCounter {
     public ArrayList<Color> colors;
     int currentIndex = -1;
 
-    public void initializeCounts() {
+    /**
+     * Count every creature type at this moment, and save the data
+     */
+    public void countThings() {
         // save fraction values
         if (this.currentIndex >= 0) {
             this.saveFractions();
@@ -35,6 +41,9 @@ public class ThingCounter {
         this.currentIndex ++;
     }
 
+    /**
+     * Save the relative abundances of different creatures
+     */
     private void saveFractions() {
         this.getCurrentValues();
         float totalCount = 0;
@@ -48,6 +57,9 @@ public class ThingCounter {
         }
     }
 
+    /**
+     * Retrieve the current counts of all creatures
+     */
     private void getCurrentValues() {
         this.thingCounts = new ArrayList<>();
         for (CreatureConstants constants: this.world.initThings.orderedCreatureConstants) {
@@ -56,6 +68,10 @@ public class ThingCounter {
         }
     }
 
+    /**
+     * Check the name of a creature and save it in the count
+     * @param thing: creature to count
+     */
     public void countThing(Thing thing) {
         ArrayList<Integer> pastCounts = this.classCounters.get(thing.constants.name);
         int count = pastCounts.get(this.currentIndex);
@@ -63,6 +79,10 @@ public class ThingCounter {
         pastCounts.set(this.currentIndex, count);
     }
 
+    /**
+     * Generate a status message saying how many of every creature there is right now
+     * @return: status string that can be printed
+     */
     public String generateCountsMessage() {
         StringBuilder message = new StringBuilder();
         for (CreatureConstants constants: this.world.initThings.orderedCreatureConstants) {
@@ -74,6 +94,10 @@ public class ThingCounter {
         return message.toString();
     }
 
+    /**
+     * Initialize counter
+     * @param world: game world
+     */
     public ThingCounter(World world) {
         this.world = world;
         this.classCounters = new HashMap<>();

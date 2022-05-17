@@ -11,7 +11,7 @@ public class CreateFrame extends JFrame {
     Game game;
 
     /**
-     * Initialize JFrame extension
+     * Initialize JFrame extension and open a view window. Then launch the game by initializing Game!
      */
     public CreateFrame() {
         game = new Game();
