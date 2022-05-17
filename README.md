@@ -58,29 +58,42 @@ However, since I am not a digital artist the only creatures that are currently a
 ## Creature descriptions:
 1. Grass: the smallest plant in the system. Very fast-growing, but is easily shaded out by larger plants. Eaten by 
 elephants. Generally, grass will go extinct if it becomes out-competed for space.
-   ![Alt Text](animations/grass.gif)
-   ![Alt Text](animations/grass.gif | width=250)
-   ![Alt Text](animations/grass.gif =250x250)
-   ![Alt Text](<img src="/animations/grass.gif" width="250" height="250"/>)
-   <img src="/animations/grass.gif" width="250" height="250"/>
+
+<img src="/animations/grass.gif" width="300" height="200"/>
 
 2. Bush: the medium plant in the system. Fast-growing and prolific. Shades out grass and smaller tree saplings.
 Eaten by caterpillars.
-   ![Alt Text](animations/bushes.gif)
+
+<img src="/animations/bushes.gif" width="300" height="200"/>
 
 3. Tree: the largest plant. Slow-growing but has a large canopy that shades out all other plants except the strongest
 of adult bushes. Will slowly cover the whole map unless kept in check by beetles.
-   ![Alt Text](animations/trees.gif)
+
+<img src="/animations/trees.gif" width="300" height="200"/>
 
 4. Beetle: a quick bug that rapidly eats trees while young. Once an adult it stops eating and searches for new trees to
 lay eggs under, which it does until it starves to death. Is predated on by turtles.
+
+<img src="/animations/beetles.gif" width="300" height="200"/>
+
 5. Caterpillar: the larval form of the butterfly. Very slow-moving and has poor senses. Eats bushes until it is fully
 grown, at which point it turns into a pupae. Both the caterpillar and the pupae are predated on by the turtle.
+
+<img src="/animations/caterpillars.gif" width="300" height="200"/>
+
 6. Butterfly: the adult for of the caterpillar. Moves very fast thanks to flight. It does not eat, and will fly around
 laying eggs on new bushes until it starves to death.
+
+<img src="/animations/butterflies.gif" width="300" height="200"/>
+
 7. Elephant: a large last herbivore that eats grass. It is slow to reproduce but can survive food shortages.   
+
+<img src="/animations/elephants.gif" width="300" height="200"/>
+
 8. Turtle: the predator of the system, hunting young and adult beetles, caterpillars, and butterfly pupae. Is very slow
 and vulnerable when young.
+
+<img src="/animations/turtles.gif" width="300" height="200"/>
 
 ## How do I "play" and control the simulation?
 Once you install the Java application and run `LaunchGame` the game will launch, randomly populate the world with some
