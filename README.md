@@ -58,10 +58,20 @@ However, since I am not a digital artist the only creatures that are currently a
 ## Creature descriptions:
 1. Grass: the smallest plant in the system. Very fast-growing, but is easily shaded out by larger plants. Eaten by 
 elephants. Generally, grass will go extinct if it becomes out-competed for space.
+   ![Alt Text](animations/grass.gif)
+   ![Alt Text](animations/grass.gif | width=250)
+   ![Alt Text](animations/grass.gif =250x250)
+   ![Alt Text](<img src="/animations/grass.gif" width="250" height="250"/>)
+   <img src="/animations/grass.gif" width="250" height="250"/>
+
 2. Bush: the medium plant in the system. Fast-growing and prolific. Shades out grass and smaller tree saplings.
 Eaten by caterpillars.
+   ![Alt Text](animations/bushes.gif)
+
 3. Tree: the largest plant. Slow-growing but has a large canopy that shades out all other plants except the strongest
 of adult bushes. Will slowly cover the whole map unless kept in check by beetles.
+   ![Alt Text](animations/trees.gif)
+
 4. Beetle: a quick bug that rapidly eats trees while young. Once an adult it stops eating and searches for new trees to
 lay eggs under, which it does until it starves to death. Is predated on by turtles.
 5. Caterpillar: the larval form of the butterfly. Very slow-moving and has poor senses. Eats bushes until it is fully
@@ -81,6 +91,21 @@ observe the simulation and interface with it using the following controls:
 3. Press the space bar to speed up the simulation. This part is really fun.
 4. Use the mouse to select the creature icons in the bottom right and then left-click on the field to place new
 creatures. It can be fun to mess with established communities this way. 
+
+
+## Parameterization and customization:
+Note that you will need to recompile the code (see installation) to incorporate changes.
+
+Most of the important constants and options for user/window interaction (panel size, zoom speed, etc) can be configured
+in `src/game/userIO/UiConstants.java`. Options for controlling animal and plant parameters (growth size, speed, 
+reproduction, size, animations, etc) can be found in corresponding files in `src/game/things/AnimalConstants.java` 
+and `src/game/things/PlantConstants.java`. Options for the plots and numbers shown in the dashboard can be changed
+in `src/game/dashboard/Dashboard.java`.
+
+If you would like, you can create your own creatures by following the template examples in 
+`src/game/things/AnimalConstants.java` and `src/game/things/PlantConstants.java`, and adding your new creature 
+constants to `src/game/world/InitThing.java`. I would recomend making a copy of another organism and gradually 
+changing it.
 
 ## Installation and running:
 This is simply a Java project, so if you are comfortable, feel free to build and test however you prefer.

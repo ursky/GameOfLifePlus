@@ -20,7 +20,7 @@ public final class UiConstants {
     public static final boolean doPrintStepNanoseconds = false;
     public static final boolean doPaintThings = true;
     public static final boolean saveFrames = true;
-    public static final boolean blankCanvas = false;
+    public static final boolean blankCanvas = true;
 
     public static final int panelWidth = 600;
     public static final int panelHeight = 400;

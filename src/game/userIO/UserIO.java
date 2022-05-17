@@ -22,33 +22,41 @@ public class UserIO {
             this.playerPositionY + this.povDimY / 2};
     public float loadRange = UiConstants.loadRangeMultiplier * Math.max(this.povDimX / 2, this.povDimY / 2);
     private float scrollSpeed = UiConstants.scrollSpeed / this.zoomLevel;
+    float fpsToAdjustTo;
 
 
     public void keyboardCheck() {
         if (this.fastForward()) { return; }
         this.movingCamera = false;
+        if (UiConstants.saveFrames) {
+            // make the zooming slow and smooth for nicer GIFs
+            fpsToAdjustTo = UiConstants.targetFPS * 2;
+        }
+        else {
+            fpsToAdjustTo = this.engine.tracker.currentFPS;
+        }
         if (Keyboard.isKeyPressed(KeyEvent.VK_W)) {
-            this.playerPositionY -= this.scrollSpeed / this.engine.tracker.currentFPS;
+            this.playerPositionY -= this.scrollSpeed / fpsToAdjustTo;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_S)) {
-            this.playerPositionY += this.scrollSpeed / this.engine.tracker.currentFPS;
+            this.playerPositionY += this.scrollSpeed / fpsToAdjustTo;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_A)) {
-            this.playerPositionX -= this.scrollSpeed / this.engine.tracker.currentFPS;
+            this.playerPositionX -= this.scrollSpeed / fpsToAdjustTo;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_D)) {
-            this.playerPositionX += this.scrollSpeed / this.engine.tracker.currentFPS;
+            this.playerPositionX += this.scrollSpeed / fpsToAdjustTo;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_EQUALS)) {
-            this.zoomLevel += this.zoomLevel * this.zoomSpeed / this.engine.tracker.currentFPS;
+            this.zoomLevel += this.zoomLevel * this.zoomSpeed / fpsToAdjustTo;
             reAdjustView();
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_MINUS)) {
-            this.zoomLevel -= this.zoomLevel * this.zoomSpeed / this.engine.tracker.currentFPS;
+            this.zoomLevel -= this.zoomLevel * this.zoomSpeed / fpsToAdjustTo;
             reAdjustView();
         }
     }
