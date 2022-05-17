@@ -11,8 +11,8 @@ predation, resource competition, sun shading, biomass distribution modeling, and
 
 ## What is this for?
 This is just a fun passion project I came up with as I was learning Java. In its current form the project 
-has no real scientific value. However, since the engine I built supports fairly complex interactions 
-and extremely efficient for large-scale simulations, this engine can theoretically be used to build a much more
+has no real scientific value. However, since the game I built supports fairly complex interactions 
+and extremely efficient for large-scale simulations, this game can theoretically be used to build a much more
 realistic microbial interaction simulation.
 
 ## Is this a realistic ecology simulator?
@@ -26,7 +26,7 @@ throughout the project are low-level and carefully thought out with speed in min
 time complexity is O(n), and memory is also O(n), which was quite difficult to achieve considering the complexity
 of the interactions. Here are some of the simulation's features:
 1. Every creature (bug, tree, grass, etc) is processed independently every frame (running at 60 frames per second).
-This means 60 times every second, a given creature does all the things it can do at that moment, including:
+This means 60 times every second, a given creature does all the game.things it can do at that moment, including:
 move, accelerate towards something, run away from a predator (animals only), investigate the surrounding around, 
 hunts prey (animals only), eats, grows, reproduces, lays eggs or spreads seeds, and shades neighbors (plants only). 
 2. A novel custom implementation of a multi-threaded Quad Tree 2D search allows all the creatures to "see" other 

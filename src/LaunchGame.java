@@ -1,4 +1,4 @@
-import engine.CreateFrame;
+import game.visuals.CreateFrame;
 
 public class LaunchGame {
     public static void main(String[] args) {
