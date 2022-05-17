@@ -51,6 +51,9 @@ choppy).
 the images are automatically rotated, resized, change opacity, etc. (all done in O(1) time thanks to caching).
 However, since I am not a digital artist the only creatures that are currently animated are the butterflies. 
 
+## Example animations:
+![Alt Text](animations/low_res_example_1.gif)
+
 ## Creature descriptions:
 1. Grass: the smallest plant in the system. Very fast-growing, but is easily shaded out by larger plants. Eaten by 
 elephants. Generally, grass will go extinct if it becomes out-competed for space.
