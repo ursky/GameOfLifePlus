@@ -82,7 +82,7 @@ creatures. It can be fun to mess with established communities this way.
 This is simply a Java project, so if you are comfortable, feel free to build and test however you prefer.
 The only "special" dependency is that the game needs to be run inside `GameOfLifePlus/` so it can have access
 to `GameOfLifePlus/graphics` and `GameOfLifePlus/rendered_images`. You will obviously need JRE installed on your
-system.
+system. You can also load the project up into an IDE and launch `src/LaunchGame` directly.
 
 However, if you would like a quick how-to guide, follow these steps (for Mac/Unix):
 ```bash
@@ -92,93 +92,5 @@ cd GameOfLifePlus
 ./runGame.sh  # alternatively: `java -jar runGame.jar` 
 ```
 
-## File structure:
-```
-├── LICENSE
-├── LifeSimulationJ.iml
-├── README.md
-├── graphics
-│   ├── bush.png
-│   ├── butterfly_1.png
-│   ├── butterfly_2.png
-│   ├── butterfly_3.png
-│   ├── butterfly_4.png
-│   ├── butterfly_5.png
-│   ├── butterfly_6.png
-│   ├── butterfly_7.png
-│   ├── butterfly_8.png
-│   ├── caterpillar_1.png
-│   ├── caterpillar_2.png
-│   ├── caterpillar_3.png
-│   ├── dead_grass.png
-│   ├── dead_mouse.png
-│   ├── dead_tree.png
-│   ├── dead_turtle.png
-│   ├── egg.png
-│   ├── egg_spotted.png
-│   ├── elephant.png
-│   ├── grass.png
-│   ├── ladybug.png
-│   ├── pupae.png
-│   ├── seed.png
-│   ├── splat.png
-│   ├── tree.png
-│   ├── tree_seed.png
-│   ├── turtle.png
-├── rendered_images
-└── src
-    ├── LaunchGame.java
-    ├── engine
-    │   ├── CreateFrame.java
-    │   ├── Engine.java
-    │   ├── TimeTracker.java
-    │   ├── World.java
-    │   ├── dashboard
-    │   │   ├── Buttons.java
-    │   │   ├── ClickableButton.java
-    │   │   ├── Dashboard.java
-    │   │   ├── DashboardConstants.java
-    │   │   ├── LinePlot.java
-    │   │   └── StackedLinePlot.java
-    │   ├── quadsearch
-    │   │   ├── Point.java
-    │   │   ├── QuadTree.java
-    │   │   ├── Region.java
-    │   │   └── SearchAreas.java
-    │   ├── userIO
-    │   │   ├── Keyboard.java
-    │   │   ├── Mouse.java
-    │   │   ├── UiConstants.java
-    │   │   └── UserIO.java
-    │   ├── utilities
-    │   │   └── Utils.java
-    │   ├── visuals
-    │   │   ├── AnimationStack.java
-    │   │   ├── ImageLoadThread.java
-    │   │   ├── ImageStack.java
-    │   │   └── PaintingGroupThread.java
-    │   └── world
-    │       ├── InitThings.java
-    │       ├── ProceduralGeneration.java
-    │       ├── QuadTreeThread.java
-    │       ├── ThingCounter.java
-    │       └── UpdateThingsThread.java
-    └── things
-        ├── AnimalConstants
-        │   ├── BeetleConstants.java
-        │   ├── ButterflyConstants.java
-        │   ├── CaterpillarConstants.java
-        │   ├── ElephantConstants.java
-        │   └── TurtleConstants.java
-        ├── Classes
-        │   ├── Animal.java
-        │   ├── CreatureConstants.java
-        │   ├── InitialSeedDensities.java
-        │   ├── Plant.java
-        │   ├── Thing.java
-        │   └── ThingArchive.java
-        └── PlantConstants
-            ├── BushConstants.java
-            ├── GrassConstants.java
-            └── TreeConstants.java
-```
+## Author and credits
+This game was independently developed by Gherman Uritskiy.

@@ -74,9 +74,16 @@ public class LinePlot {
     }
 
     private void paintLabels() {
-        this.drawString(this.label, this.minX + 9, this.midPointY, this.font90);
+        this.drawString(this.label, this.minX + 10, this.midPointY, this.font90);
         this.drawString("0", this.maxX + 8, this.maxY - 6, this.font);
-        String upperValue = this.asString(this.maxValue);
+        String upperValue;
+        if (this.maxValue > 1000) {
+            // some wacky math to turn the value into a pretty and concise decimal
+            upperValue = this.maxValue / 1000 + "." + ((this.maxValue - 1000 * (this.maxValue / 1000)) / 100) + "K";
+        }
+        else {
+            upperValue = this.asString(this.maxValue);
+        }
         this.drawString(upperValue, this.maxX + this.getStringWidth(upperValue) / 2 + 4,
                 this.minY + 7, this.font);
     }

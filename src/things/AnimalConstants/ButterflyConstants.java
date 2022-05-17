@@ -42,7 +42,7 @@ public final class ButterflyConstants extends CreatureConstants {
         this.frameCoolDown = 1;
 
         // growth constants
-        this.metabolismRate = -5; // adjust to FPS and cool down
+        this.metabolismRate = -4; // adjust to FPS and cool down
         this.decayRate = -300; // adjust to FPS and cool down
         this.growAtHealth = 10;
         this.maxGrowthRate = 100; // adjust to FPS and cool down

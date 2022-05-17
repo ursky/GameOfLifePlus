@@ -66,7 +66,7 @@ public final class CaterpillarConstants extends CreatureConstants {
         this.visionRange = 20;
         this.minFoodSize = 1;
         this.eatsSeeds = false;
-        this.eatingRate = 50; // biomass per second; adjust to FPS and cool down
+        this.eatingRate = 60; // biomass per second; adjust to FPS and cool down
         this.foodConversion = 0.9f; // biomass to health
     }
 }
