@@ -1,8 +1,8 @@
 package game.world;
 
-import game.things.Classes.CreatureConstants;
+import game.world.things.Classes.CreatureConstants;
 import game.World;
-import game.things.Classes.Thing;
+import game.world.things.Classes.Thing;
 
 import java.awt.*;
 import java.util.ArrayList;

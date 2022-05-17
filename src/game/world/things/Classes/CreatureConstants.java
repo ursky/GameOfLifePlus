@@ -1,6 +1,6 @@
-package game.things.Classes;
+package game.world.things.Classes;
 
-import game.userIO.UiConstants;
+import game.constants.UiConstants;
 import game.visuals.AnimationStack;
 import game.visuals.ImageStack;
 import game.World;

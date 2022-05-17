@@ -8,14 +8,14 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
-import game.userIO.UiConstants;
+import game.constants.UiConstants;
 import game.userIO.Mouse;
 import game.utilities.TimeTracker;
 import game.visuals.PaintingGroupThread;
 import game.userIO.UserIO;
 import game.world.ProceduralGeneration;
 import game.dashboard.Dashboard;
-import game.utilities.Utils;
+import game.utilities.Random;
 
 public class Engine extends JPanel implements ActionListener {
     public World world = new World(this);
@@ -113,7 +113,7 @@ public class Engine extends JPanel implements ActionListener {
     private void initForSaving() {
         // this is purely for saving frames to make GIFs later
         if (UiConstants.saveFrames) {
-            this.randomID = Utils.randString(6);
+            this.randomID = Random.randString(6);
             File theDir = new File(UiConstants.savedImageDir + "/" + this.randomID);
             if (!theDir.exists()){
                 boolean created = theDir.mkdirs();

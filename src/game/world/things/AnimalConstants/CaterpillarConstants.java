@@ -1,6 +1,6 @@
-package game.things.AnimalConstants;
+package game.world.things.AnimalConstants;
 
-import game.things.Classes.CreatureConstants;
+import game.world.things.Classes.CreatureConstants;
 import game.visuals.AnimationStack;
 import game.visuals.ImageStack;
 import game.World;

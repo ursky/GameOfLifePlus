@@ -1,7 +1,9 @@
 # GameOfLife+
 
+![Alt Text](animations/high_res_example_1.gif)
+
 ## What is this?
-This repo contains a small Java implementation of an ecology multi-species interaction game/simulator. 
+This repo contains a Java implementation of an ecology multi-species interaction game/simulator. 
 The purpose of the game is nothing more that provide a framework to model how relatively simple interactions between
 a few types of organisms can produce complex patterns and dynamics. This simulator is loosely inspired by the classical
 "Game of Life" - a mathematical 2D model that produces complex behavior from a set of extremely simple rules. My 
@@ -26,7 +28,7 @@ throughout the project are low-level and carefully thought out with speed in min
 time complexity is O(n), and memory is also O(n), which was quite difficult to achieve considering the complexity
 of the interactions. Here are some of the simulation's features:
 1. Every creature (bug, tree, grass, etc) is processed independently every frame (running at 60 frames per second).
-This means 60 times every second, a given creature does all the game.things it can do at that moment, including:
+This means 60 times every second, a given creature does all the game.world.things it can do at that moment, including:
 move, accelerate towards something, run away from a predator (animals only), investigate the surrounding around, 
 hunts prey (animals only), eats, grows, reproduces, lays eggs or spreads seeds, and shades neighbors (plants only). 
 2. A novel custom implementation of a multi-threaded Quad Tree 2D search allows all the creatures to "see" other 
@@ -50,10 +52,6 @@ choppy).
 8. Each creature supports animations, as long as you have PNGs of each frame. As the creatures grow and move around
 the images are automatically rotated, resized, change opacity, etc. (all done in O(1) time thanks to caching).
 However, since I am not a digital artist the only creatures that are currently animated are the butterflies. 
-
-## Example animations:
-![Alt Text](animations/low_res_example_1.gif)
-![Alt Text](animations/high_res_example_1.gif)
 
 ## Creature descriptions:
 1. Grass: the smallest plant in the system. Very fast-growing, but is easily shaded out by larger plants. Eaten by 

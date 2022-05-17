@@ -1,16 +1,17 @@
 package game.world;
 
 import game.World;
-import game.userIO.UiConstants;
-import game.things.Classes.Animal;
-import game.things.AnimalConstants.*;
-import game.things.Classes.CreatureConstants;
-import game.things.Classes.Plant;
-import game.things.PlantConstants.BushConstants;
-import game.things.PlantConstants.GrassConstants;
-import game.things.PlantConstants.TreeConstants;
-import game.things.Classes.Thing;
-import game.utilities.Utils;
+import game.constants.InitialSeedDensities;
+import game.constants.UiConstants;
+import game.world.things.Classes.Animal;
+import game.world.things.AnimalConstants.*;
+import game.world.things.Classes.CreatureConstants;
+import game.world.things.Classes.Plant;
+import game.world.things.PlantConstants.BushConstants;
+import game.world.things.PlantConstants.GrassConstants;
+import game.world.things.PlantConstants.TreeConstants;
+import game.world.things.Classes.Thing;
+import game.utilities.Random;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -23,16 +24,17 @@ public class InitThings {
         int count;
         if (this.world.engine.tracker.frameCounter > UiConstants.fastPreRenderFrames) {
             // if this is later in the simulation engine.things should be copied, so include only small amount of new engine.things
-            count = seedDensityToCount(constants.startingDensity * UiConstants.postStartSpawnPenalty,
+            count = seedDensityToCount(
+                    constants.startingDensity * InitialSeedDensities.postStartSpawnPenalty,
                     minX, minY, maxX, maxY);
         }
         else {
             count = seedDensityToCount(constants.startingDensity, minX, minY, maxX, maxY);
         }
         for (int i = 0; i<count; i++) {
-            float randX = Utils.randFloat(minX, maxX);
-            float randY = Utils.randFloat(minY, maxY);
-            float size = Utils.randFloat(constants.maxSize / 2, constants.maxSize);
+            float randX = Random.randFloat(minX, maxX);
+            float randY = Random.randFloat(minY, maxY);
+            float size = Random.randFloat(constants.maxSize / 2, constants.maxSize);
             this.createThing(randX, randY, size, constants);
         }
     }
@@ -51,8 +53,8 @@ public class InitThings {
     }
 
     private void initThing(Thing thing) {
-        float health = Utils.randFloat(20, 100);
-        thing.currentRotation = Utils.randFloat(0, 360);
+        float health = Random.randFloat(20, 100);
+        thing.currentRotation = Random.randFloat(0, 360);
         thing.currentOpacity = 255;
         thing.initImage(thing.constants.mainImage);
         thing.healthPercent = health;
@@ -82,8 +84,8 @@ public class InitThings {
         }
         float[] copyRange = selectRangeToCopy(maxX - minX, maxY - minY);
         for (Thing thing: this.world.things) {
-            if (Utils.inBounds(thing.xPosition, copyRange[0], copyRange[1])
-                    && Utils.inBounds(thing.yPosition, copyRange[2], copyRange[3])) {
+            if (this.inBounds(thing.xPosition, copyRange[0], copyRange[1])
+                    && this.inBounds(thing.yPosition, copyRange[2], copyRange[3])) {
                 float newXPos = minX + (thing.xPosition - copyRange[0]);
                 float newYPos = minY + (thing.yPosition - copyRange[2]);
                 Thing newThing = copyThingTo(thing, newXPos, newYPos);
@@ -93,11 +95,22 @@ public class InitThings {
         return copiedThings;
     }
 
+    /**
+     * Check if a number is in bounds
+     * @param value: number to check
+     * @param lowBound: bounds to check
+     * @param highBound: bounds to check
+     * @return: is it in range?
+     */
+    private boolean inBounds(float value, float lowBound, float highBound) {
+        return (value >= lowBound && value < highBound);
+    }
+
     private float[] selectRangeToCopy(float widthX, float widthY) {
-        float copyStartX = Utils.randFloat(this.world.engine.userIO.positionsInView[0],
+        float copyStartX = Random.randFloat(this.world.engine.userIO.positionsInView[0],
                 this.world.engine.userIO.positionsInView[1] - widthX);
         float copyEndX = copyStartX + widthX;
-        float copyStartY = Utils.randFloat(this.world.engine.userIO.positionsInView[2],
+        float copyStartY = Random.randFloat(this.world.engine.userIO.positionsInView[2],
                 this.world.engine.userIO.positionsInView[3] - widthY);
         float copyEndY = copyStartY + widthY;
         return new float[] {copyStartX, copyEndX, copyStartY, copyEndY};

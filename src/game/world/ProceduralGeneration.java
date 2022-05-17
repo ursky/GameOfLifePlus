@@ -1,8 +1,8 @@
 package game.world;
-import game.userIO.UiConstants;
+import game.constants.UiConstants;
 import game.World;
-import game.things.Classes.ThingArchive;
-import game.things.Classes.Thing;
+import game.world.things.Classes.ThingArchive;
+import game.world.things.Classes.Thing;
 
 import java.util.ArrayList;
 

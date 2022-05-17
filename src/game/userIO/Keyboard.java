@@ -5,7 +5,13 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Detect keyboard presses
+ */
 public class Keyboard {
+    /**
+     * Initialize keyboard tracker
+     */
     private static final Map<Integer, Boolean> pressedKeys = new HashMap<>();
     static {
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(event -> {
@@ -17,6 +23,11 @@ public class Keyboard {
         });
     }
 
+    /**
+     * Check if a given key is pressed this moment
+     * @param keyCode: key to check
+     * @return: was it pressed this frame?
+     */
     public static boolean isKeyPressed(int keyCode) {
         return pressedKeys.getOrDefault(keyCode, false);
     }

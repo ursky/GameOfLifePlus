@@ -1,17 +1,27 @@
 package game.dashboard;
 
-import game.things.Classes.CreatureConstants;
+import game.world.things.Classes.CreatureConstants;
 import game.Engine;
 
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * This class handles all the creature icons and buttons at the bottom right of the screen.
+ * Inherits from the LinePlot (to be able to draw more efficiently).
+ */
 public class CreatureIcons extends LinePlot {
     Engine engine;
+    // stored list of the icons/buttons
     public ArrayList<ClickableButton> buttons;
     int size, lineWidth;
+    // this stores which creature is currently toggled ON (selected)
     public CreatureConstants selectedConstants;
 
+    /**
+     * Updates the counts of each creature icon
+     * @param values: list of creature counts
+     */
     @Override
     public void update(ArrayList<Integer> values) {
         for (int i=0; i<values.size(); i++) {
@@ -19,6 +29,9 @@ public class CreatureIcons extends LinePlot {
         }
     }
 
+    /**
+     * Draws the buttons/icons onto the Graphics panel
+     */
     @Override
     public void draw() {
         this.drawString(this.label, (this.maxX + this.minX) / 2, this.minY + resize(10), this.font);
@@ -27,6 +40,10 @@ public class CreatureIcons extends LinePlot {
         }
     }
 
+    /**
+     * Draws a button onto the correct location on the panel
+     * @param button: the button/icon to plot
+     */
     private void drawButton(ClickableButton button) {
         // draw label
         this.drawString(
@@ -50,6 +67,11 @@ public class CreatureIcons extends LinePlot {
         this.engine.paintImage(button.image, button.xMin, button.yMin, this.size - 2 * this.lineWidth);
     }
 
+    /**
+     * Handle a click event! Check where the click occured and either select the corresponding button or add a creature.
+     * @param x: click position
+     * @param y: click position
+     */
     public void click(int x, int y) {
         // check if click was in the buttons field
         if (x > this.minX && x < this.maxX && y > this.minY && y < this.maxY) {
@@ -70,11 +92,19 @@ public class CreatureIcons extends LinePlot {
         }
     }
 
+    /**
+     * De-select a button
+     * @param button: the button to de-select
+     */
     public void toggleOff(ClickableButton button) {
         button.selected = false;
         button.dim();
     }
 
+    /**
+     * Select a button. Then un-select all other buttons.
+     * @param button: button to select
+     */
     public void toggleOn(ClickableButton button) {
         button.selected = false;
         this.selectedConstants = button.constants;
@@ -87,6 +117,13 @@ public class CreatureIcons extends LinePlot {
         }
     }
 
+    /**
+     * Initialize the buttons. Start off with the first one being selected.
+     * @param engine: game engine
+     * @param startX: buttons left bounds
+     * @param endX: buttons right bounds
+     * @param label: the name of dashboard piece
+     */
     public CreatureIcons(Engine engine, int startX, int endX, String label) {
         super(engine, startX, endX, 0, label);
         this.engine = engine;
@@ -103,6 +140,7 @@ public class CreatureIcons extends LinePlot {
             this.buttons.add(new ClickableButton(constants, xMin, xMax, yMin, yMax));
             xMin = xMax;
         }
+        // start by having the first button selected
         this.toggleOn(this.buttons.get(0));
     }
 }

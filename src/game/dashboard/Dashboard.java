@@ -1,16 +1,28 @@
 package game.dashboard;
 
-import game.userIO.UiConstants;
+import game.constants.DashboardConstants;
+import game.constants.UiConstants;
 import game.Engine;
 
+/**
+ * Handles the plots, images, and calculations for the entire dashboard at the bottom of the screen.
+ */
 public class Dashboard {
     Engine engine;
+    // this plot is for storing the stacked counts plot (the rainbow one)
     StackedLinePlot countsPlot;
+    // this stores the creature buttons
     public CreatureIcons creatureIcons;
+    // this is for the other more basic line plots
     LinePlot latencyPlot, fpsPlot, totalCountPlot;
+    // the bounds of the whole dashboard
     int minY, maxY, minX, maxX;
 
+    /**
+     * Go over all the plots and update their values/status. This is done every few frames.
+     */
     public void update() {
+        // notice they are not updated every frame
         if (this.engine.tracker.timeToUpdateCounts() ) {
             this.countsPlot.update(this.engine.world.counter.classFractions, this.engine.world.counter.colors);
             this.latencyPlot.update(this.engine.tracker.latencyList);
@@ -20,6 +32,9 @@ public class Dashboard {
         }
     }
 
+    /**
+     * Display the plots on the dashboard. This is done every frame.
+     */
     public void paint() {
         if (this.engine.tracker.frameCounter > 0) {
             this.paintBar();
@@ -31,6 +46,9 @@ public class Dashboard {
         }
     }
 
+    /**
+     * Paints the bounds of the dashboard for a cleaner look
+     */
     public void paintBar() {
         // paint blank info bar
         this.engine.g2D.setColor(DashboardConstants.backgroundColor);
@@ -38,6 +56,10 @@ public class Dashboard {
                 0, this.minY, (this.maxX - this.minX), (this.maxY - this.minY));
     }
 
+    /**
+     * Initialize the plots in the dashboard.
+     * @param engine: game engined
+     */
     public Dashboard(Engine engine) {
         this.engine = engine;
         this.countsPlot = new StackedLinePlot(

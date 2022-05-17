@@ -1,6 +1,6 @@
 package game.world;
 
-import game.things.Classes.Thing;
+import game.world.things.Classes.Thing;
 
 import java.util.ArrayList;
 

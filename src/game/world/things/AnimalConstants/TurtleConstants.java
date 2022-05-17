@@ -1,7 +1,7 @@
-package game.things.AnimalConstants;
+package game.world.things.AnimalConstants;
 
-import game.things.Classes.CreatureConstants;
-import game.things.Classes.InitialSeedDensities;
+import game.world.things.Classes.CreatureConstants;
+import game.constants.InitialSeedDensities;
 import game.World;
 import game.visuals.ImageStack;
 

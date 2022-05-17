@@ -1,4 +1,4 @@
-package game.things.Classes;
+package game.world.things.Classes;
 import game.World;
 
 public class Plant extends Thing {

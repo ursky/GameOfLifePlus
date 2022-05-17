@@ -1,24 +1,38 @@
 package game.quadsearch;
 
-import game.things.Classes.Thing;
+import game.world.things.Classes.Thing;
 
 import java.util.ArrayList;
 
+/**
+ * A thread class handling processing data in a subsection of the game field with the Quad tree algorithm.
+ */
 public class QuadTreeThread implements Runnable {
     Thread t;
     public int thread;
     public ArrayList<Thing> things;
 
+    /**
+     * Initialize thread
+     * @param things: creatures to add to this quad tree search object
+     * @param thread: index of the thread
+     */
     public QuadTreeThread(ArrayList<Thing> things, int thread) {
         this.things = things;
         this.thread = thread;
         this.t = new Thread(this);
     }
 
+    /**
+     * Launch thread
+     */
     public void start() {
         this.t.start();
     }
 
+    /**
+     * Wait for thread to stop
+     */
     public void join() {
         try {
             this.t.join();
@@ -27,6 +41,9 @@ public class QuadTreeThread implements Runnable {
         }
     }
 
+    /**
+     * Add creatures designated to this thread to the Quad tree data structure
+     */
     public void run() {
         for (int i=0; i<this.things.size(); i++) {
             Thing thing = things.get(i);

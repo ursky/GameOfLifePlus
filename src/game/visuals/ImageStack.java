@@ -1,6 +1,6 @@
 package game.visuals;
 
-import game.userIO.UiConstants;
+import game.constants.UiConstants;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

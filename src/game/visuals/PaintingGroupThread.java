@@ -1,7 +1,7 @@
 package game.visuals;
 
 import game.Engine;
-import game.things.Classes.Thing;
+import game.world.things.Classes.Thing;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

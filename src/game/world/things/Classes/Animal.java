@@ -1,6 +1,6 @@
-package game.things.Classes;
-import game.userIO.UiConstants;
-import game.utilities.Utils;
+package game.world.things.Classes;
+import game.constants.UiConstants;
+import game.utilities.Random;
 import game.World;
 
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import java.util.Objects;
 public class Animal extends Thing {
     float xVelocity = 0;
     float yVelocity = 0;
-    float xAcceleration = Utils.randFloat(-this.constants._maxAcceleration, this.constants._maxAcceleration);
-    float yAcceleration = Utils.randFloat(-this.constants._maxAcceleration, this.constants._maxAcceleration);
+    float xAcceleration = Random.randFloat(-this.constants._maxAcceleration, this.constants._maxAcceleration);
+    float yAcceleration = Random.randFloat(-this.constants._maxAcceleration, this.constants._maxAcceleration);
     float wobble = 0;
     int flapFrame = 0;
     boolean wobbleRight = true;
@@ -110,8 +110,8 @@ public class Animal extends Thing {
     private void wander() {
         // step 1: introduce small % randomness to the acceleration vectors
         float range = this.constants._maxAcceleration * this.constants._wanderRandomness;
-        this.xAcceleration += Utils.randFloat(this.xAcceleration - range, this.xAcceleration + range);
-        this.yAcceleration += Utils.randFloat(this.yAcceleration - range, this.yAcceleration + range);
+        this.xAcceleration += Random.randFloat(this.xAcceleration - range, this.xAcceleration + range);
+        this.yAcceleration += Random.randFloat(this.yAcceleration - range, this.yAcceleration + range);
         // step 2: double down (to ensure max speed)
         this.xAcceleration *= 2;
         this.yAcceleration *= 2;

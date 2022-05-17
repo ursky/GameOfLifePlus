@@ -1,11 +1,19 @@
 package game.quadsearch;
 
+/**
+ * Define a single area on a 2D plane
+ */
 public class Region {
     private final float x1;
     private final float y1;
     private final float x2;
     private final float y2;
 
+    /**
+     * Is this point in this region?
+     * @param point: point on 2D plane to check
+     * @return: is this point in this region
+     */
     public boolean containsPoint(Point point) {
         return point.getX() >= this.x1
                 && point.getX() < this.x2
@@ -13,6 +21,11 @@ public class Region {
                 && point.getY() < this.y2;
     }
 
+    /**
+     * Does another region overlap this region?
+     * @param testRegion: another region
+     * @return: do they overlap?
+     */
     public boolean doesOverlap(Region testRegion) {
         if (testRegion.getX2() < this.getX1()) {
             return false;
@@ -26,6 +39,11 @@ public class Region {
         return !(testRegion.getY2() < this.getY1());
     }
 
+    /**
+     * Make a new region for a given quad tree quadrant
+     * @param quadrantIndex: quad tree search index
+     * @return: region new region representing the quadrant
+     */
     public Region getQuadrant(int quadrantIndex) {
         float quadrantWidth = (this.x2 - this.x1) / 2;
         float quadrantHeight = (this.y2 - this.y1) / 2;
@@ -44,6 +62,13 @@ public class Region {
         return null;
     }
 
+    /**
+     * Initialize bounds of region
+     * @param x1: bounds on 2D plane
+     * @param y1: bounds on 2D plane
+     * @param x2: bounds on 2D plane
+     * @param y2: bounds on 2D plane
+     */
     public Region(float x1, float y1, float x2, float y2) {
         this.x1 = x1;
         this.y1 = y1;
@@ -51,18 +76,34 @@ public class Region {
         this.y2 = y2;
     }
 
+    /**
+     * Bounds getter
+     * @return: region bound
+     */
     public float getX1() {
         return this.x1;
     }
 
+    /**
+     * Bounds getter
+     * @return: region bound
+     */
     public float getX2() {
         return this.x2;
     }
 
+    /**
+     * Bounds getter
+     * @return: region bound
+     */
     public float getY1() {
         return this.y1;
     }
 
+    /**
+     * Bounds getter
+     * @return: region bound
+     */
     public float getY2() {
         return this.y2;
     }

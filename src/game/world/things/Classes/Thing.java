@@ -1,9 +1,9 @@
-package game.things.Classes;
-import game.userIO.UiConstants;
+package game.world.things.Classes;
+import game.constants.UiConstants;
 import game.visuals.ImageStack;
 import game.quadsearch.Point;
 import game.quadsearch.Region;
-import game.utilities.Utils;
+import game.utilities.Random;
 import game.World;
 
 import java.awt.image.BufferedImage;
@@ -198,9 +198,9 @@ public class Thing {
     }
 
     public void makeYoung() {
-        float seedX = Utils.randFloat(this.xPosition - this.constants.dispersalRange,
+        float seedX = Random.randFloat(this.xPosition - this.constants.dispersalRange,
                 this.xPosition + this.constants.dispersalRange);
-        float seedY = Utils.randFloat(this.yPosition - this.constants.dispersalRange,
+        float seedY = Random.randFloat(this.yPosition - this.constants.dispersalRange,
                 this.yPosition + this.constants.dispersalRange);
         if (this.isInBounds(seedX, seedY)
                 && calcDistance(this.xPosition, this.yPosition, seedX, seedY) <= this.constants.dispersalRange) {
@@ -222,7 +222,7 @@ public class Thing {
             seedling.yPosition = seedY;
             seedling.updateBin();
             seedling.isSeed = true;
-            seedling.currentRotation = Utils.randFloat(0, 360);
+            seedling.currentRotation = Random.randFloat(0, 360);
             seedling.initImage(seedling.constants.youngImage);
             if (seedling.isRendered()) {
                 this.world.newThings.add(seedling);
