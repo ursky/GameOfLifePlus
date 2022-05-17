@@ -53,6 +53,7 @@ However, since I am not a digital artist the only creatures that are currently a
 
 ## Example animations:
 ![Alt Text](animations/low_res_example_1.gif)
+![Alt Text](animations/high_res_example_1.gif)
 
 ## Creature descriptions:
 1. Grass: the smallest plant in the system. Very fast-growing, but is easily shaded out by larger plants. Eaten by 
