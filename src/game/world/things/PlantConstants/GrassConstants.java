@@ -3,10 +3,13 @@ package game.world.things.PlantConstants;
 import game.world.things.Classes.CreatureConstants;
 import game.constants.InitialSeedDensities;
 import game.visuals.ImageStack;
-import game.World;
+import game.world.World;
 
 import java.awt.*;
 
+/**
+ * Constants for the grass creature
+ */
 public final class GrassConstants extends CreatureConstants {
     public GrassConstants(World world) {
         super(world);

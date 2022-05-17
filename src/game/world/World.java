@@ -1,18 +1,16 @@
-package game;
+package game.world;
 
+import game.Game;
 import game.constants.UiConstants;
 import game.quadsearch.SearchAreas;
-import game.world.InitThings;
 import game.quadsearch.QuadTreeThread;
-import game.world.ThingCounter;
-import game.world.UpdateThingsThread;
 import game.world.things.Classes.Animal;
 import game.world.things.Classes.Thing;
 
 import java.util.ArrayList;
 
 public class World {
-    public Engine engine;
+    public Game game;
     public ThingCounter counter;
     public ArrayList<Thing> things = new ArrayList<>();
     public ArrayList<Thing> newThings = new ArrayList<>();
@@ -31,7 +29,7 @@ public class World {
     }
 
     public void updateThingsMultithreading() {
-        if (this.engine.tracker.frameCounter < 1) { return; }
+        if (this.game.tracker.frameCounter < 1) { return; }
         ArrayList<UpdateThingsThread> threads = new ArrayList<>();
         int[][] positions = this.breakIntoChunks(this.things.size());
         for (int i = 0; i<UiConstants.threadCount; i++) {
@@ -67,12 +65,12 @@ public class World {
 
     private void removeDeadOrOffscreen() {
         ArrayList<Thing> thingsInRange = new ArrayList<>();
-        if (this.engine.tracker.timeToUpdateCounts()) {
+        if (this.game.tracker.timeToUpdateCounts()) {
             this.counter.initializeCounts();
         }
         for (Thing thing: this.things) {
             if (thing != null && thing.size > 0 && thing.currentOpacity > 0) {
-                if (this.engine.tracker.timeToUpdateCounts()) {
+                if (this.game.tracker.timeToUpdateCounts()) {
                     this.counter.countThing(thing);
                 }
                 if (thing.isRendered()) {
@@ -80,8 +78,8 @@ public class World {
                 }
                 else {
                     // if animal moves out of range, it should be deleted to avoid piling up on border
-                    if (!(thing instanceof Animal) || thing.isSeed || this.engine.userIO.movingCamera) {
-                        this.engine.procedural.archivedThings[thing.xBin][thing.yBin].add(thing);
+                    if (!(thing instanceof Animal) || thing.isSeed || this.game.userIO.movingCamera) {
+                        this.game.procedural.archivedThings[thing.xBin][thing.yBin].add(thing);
                     }
                 }
             }
@@ -92,22 +90,22 @@ public class World {
 
     public void updateWorld() {
         this.calcDistancesMultithreading();
-        this.engine.tracker.printStepNanoseconds("QuadTree");
+        this.game.tracker.printStepNanoseconds("QuadTree");
 
         this.updateThingsMultithreading();
-        this.engine.tracker.printStepNanoseconds("Update engine.things");
+        this.game.tracker.printStepNanoseconds("Update engine.things");
 
         this.things.addAll(this.newThings);
         this.newThings.clear();
-        this.engine.tracker.printStepNanoseconds("Add new engine.things");
+        this.game.tracker.printStepNanoseconds("Add new engine.things");
 
         this.removeDeadOrOffscreen();
-        this.engine.tracker.printStepNanoseconds("Remove dead");
+        this.game.tracker.printStepNanoseconds("Remove dead");
     }
 
-    public World(Engine engine) {
+    public World(Game game) {
         this.initThings = new InitThings(this);
-        this.engine = engine;
+        this.game = game;
         this.counter = new ThingCounter(this);
     }
 }

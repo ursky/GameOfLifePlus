@@ -10,7 +10,26 @@ public class Region {
     private final float y2;
 
     /**
+     * Bounds getters
+     *
+     * @return: region bound
+     */
+    public float getX1() {
+        return this.x1;
+    }
+    public float getX2() {
+        return this.x2;
+    }
+    public float getY1() {
+        return this.y1;
+    }
+    public float getY2() {
+        return this.y2;
+    }
+
+    /**
      * Is this point in this region?
+     *
      * @param point: point on 2D plane to check
      * @return: is this point in this region
      */
@@ -23,6 +42,7 @@ public class Region {
 
     /**
      * Does another region overlap this region?
+     *
      * @param testRegion: another region
      * @return: do they overlap?
      */
@@ -40,7 +60,8 @@ public class Region {
     }
 
     /**
-     * Make a new region for a given quad tree quadrant
+     * Make a new region for a given point in appropriate quadrant
+     *
      * @param quadrantIndex: quad tree search index
      * @return: region new region representing the quadrant
      */
@@ -63,7 +84,32 @@ public class Region {
     }
 
     /**
+     * Calculate area of this region
+     * @return: area
+     */
+    public float getArea() {
+        return (this.x2 - this.x1) * (this.y2 - this.y1);
+    }
+
+    /**
+     * Calculate region width
+     * @return: width
+     */
+    public float getWidth() {
+        return this.x2 - this.x1;
+    }
+
+    /**
+     * Calculate region height
+     * @return: height
+     */
+    public float getHeight() {
+        return this.y2 - this.y1;
+    }
+
+    /**
      * Initialize bounds of region
+     *
      * @param x1: bounds on 2D plane
      * @param y1: bounds on 2D plane
      * @param x2: bounds on 2D plane
@@ -74,37 +120,5 @@ public class Region {
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
-    }
-
-    /**
-     * Bounds getter
-     * @return: region bound
-     */
-    public float getX1() {
-        return this.x1;
-    }
-
-    /**
-     * Bounds getter
-     * @return: region bound
-     */
-    public float getX2() {
-        return this.x2;
-    }
-
-    /**
-     * Bounds getter
-     * @return: region bound
-     */
-    public float getY1() {
-        return this.y1;
-    }
-
-    /**
-     * Bounds getter
-     * @return: region bound
-     */
-    public float getY2() {
-        return this.y2;
     }
 }

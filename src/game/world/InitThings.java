@@ -1,8 +1,9 @@
 package game.world;
 
-import game.World;
 import game.constants.InitialSeedDensities;
 import game.constants.UiConstants;
+import game.quadsearch.Point;
+import game.quadsearch.Region;
 import game.world.things.Classes.Animal;
 import game.world.things.AnimalConstants.*;
 import game.world.things.Classes.CreatureConstants;
@@ -16,38 +17,47 @@ import game.utilities.Random;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Handles creature creation, initialization, and storage
+ */
 public class InitThings {
     public World world;
     public ArrayList<CreatureConstants> orderedCreatureConstants = new ArrayList<>();
 
-    private void initializeThings(float minX, float minY, float maxX, float maxY, CreatureConstants constants) {
+    /**
+     * Randomly seed creatures of a given constants type in a region
+     * @param region: region to populate
+     * @param constants: creature constants to seed
+     */
+    private void initializeThings(Region region, CreatureConstants constants) {
         int count;
-        if (this.world.engine.tracker.frameCounter > UiConstants.fastPreRenderFrames) {
+        if (this.world.game.tracker.frameCounter > UiConstants.fastPreRenderFrames) {
             // if this is later in the simulation engine.things should be copied, so include only small amount of new engine.things
             count = seedDensityToCount(
                     constants.startingDensity * InitialSeedDensities.postStartSpawnPenalty,
-                    minX, minY, maxX, maxY);
+                    region);
         }
         else {
-            count = seedDensityToCount(constants.startingDensity, minX, minY, maxX, maxY);
+            count = seedDensityToCount(constants.startingDensity, region);
         }
         for (int i = 0; i<count; i++) {
-            float randX = Random.randFloat(minX, maxX);
-            float randY = Random.randFloat(minY, maxY);
+            Point coordinate = new Point(0,
+                    Random.randFloat(region.getX1(), region.getX2()),
+                    Random.randFloat(region.getY1(), region.getY2()));
             float size = Random.randFloat(constants.maxSize / 2, constants.maxSize);
-            this.createThing(randX, randY, size, constants);
+            this.createThing(coordinate, size, constants);
         }
     }
 
-    public void createThing(float randX, float randY, float size, CreatureConstants constants) {
+    public void createThing(Point coordinate, float size, CreatureConstants constants) {
         if (constants.type.equals("Plant")) {
-            Plant thing = new Plant(randX, randY, size, this.world, constants);
+            Plant thing = new Plant(coordinate, size, this.world, constants);
             initThing(thing);
         } else if (constants.type.equals("Animal")) {
-            Animal thing = new Animal(randX, randY, size, this.world, constants);
+            Animal thing = new Animal(coordinate, size, this.world, constants);
             initThing(thing);
         } else {
-            Thing thing = new Thing(randX, randY, size, this.world, constants);
+            Thing thing = new Thing(coordinate, size, this.world, constants);
             initThing(thing);
         }
     }
@@ -61,74 +71,62 @@ public class InitThings {
         this.world.things.add(thing);
     }
 
-    public void initPlants(float minX, float minY, float maxX, float maxY) {
+    public void initPlants(Region region) {
         for (CreatureConstants creatureConstants : this.orderedCreatureConstants) {
             if (Objects.equals(creatureConstants.type, "Plant")) {
-                this.initializeThings(minX, minY, maxX, maxY, creatureConstants);
+                this.initializeThings(region, creatureConstants);
             }
         }
     }
 
-    public void initAnimals(float minX, float minY, float maxX, float maxY) {
+    public void initAnimals(Region region) {
         for (CreatureConstants creatureConstants : this.orderedCreatureConstants) {
             if (Objects.equals(creatureConstants.type, "Animal")) {
-                this.initializeThings(minX, minY, maxX, maxY, creatureConstants);
+                this.initializeThings(region, creatureConstants);
             }
         }
     }
 
-    public ArrayList<Thing> copyThings(float minX, float minY, float maxX, float maxY) {
+    public ArrayList<Thing> copyThings(Region region) {
         ArrayList<Thing> copiedThings = new ArrayList<>();
         if (UiConstants.blankCanvas) {
             return copiedThings;
         }
-        float[] copyRange = selectRangeToCopy(maxX - minX, maxY - minY);
+        Region copyRegion = selectRangeToCopy(region.getWidth(), region.getHeight());
         for (Thing thing: this.world.things) {
-            if (this.inBounds(thing.xPosition, copyRange[0], copyRange[1])
-                    && this.inBounds(thing.yPosition, copyRange[2], copyRange[3])) {
-                float newXPos = minX + (thing.xPosition - copyRange[0]);
-                float newYPos = minY + (thing.yPosition - copyRange[2]);
-                Thing newThing = copyThingTo(thing, newXPos, newYPos);
+            if (copyRegion.containsPoint(thing.coordinate)) {
+                Point newCoordinate = new Point(0,
+                        region.getX1() + (thing.coordinate.getX() - copyRegion.getX1()),
+                        region.getY1() + (thing.coordinate.getY() - copyRegion.getY1()));
+                Thing newThing = copyThingTo(thing, newCoordinate);
                 copiedThings.add(newThing);
             }
         }
         return copiedThings;
     }
 
-    /**
-     * Check if a number is in bounds
-     * @param value: number to check
-     * @param lowBound: bounds to check
-     * @param highBound: bounds to check
-     * @return: is it in range?
-     */
-    private boolean inBounds(float value, float lowBound, float highBound) {
-        return (value >= lowBound && value < highBound);
-    }
-
-    private float[] selectRangeToCopy(float widthX, float widthY) {
-        float copyStartX = Random.randFloat(this.world.engine.userIO.positionsInView[0],
-                this.world.engine.userIO.positionsInView[1] - widthX);
+    private Region selectRangeToCopy(float widthX, float widthY) {
+        float copyStartX = Random.randFloat(this.world.game.userIO.positionsInView[0],
+                this.world.game.userIO.positionsInView[1] - widthX);
         float copyEndX = copyStartX + widthX;
-        float copyStartY = Random.randFloat(this.world.engine.userIO.positionsInView[2],
-                this.world.engine.userIO.positionsInView[3] - widthY);
+        float copyStartY = Random.randFloat(this.world.game.userIO.positionsInView[2],
+                this.world.game.userIO.positionsInView[3] - widthY);
         float copyEndY = copyStartY + widthY;
-        return new float[] {copyStartX, copyEndX, copyStartY, copyEndY};
+        return new Region(copyStartX, copyStartY, copyEndX, copyEndY);
     }
 
-    private Thing copyThingTo(Thing thing, float newXPos, float newYPos) {
+    private Thing copyThingTo(Thing thing, Point newCoordinate) {
         Thing newThing = thing.makeClone();
-        newThing.xPosition = newXPos;
-        newThing.yPosition = newYPos;
+        newThing.coordinate = newCoordinate;
         newThing.updateBin();
         return newThing;
     }
 
-    private int seedDensityToCount(float densityPer1000, float minX, float minY, float maxX, float maxY) {
+    private int seedDensityToCount(float densityPer1000, Region region) {
         if (UiConstants.blankCanvas) {
             return 0;
         }
-        float area = (maxX - minX) * (maxY - minY);
+        float area = region.getArea();
         float expectedCount = densityPer1000 * area / 10000;
         int countInt = (int)expectedCount;
         float remainder = expectedCount - countInt;

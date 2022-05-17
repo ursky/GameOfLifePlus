@@ -1,16 +1,22 @@
 package game.visuals;
 
-import game.Engine;
+import game.Game;
 
 import javax.swing.*;
 
+/**
+ * JFrame extension for handling individual images
+ */
 public class CreateFrame extends JFrame {
-    Engine engine;
+    Game game;
 
+    /**
+     * Initialize JFrame extension
+     */
     public CreateFrame() {
-        engine = new Engine();
+        game = new Game();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.add(engine);
+        this.add(game);
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);

@@ -3,12 +3,15 @@ package game.world.things.AnimalConstants;
 import game.world.things.Classes.CreatureConstants;
 import game.visuals.AnimationStack;
 import game.visuals.ImageStack;
-import game.World;
+import game.world.World;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Constants for the caterpillar creature
+ */
 public final class CaterpillarConstants extends CreatureConstants {
     public CaterpillarConstants(World world) {
         super(world);

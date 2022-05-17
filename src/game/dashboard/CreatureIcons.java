@@ -1,7 +1,8 @@
 package game.dashboard;
 
+import game.quadsearch.Point;
 import game.world.things.Classes.CreatureConstants;
-import game.Engine;
+import game.Game;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
  * Inherits from the LinePlot (to be able to draw more efficiently).
  */
 public class CreatureIcons extends LinePlot {
-    Engine engine;
+    Game game;
     // stored list of the icons/buttons
     public ArrayList<ClickableButton> buttons;
     int size, lineWidth;
@@ -54,17 +55,17 @@ public class CreatureIcons extends LinePlot {
                 this.midPointY + this.size / 2 + resize(10) + 1, this.font);
 
         // draw borders
-        this.engine.g2D.setStroke(new BasicStroke(this.lineWidth));
-        this.engine.g2D.setColor(Color.black);
-        this.engine.g2D.fillRect(
+        this.game.g2D.setStroke(new BasicStroke(this.lineWidth));
+        this.game.g2D.setColor(Color.black);
+        this.game.g2D.fillRect(
                 button.xMin, button.yMin, this.size - 2 * this.lineWidth, this.size - 2 * this.lineWidth);
 
-        this.engine.g2D.setColor(button.color);
-        this.engine.g2D.drawRect(
+        this.game.g2D.setColor(button.color);
+        this.game.g2D.drawRect(
                 button.xMin, button.yMin, this.size - 2 * this.lineWidth, this.size - 2 * this.lineWidth);
 
         // draw critter image
-        this.engine.paintImage(button.image, button.xMin, button.yMin, this.size - 2 * this.lineWidth);
+        this.game.paintImage(button.image, button.xMin, button.yMin, this.size - 2 * this.lineWidth);
     }
 
     /**
@@ -84,10 +85,9 @@ public class CreatureIcons extends LinePlot {
             }
         }
         // check if click was on the play field
-        else if (y < this.engine.dashboard.minY) {
-            float trueX = this.engine.userIO.reverseTransformX(x);
-            float trueY = this.engine.userIO.reverseTransformY(y);
-            this.engine.world.initThings.createThing(trueX, trueY, this.selectedConstants.maxSize,
+        else if (y < this.game.dashboard.minY) {
+            Point trueCoordinate = this.game.userIO.reverseTransformCoordinate(x, y);
+            this.game.world.initThings.createThing(trueCoordinate, this.selectedConstants.maxSize,
                     this.selectedConstants);
         }
     }
@@ -119,15 +119,15 @@ public class CreatureIcons extends LinePlot {
 
     /**
      * Initialize the buttons. Start off with the first one being selected.
-     * @param engine: game engine
+     * @param game: game engine
      * @param startX: buttons left bounds
      * @param endX: buttons right bounds
      * @param label: the name of dashboard piece
      */
-    public CreatureIcons(Engine engine, int startX, int endX, String label) {
-        super(engine, startX, endX, 0, label);
-        this.engine = engine;
-        this.size = (this.maxX - this.minX) / (this.engine.world.initThings.orderedCreatureConstants.size());
+    public CreatureIcons(Game game, int startX, int endX, String label) {
+        super(game, startX, endX, 0, label);
+        this.game = game;
+        this.size = (this.maxX - this.minX) / (this.game.world.initThings.orderedCreatureConstants.size());
         this.lineWidth = this.size / 10;
         this.buttons = new ArrayList<>();
 
@@ -135,7 +135,7 @@ public class CreatureIcons extends LinePlot {
         int xMin = this.minX;
         int yMin = this.midPointY - size / 2;
         int yMax = yMin + this.size;
-        for (CreatureConstants constants: this.engine.world.initThings.orderedCreatureConstants) {
+        for (CreatureConstants constants: this.game.world.initThings.orderedCreatureConstants) {
             int xMax = xMin + this.size + this.lineWidth;
             this.buttons.add(new ClickableButton(constants, xMin, xMax, yMin, yMax));
             xMin = xMax;

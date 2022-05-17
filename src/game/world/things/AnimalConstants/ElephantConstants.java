@@ -3,10 +3,13 @@ package game.world.things.AnimalConstants;
 import game.world.things.Classes.CreatureConstants;
 import game.constants.InitialSeedDensities;
 import game.visuals.ImageStack;
-import game.World;
+import game.world.World;
 
 import java.awt.*;
 
+/**
+ * Constants for the elephant creature
+ */
 public final class ElephantConstants extends CreatureConstants {
     public ElephantConstants(World world) {
         super(world);

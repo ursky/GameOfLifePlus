@@ -3,10 +3,13 @@ package game.world.things.AnimalConstants;
 import game.world.things.Classes.CreatureConstants;
 import game.constants.InitialSeedDensities;
 import game.visuals.ImageStack;
-import game.World;
+import game.world.World;
 
 import java.awt.*;
 
+/**
+ * Constants for the beetle creature
+ */
 public final class BeetleConstants extends CreatureConstants {
     public BeetleConstants(World world) {
         super(world);

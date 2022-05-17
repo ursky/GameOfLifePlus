@@ -1,6 +1,6 @@
 package game.dashboard;
 
-import game.Engine;
+import game.Game;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -43,8 +43,8 @@ public class StackedLinePlot extends LinePlot {
     @Override
     public void draw() {
         for (int set=0; set<this.fixedColors.size(); set++) {
-            this.engine.g2D.setColor(this.fixedColors.get(set));
-            this.engine.g2D.fillPolygon(this.xPolygonCoordinates[set], this.yPolygonCoordinates[set], this.polygonSize);
+            this.game.g2D.setColor(this.fixedColors.get(set));
+            this.game.g2D.fillPolygon(this.xPolygonCoordinates[set], this.yPolygonCoordinates[set], this.polygonSize);
         }
         this.postProcess();
     }
@@ -142,13 +142,13 @@ public class StackedLinePlot extends LinePlot {
 
     /**
      * Initialize stacked line plot object to add to the dashboard
-     * @param engine: game engine
+     * @param game: game engine
      * @param startX: left bound of this plot
      * @param endX: right bound of this plot
      * @param xIncrement: how many pixels to move over for every point (higher means plot moves faster)
      * @param label: text label to add as heading
      */
-    public StackedLinePlot(Engine engine, int startX, int endX, int xIncrement, String label) {
-        super(engine, startX, endX, xIncrement, label);
+    public StackedLinePlot(Game game, int startX, int endX, int xIncrement, String label) {
+        super(game, startX, endX, xIncrement, label);
     }
 }

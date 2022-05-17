@@ -49,8 +49,8 @@ public class QuadTreeThread implements Runnable {
             Thing thing = things.get(i);
             if (thing.isSeed) {continue;}
             if (thing.getThreadSlice() == this.thread) {
-                game.quadsearch.Point point = new game.quadsearch.Point(i, thing.xPosition, thing.yPosition);
-                thing.world.quadTreeSearchGroups.getQuadTree(thing).addPoint(point);
+                thing.coordinate.setIndex(i);
+                thing.world.quadTreeSearchGroups.getQuadTree(thing).addPoint(thing.coordinate);
             }
         }
     }

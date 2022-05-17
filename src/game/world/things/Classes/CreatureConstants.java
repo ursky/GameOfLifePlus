@@ -3,11 +3,14 @@ package game.world.things.Classes;
 import game.constants.UiConstants;
 import game.visuals.AnimationStack;
 import game.visuals.ImageStack;
-import game.World;
+import game.world.World;
 
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Initialize all constants for plants and animals
+ */
 public class CreatureConstants {
     public World world;
 
@@ -28,13 +31,18 @@ public class CreatureConstants {
     public AnimationStack animationStack;
     public CreatureConstants metamorphosisFrom, metamorphosisTo;
 
-    // variables
+    // rate variables
+    // Note that these rates are derived from their static counterparts depending on the time delay of a given frame
     public float _metabolismRate, _maxGrowthRate, _shadePenalty, _sproutTime, _decayRate, _reproductionCoolDown;
     public float _maxSpeed, _maxAcceleration, _wanderRandomness, _eatingRate, _wobbleSpeed, _hatchRate;
 
+    /**
+     * This is critical - update all the rate variables to account for the current frame delay (FPS) to make sure
+     * things behave/move the same regardless of the FPS.
+     */
     public void updateRates() {
-        float speedUp = 1 / this.world.engine.tracker.currentFPS;
-        if (this.world.engine.userIO.fastForward()) {
+        float speedUp = 1 / this.world.game.tracker.currentFPS;
+        if (this.world.game.userIO.fastForward()) {
             speedUp = Math.min(UiConstants.fastForward * speedUp, UiConstants.maxRateFactor);
         }
         this._metabolismRate = speedUp * this.metabolismRate;
@@ -52,6 +60,10 @@ public class CreatureConstants {
         this._hatchRate = this.sproutTime / speedUp;
     }
 
+    /**
+     * Initialize constants
+     * @param world: game world
+     */
     public CreatureConstants(World world) {
         this.world = world;
     }

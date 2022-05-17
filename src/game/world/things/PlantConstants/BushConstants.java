@@ -3,10 +3,13 @@ package game.world.things.PlantConstants;
 import game.world.things.Classes.CreatureConstants;
 import game.constants.InitialSeedDensities;
 import game.visuals.ImageStack;
-import game.World;
+import game.world.World;
 
 import java.awt.*;
 
+/**
+ * Constants for the bush creature
+ */
 public final class BushConstants extends CreatureConstants {
     public BushConstants(World world) {
         super(world);

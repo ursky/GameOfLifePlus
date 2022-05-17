@@ -13,6 +13,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+/**
+ * This class handles loading and storage of a single image and its rotation/opacity variants in memory.
+ * The image variants are saved to disk for faster retrieval in future runs.
+ */
 public class ImageStack extends JFrame {
     public String origImageName;
     public BufferedImage origImage;
@@ -23,6 +27,12 @@ public class ImageStack extends JFrame {
     public int imageResolution;
     public int imagePadding;
 
+    /**
+     * Retrieve from memory the correct image given a creature's rotation and opacity
+     * @param rotation: current rotation 0-360
+     * @param opacity: current opacity 0-255
+     * @return: the image that most accurately represents the creature
+     */
     public BufferedImage getImage(float rotation, float opacity) {
         if (rotation >= 360) {
             rotation -= 360;
@@ -38,6 +48,13 @@ public class ImageStack extends JFrame {
         return this.imageStack.get(roundedRotation).get(roundedOpacity);
     }
 
+    /**
+     * Rotate an image a certain number of degrees clockwise. Note: this is quite slow, which is why its done once
+     * during initialization.
+     * @param imageToRotate: image to rotate
+     * @param rotation: degrees to rotate clockwise
+     * @return: rotated image
+     */
     public BufferedImage rotate(BufferedImage imageToRotate, int rotation) {
         int widthOfImage = imageToRotate.getWidth();
         int heightOfImage = imageToRotate.getHeight();
@@ -49,6 +66,11 @@ public class ImageStack extends JFrame {
         return newImageFromBuffer;
     }
 
+    /**
+     * Convert image to bufferedImage
+     * @param image: image to convert
+     * @return: buffered image object
+     */
     public BufferedImage toBufferedImage(Image image)
     {
         BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null),
@@ -59,6 +81,12 @@ public class ImageStack extends JFrame {
         return bufferedImage;
     }
 
+    /**
+     * Change opacity of an image
+     * @param image: image to modify
+     * @param opacity: desired opacity
+     * @return: fixed image
+     */
     private BufferedImage changeOpacity(BufferedImage image, int opacity) {
         BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         for (int x = 0; x < image.getWidth(); ++x) {
@@ -73,11 +101,20 @@ public class ImageStack extends JFrame {
         return newImage;
     }
 
+    /**
+     * Change the opacity of a color
+     * @param origColor: color to modify
+     * @param alphaValue: derised opacity
+     * @return: fixed color
+     */
     private int changeAlpha(int origColor, int alphaValue) {
         origColor = origColor & 0x00ffffff; // drop the previous alpha value
         return (alphaValue << 24) | origColor; // add the one the user inputted
     }
 
+    /**
+     * Initialize all requested rotation/opacity variant images from the original image
+     */
     private void initImageStack() {
         // load in the images first, but don't add them yet to prevent threading exceptions
         ArrayList<ImageLoadThread> threads = new ArrayList<>();
@@ -88,6 +125,7 @@ public class ImageStack extends JFrame {
                 threads.add(thread);
             }
         }
+        // note: this does not save that much time, but still about 3x faster
         for (ImageLoadThread thread: threads) { thread.start(); }
         for (ImageLoadThread thread: threads) { thread.join(); }
 
@@ -97,6 +135,13 @@ public class ImageStack extends JFrame {
         }
     }
 
+    /**
+     * Check if an image was previously created and saved to disk. If yes, then load it to save time (fast).
+     * If no, then generate it from scratch from the original main source image (slow).
+     * @param rotation: desired rotation of image
+     * @param opacity: desired opacity of image
+     * @return: requested image
+     */
     public BufferedImage makeOrLoadImage(int rotation, int opacity) {
         String imageFile = this.origImageName.substring(0, this.origImageName.lastIndexOf('.'))
                 + "_" + this.imageResolution + "_" + this.imagePadding + "_" + rotation + "_" + opacity + ".png";
@@ -120,6 +165,11 @@ public class ImageStack extends JFrame {
         }
     }
 
+    /**
+     * Add some transparent pixels to edge of image to prevent cropping artifacts during rotation
+     * @param image: image to modify
+     * @return: modified image
+     */
     private BufferedImage addPadding(BufferedImage image) {
         int newDim = this.imageResolution + 2 * this.imagePadding;
         BufferedImage newImage = new BufferedImage(newDim, newDim, BufferedImage.TYPE_INT_ARGB);
@@ -131,6 +181,11 @@ public class ImageStack extends JFrame {
         return newImage;
     }
 
+    /**
+     * Add transparent padding pixels to image to make it a perfect square
+     * @param image: image to modify
+     * @return: modified image
+     */
     private BufferedImage resizeToSquare(BufferedImage image) {
         BufferedImage squareImage;
         int imageHeight = image.getHeight();
@@ -168,6 +223,15 @@ public class ImageStack extends JFrame {
         return resizedImage;
     }
 
+    /**
+     * Create object and launch stack initialization
+     * @param imageName: name of png file to load
+     * @param startRotation: the start rotation of creature in the source image (0 if pointing up)
+     * @param rotationVariety: how many rotation variants to generate (1-360)
+     * @param opacityVariety: how many opacity variants to generate (1-255)
+     * @param imageResolution: what resolution to keep the image at?
+     * @param imagePadding: how many pixels to crop off the original image
+     */
     public ImageStack(String imageName, int startRotation, int rotationVariety, int opacityVariety,
                       int imageResolution, int imagePadding) {
         this.origImageName = imageName;

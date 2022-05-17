@@ -1,6 +1,6 @@
 package game.utilities;
 
-import game.Engine;
+import game.Game;
 import game.constants.UiConstants;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * latency information for dashboard plotting, keeping track of the last update, etc.
  */
 public class TimeTracker {
-    public Engine engine;
+    public Game game;
     public float currentFPS = UiConstants.targetFPS;
     public long currentTime = System.currentTimeMillis();
     private int framesSinceLastFPS = 0;
@@ -58,7 +58,7 @@ public class TimeTracker {
     public void updateFPS() {
         this.frameCounter++;
         // the thread buffer is a moving line indicating the division lines for quad tree search threads
-        this.threadBuffer = this.frameCounter % (this.engine.procedural.loadRangeWidth);
+        this.threadBuffer = this.frameCounter % (this.game.procedural.currentCoordinates.getWidth());
         this.throttleFPS();
         this.framesSinceLastFPS ++;
         long time = System.currentTimeMillis();
@@ -66,9 +66,17 @@ public class TimeTracker {
         long timeSinceLastPrint = time - this.timeOfLastPrint;
 
         if (timeSinceLastFPS > UiConstants.infoUpdateMs) {
-            this.currentFPS = 1000f * this.framesSinceLastFPS / (int) timeSinceLastFPS;
-            this.currentFPS = Math.min(this.currentFPS, UiConstants.targetFPS);
-            this.currentFPS = Math.max(this.currentFPS, 1);
+            if (this.game.recording) {
+                // the FPS will be very low while writing frames to disk, so it iss not really fair.
+                // I artificially increase it when recording.
+                this.currentFPS = UiConstants.targetFPS;
+            }
+            else {
+                // tidy up the FPS counter for display
+                this.currentFPS = 1000f * this.framesSinceLastFPS / (int) timeSinceLastFPS;
+                this.currentFPS = Math.min(this.currentFPS, UiConstants.targetFPS);
+                this.currentFPS = Math.max(this.currentFPS, 1);
+            }
             this.framesSinceLastFPS = 0;
             this.timeOfLastFPS = time;
         }
@@ -105,10 +113,10 @@ public class TimeTracker {
 
     /**
      * Initialize time tracker
-     * @param engine: game engine
+     * @param game: game engine
      */
-    public TimeTracker(Engine engine) {
-        this.engine = engine;
+    public TimeTracker(Game game) {
+        this.game = game;
         this.latencyList = new ArrayList<>();
         this.fpsList = new ArrayList<>();
     }

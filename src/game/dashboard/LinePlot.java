@@ -2,7 +2,7 @@ package game.dashboard;
 
 import game.constants.DashboardConstants;
 import game.constants.UiConstants;
-import game.Engine;
+import game.Game;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * This class handles a single plot in the dashboard
  */
 public class LinePlot {
-    Engine engine;
+    Game game;
     // bounds of the plot
     int minX, minY, maxX, maxY, midPointY, height;
     // how many numerical values does the plot contain right now?
@@ -56,13 +56,13 @@ public class LinePlot {
             return;
         }
         this.maxValue = Math.max(1, this.getMax(this.yValues));
-        this.engine.g2D.setStroke(new BasicStroke(1));
+        this.game.g2D.setStroke(new BasicStroke(1));
         for (int i=0; i<this.xValues.length-1; i++) {
-            this.engine.g2D.setColor(this.color);
+            this.game.g2D.setColor(this.color);
             this.yStart = this.maxY - (this.maxY - this.minY) * this.yValues[i] / this.maxValue;
             this.yEnd = this.maxY - (this.maxY - this.minY) * this.yValues[i+1] / this.maxValue;
             // note im using lines, not points, so the x increment can be large and still look OK
-            this.engine.g2D.drawLine(this.xValues[i], this.yStart, this.xValues[i+1], this.yEnd);
+            this.game.g2D.drawLine(this.xValues[i], this.yStart, this.xValues[i+1], this.yEnd);
         }
         this.postProcess();
     }
@@ -102,7 +102,7 @@ public class LinePlot {
      */
     private void paintSeparationLines() {
         // draw division lines
-        this.engine.g2D.setColor(Color.black);
+        this.game.g2D.setColor(Color.black);
         this.paintVerticalLine(this.minX - resize(3), resize(13));
         this.paintVerticalLine(this.maxX, resize(3));
     }
@@ -150,8 +150,8 @@ public class LinePlot {
      * @param width: width of line
      */
     public void paintVerticalLine(int xPosition, int width) {
-        this.engine.g2D.setStroke(new BasicStroke(width));
-        this.engine.g2D.drawLine(
+        this.game.g2D.setStroke(new BasicStroke(width));
+        this.game.g2D.drawLine(
                 xPosition + width / 2,
                 this.minY + width / 2,
                 xPosition + width / 2,
@@ -167,8 +167,8 @@ public class LinePlot {
      */
     public void drawString(String text, int xPos, int yPos, Font font) {
         int width = getStringWidth(text);
-        this.engine.g2D.setColor(this.color);
-        this.engine.g2D.setFont(font);
+        this.game.g2D.setColor(this.color);
+        this.game.g2D.setFont(font);
         // adjust positions to account for string length
         if (font == this.font) {
             xPos -= width / 2;
@@ -178,7 +178,7 @@ public class LinePlot {
             yPos += width / 2;
             xPos -= resize(3);
         }
-        this.engine.g2D.drawString(text, xPos, yPos);
+        this.game.g2D.drawString(text, xPos, yPos);
     }
 
     /**
@@ -187,20 +187,20 @@ public class LinePlot {
      * @return: pixel width
      */
     private int getStringWidth(String text) {
-        this.engine.g2D.setFont(this.font);
-        return this.engine.g2D.getFontMetrics().stringWidth(text);
+        this.game.g2D.setFont(this.font);
+        return this.game.g2D.getFontMetrics().stringWidth(text);
     }
 
     /**
      * Initialize a line plot to add to the dashboard
-     * @param engine: game engine
+     * @param game: game engine
      * @param startX: left bound of this plot
      * @param endX: right bound of this plot
      * @param xIncrement: how many pixels to move over for every point (higher means plot moves faster)
      * @param label: text label to add as heading
      */
-    public LinePlot(Engine engine, int startX, int endX, int xIncrement, String label) {
-        this.engine = engine;
+    public LinePlot(Game game, int startX, int endX, int xIncrement, String label) {
+        this.game = game;
         this.label = label;
         this.minX = startX + resize(4);
         this.maxX = endX;

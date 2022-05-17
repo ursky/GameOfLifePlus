@@ -45,16 +45,13 @@ public final class UiConstants {
     // display the creatures on the screen (in case you want to turn it off to speed things up - this doubles the FPS)
     public static final boolean doPaintThings = true;
 
-    // save each frame as a PNG to 'saved_images' (warning: this is very slow)
-    public static final boolean saveFrames = true;
-
     // do not automatically seed any creatures on the screen; the player has to add everything themselves (can be fun)
-    public static final boolean blankCanvas = true;
+    public static final boolean blankCanvas = false;
 
 
     // display window size
-    public static final int panelWidth = 600;
-    public static final int panelHeight = 400;
+    public static final int panelWidth = 1600;
+    public static final int panelHeight = 900;
 
     // player camera zoom constants
     public static final float startZoom = 1.5f;

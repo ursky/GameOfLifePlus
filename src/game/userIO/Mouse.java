@@ -1,6 +1,6 @@
 package game.userIO;
 
-import game.Engine;
+import game.Game;
 
 import java.awt.event.MouseEvent;
 
@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
  * Listener for mouse events. Detect any clicks and handle them.
  */
 public class Mouse extends java.awt.event.MouseAdapter {
-    Engine engine;
+    Game game;
 
     /**
      * A mouse click (release) was detected!
@@ -27,15 +27,15 @@ public class Mouse extends java.awt.event.MouseAdapter {
      * @param y: click location of field
      */
     private void handleClick(int x, int y) {
-        this.engine.dashboard.creatureIcons.click(x, y);
+        this.game.dashboard.creatureIcons.click(x, y);
     }
 
     /**
      * Initialize mouse listener
-     * @param engine: game engine
+     * @param game: game engine
      */
-    public Mouse(Engine engine) {
-        this.engine = engine;
+    public Mouse(Game game) {
+        this.game = game;
     }
 
 }

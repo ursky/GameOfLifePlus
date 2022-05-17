@@ -4,12 +4,15 @@ import game.world.things.Classes.CreatureConstants;
 import game.constants.InitialSeedDensities;
 import game.visuals.AnimationStack;
 import game.visuals.ImageStack;
-import game.World;
+import game.world.World;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Constants for the butterfly creature
+ */
 public final class ButterflyConstants extends CreatureConstants {
     public ButterflyConstants(World world) {
         super(world);

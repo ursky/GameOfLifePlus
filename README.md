@@ -100,18 +100,19 @@ observe the simulation and interface with it using the following controls:
 1. Use "W", "A", "S", and "D" keys to scroll up, left, down, and to the right (respectively). 
 2. Use "-" and "+" keys to zoom out or zoom in on the field.
 3. Press the space bar to speed up the simulation. This part is really fun.
-4. Use the mouse to select the creature icons in the bottom right and then left-click on the field to place new
-creatures. It can be fun to mess with established communities this way. 
-
+4. Press "R" to take a screenshot, or hold "R" to save many frames to make an
+animated GIF later. The frames/screen shots will be saved into `saved_images`. Note that this drops the FPS.
+5. Use the mouse to select the creature icons in the bottom right and then left-click on the field to place new
+creatures. It can be fun to mess with established communities this way.
 
 ## Parameterization and customization:
 Note that you will need to recompile the code (see installation) to incorporate changes.
 
-Most of the important constants and options for user/window interaction (panel size, zoom speed, etc) can be configured
-in `src/game/userIO/UiConstants.java`. Options for controlling animal and plant parameters (growth size, speed, 
-reproduction, size, animations, etc) can be found in corresponding files in `src/game/things/AnimalConstants.java` 
-and `src/game/things/PlantConstants.java`. Options for the plots and numbers shown in the dashboard can be changed
-in `src/game/dashboard/Dashboard.java`.
+Most of the important constants and options for user/window interaction (panel size, zoom speed, etc.) can be configured
+in `src/game/constants/UiConstants.java`. Options for controlling animal and plant parameters (growth size, speed, 
+reproduction, size, animations, etc) can be found in corresponding files in `src/game/things/AnimalConstants` 
+and `src/game/things/PlantConstants`. Options for the plots and numbers shown in the dashboard can be changed
+in `src/game/constants/Dashboard.java`.
 
 If you would like, you can create your own creatures by following the template examples in 
 `src/game/things/AnimalConstants.java` and `src/game/things/PlantConstants.java`, and adding your new creature 
@@ -131,6 +132,10 @@ cd GameOfLifePlus
 ./installGame.sh
 ./runGame.sh  # alternatively: `java -jar runGame.jar` 
 ```
+
+Note: the first time you launch the game it will need to generate all intermediate rotation/opacity variants of the 
+creature images, which may take a minute. In all future runs the game will load these from disk, which only takes
+a few seconds.
 
 ## Author and credits
 This game was independently developed by Gherman Uritskiy.

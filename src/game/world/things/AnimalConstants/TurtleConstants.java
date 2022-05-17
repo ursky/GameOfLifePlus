@@ -2,11 +2,14 @@ package game.world.things.AnimalConstants;
 
 import game.world.things.Classes.CreatureConstants;
 import game.constants.InitialSeedDensities;
-import game.World;
+import game.world.World;
 import game.visuals.ImageStack;
 
 import java.awt.*;
 
+/**
+ * Constants for the turtle creature
+ */
 public final class TurtleConstants extends CreatureConstants {
     public TurtleConstants(World world) {
         super(world);

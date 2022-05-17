@@ -1,7 +1,6 @@
 package game.world;
 
 import game.world.things.Classes.CreatureConstants;
-import game.World;
 import game.world.things.Classes.Thing;
 
 import java.awt.*;

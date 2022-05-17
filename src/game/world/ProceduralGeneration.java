@@ -1,8 +1,9 @@
 package game.world;
 import game.constants.UiConstants;
-import game.World;
+import game.quadsearch.Region;
 import game.world.things.Classes.ThingArchive;
 import game.world.things.Classes.Thing;
+import game.quadsearch.Region;
 
 import java.util.ArrayList;
 
@@ -14,38 +15,33 @@ public class ProceduralGeneration {
     public boolean[][] wasRendered = new boolean[nBins][nBins];
     public boolean[][] isRendered = new boolean[nBins][nBins];
     public int[][][] cloneOfBin = new int[nBins][nBins][2];
-    public float[] currentCoordinates;
+    public Region currentCoordinates = new Region(0, 0, 0, 0);
     public int[] currentBins;
-    public float loadRangeWidth;
-    public float loadRangeHeight;
     public ThingArchive[][] archivedThings = new ThingArchive[nBins][nBins];
     public int safetyScanRange = 10;
 
     private void updateRenderedRange() {
-        this.currentCoordinates = new float[] {
-                this.world.engine.userIO.playerPositionX - this.world.engine.userIO.loadRange,
-                this.world.engine.userIO.playerPositionY - this.world.engine.userIO.loadRange,
-                this.world.engine.userIO.playerPositionX + this.world.engine.userIO.loadRange,
-                this.world.engine.userIO.playerPositionY + this.world.engine.userIO.loadRange
-        };
+        this.currentCoordinates = new Region(
+                this.world.game.userIO.playerPositionX - this.world.game.userIO.loadRange,
+                this.world.game.userIO.playerPositionY - this.world.game.userIO.loadRange,
+                this.world.game.userIO.playerPositionX + this.world.game.userIO.loadRange,
+                this.world.game.userIO.playerPositionY + this.world.game.userIO.loadRange);
         this.currentBins = new int[] {
-                (int)(this.currentCoordinates[0] / this.binWidthX),
-                (int)(this.currentCoordinates[1] / this.binWidthY),
-                (int)(this.currentCoordinates[2] / this.binWidthX),
-                (int)(this.currentCoordinates[3] / this.binWidthY)
+                (int)(this.currentCoordinates.getX1() / this.binWidthX),
+                (int)(this.currentCoordinates.getY1() / this.binWidthY),
+                (int)(this.currentCoordinates.getX2() / this.binWidthX),
+                (int)(this.currentCoordinates.getY2() / this.binWidthY)
         };
-        this.currentCoordinates = new float[] {
+        this.currentCoordinates = new Region(
                 this.currentBins[0] * this.binWidthX,
                 this.currentBins[1] * this.binWidthY,
                 this.currentBins[2] * this.binWidthX + this.binWidthX,
                 this.currentBins[3] * this.binWidthY + this.binWidthY
-        };
-        this.loadRangeWidth = this.currentCoordinates[2] - this.currentCoordinates[0];
-        this.loadRangeHeight = this.currentCoordinates[3] - this.currentCoordinates[1];
+        );
     }
 
     private void checkRenderedBins() {
-        int scanRange = this.safetyScanRange + (int) (this.safetyScanRange * this.world.engine.userIO.zoomLevel);
+        int scanRange = this.safetyScanRange + (int) (this.safetyScanRange * this.world.game.userIO.zoomLevel);
         for (int i=this.currentBins[0]-scanRange; i<=this.currentBins[2]+scanRange; i++) {
             for (int j=this.currentBins[1]-scanRange; j<=this.currentBins[3]+scanRange; j++) {
                 if (this.binIsRendered(i, j)) {
@@ -62,7 +58,7 @@ public class ProceduralGeneration {
         }
 
         if (!this.archivedThings[i][j].empty) {
-            ArrayList<Thing> archivedThings = this.archivedThings[i][j].get();
+            ArrayList<Thing> archivedThings = this.archivedThings[i][j].things;
             this.world.things.addAll(archivedThings);
             this.archivedThings[i][j].clear();
         }
@@ -85,31 +81,29 @@ public class ProceduralGeneration {
     }
 
     private void initNewBin(int i, int j) {
-        if (this.world.engine.tracker.frameCounter < UiConstants.fastPreRenderFrames) {
+        if (this.world.game.tracker.frameCounter < UiConstants.fastPreRenderFrames) {
             return;
         }
-        float minToInitX = i * this.binWidthX;
-        float maxToInitX = minToInitX + this.binWidthX;
-        float minToInitY = j * this.binWidthY;
-        float maxToInitY = minToInitY + this.binWidthY;
-        ArrayList<Thing> clonedThings = this.world.initThings.copyThings(
-                minToInitX, minToInitY, maxToInitX, maxToInitY);
+        Region region = new Region(
+                i * this.binWidthX,
+                j * this.binWidthY,
+                i * this.binWidthX + this.binWidthX,
+                j * this.binWidthY + this.binWidthY);
+        ArrayList<Thing> clonedThings = this.world.initThings.copyThings(region);
         this.world.things.addAll(clonedThings);
-        this.world.initThings.initAnimals(minToInitX, minToInitY, maxToInitX, maxToInitY);
-        this.world.initThings.initPlants(minToInitX, minToInitY, maxToInitX, maxToInitY);
+        this.world.initThings.initAnimals(region);
+        this.world.initThings.initPlants(region);
     }
 
     private void checkInitThings() {
-        if (this.world.engine.tracker.frameCounter == 1) {
+        if (this.world.game.tracker.frameCounter == 1) {
             System.out.println("Initializing plants");
-            this.world.initThings.initPlants(this.currentCoordinates[0], this.currentCoordinates[1],
-                    this.currentCoordinates[2], this.currentCoordinates[3]);
+            this.world.initThings.initPlants(this.currentCoordinates);
         }
-        if (this.world.engine.tracker.frameCounter == UiConstants.fastPreRenderFrames / 2) {
+        if (this.world.game.tracker.frameCounter == UiConstants.fastPreRenderFrames / 2) {
             // halfway though preload add animals
             System.out.println("Initializing animals");
-            this.world.initThings.initAnimals(this.currentCoordinates[0], this.currentCoordinates[1],
-                    this.currentCoordinates[2], this.currentCoordinates[3]);
+            this.world.initThings.initAnimals(this.currentCoordinates);
         }
     }
 

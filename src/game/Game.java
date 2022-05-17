@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import game.constants.UiConstants;
 import game.userIO.Mouse;
@@ -16,8 +17,9 @@ import game.userIO.UserIO;
 import game.world.ProceduralGeneration;
 import game.dashboard.Dashboard;
 import game.utilities.Random;
+import game.world.World;
 
-public class Engine extends JPanel implements ActionListener {
+public class Game extends JPanel implements ActionListener {
     public World world = new World(this);
     public ProceduralGeneration procedural;
     public Timer timer;
@@ -26,6 +28,7 @@ public class Engine extends JPanel implements ActionListener {
     public final Dashboard dashboard;
     public UserIO userIO;
     private String randomID;
+    public boolean recording;
 
     public void paintFPS(String message) {
         this.g2D.setColor(Color.white);
@@ -44,7 +47,7 @@ public class Engine extends JPanel implements ActionListener {
         this.paintFPS(fpsMessage);
         this.tracker.printStepNanoseconds("\nAdd paint objects");
         this.dashboard.paint();
-        if (UiConstants.saveFrames) {
+        if (this.recording) {
             this.saveFrame();
         }
     }
@@ -110,15 +113,16 @@ public class Engine extends JPanel implements ActionListener {
         this.g2D.drawImage(image, xPos, yPos, size, size, null);
     }
 
-    private void initForSaving() {
+    public void startRecording() {
+        this.recording = true;
         // this is purely for saving frames to make GIFs later
-        if (UiConstants.saveFrames) {
+        if (Objects.equals(this.randomID, "")) {
             this.randomID = Random.randString(6);
             File theDir = new File(UiConstants.savedImageDir + "/" + this.randomID);
             if (!theDir.exists()){
                 boolean created = theDir.mkdirs();
                 if (created) {
-                    System.out.println("Initialized run " + this.randomID);
+                    System.out.println("Initialized saving directory: " + this.randomID);
                 }
             }
         }
@@ -142,7 +146,7 @@ public class Engine extends JPanel implements ActionListener {
         this.tracker.printStepNanoseconds("Update frames");
     }
 
-    public Engine() {
+    public Game() {
         this.addMouseListener(new Mouse(this));
         this.setPreferredSize(new Dimension(UiConstants.panelWidth, UiConstants.panelHeight));
         this.setBackground(Color.black);
@@ -152,6 +156,7 @@ public class Engine extends JPanel implements ActionListener {
         this.timer.start();
         this.tracker = new TimeTracker(this);
         this.dashboard = new Dashboard(this);
-        this.initForSaving();
+        this.recording = false;
+        this.randomID = "";
     }
 }

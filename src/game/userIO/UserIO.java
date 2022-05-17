@@ -2,7 +2,8 @@ package game.userIO;
 
 import game.constants.UiConstants;
 import game.constants.DashboardConstants;
-import game.Engine;
+import game.Game;
+import game.quadsearch.Point;
 
 import java.awt.event.KeyEvent;
 
@@ -11,7 +12,7 @@ import java.awt.event.KeyEvent;
  * zooming in and out, and clicking keys of mouse.
  */
 public class UserIO {
-    public Engine engine;
+    public Game game;
     public boolean movingCamera = false;
 
     // current zoom and location positions
@@ -40,12 +41,12 @@ public class UserIO {
     public void keyboardCheck() {
         if (this.fastForward()) { return; }
         this.movingCamera = false;
-        if (UiConstants.saveFrames) {
+        if (this.game.recording || Keyboard.isKeyPressed(KeyEvent.VK_R)) {
             // make the zooming slow and smooth for nicer GIFs
             fpsToAdjustTo = UiConstants.targetFPS * 2;
         }
         else {
-            fpsToAdjustTo = this.engine.tracker.currentFPS;
+            fpsToAdjustTo = this.game.tracker.currentFPS;
         }
         if (Keyboard.isKeyPressed(KeyEvent.VK_W)) {
             this.playerPositionY -= this.scrollSpeed / fpsToAdjustTo;
@@ -70,6 +71,12 @@ public class UserIO {
         if (Keyboard.isKeyPressed(KeyEvent.VK_MINUS)) {
             this.zoomLevel -= this.zoomLevel * this.zoomSpeed / fpsToAdjustTo;
             reAdjustView();
+        }
+        if (Keyboard.isKeyPressed(KeyEvent.VK_R)) {
+            this.game.startRecording();
+        }
+        else {
+            this.game.recording = false;
         }
     }
 
@@ -102,35 +109,27 @@ public class UserIO {
      * @return: are we fast-forwarding right now?
      */
     public boolean fastForward(){
-        return this.engine.tracker.frameCounter < UiConstants.fastPreRenderFrames
+        return this.game.tracker.frameCounter < UiConstants.fastPreRenderFrames
                 || Keyboard.isKeyPressed(KeyEvent.VK_SPACE);
     }
 
     /**
      * Convert coordinate on the view window to the true coordinate of the spot on the game board
      * @param x: coordinate on the viewing window (such as form from a mouse click)
+     * @param Y: coordinate on the viewing window (such as form from a mouse click)
      * @return: true coordinate (as seen by a creature)
      */
-    public float reverseTransformX(int x) {
-        return x / this.engine.userIO.zoomLevel + this.engine.userIO.playerPositionX
-                - this.engine.userIO.povDimX / 2;
-    }
-
-    /**
-     * Convert coordinate on the view window to the true coordinate of the spot on the game board
-     * @param y: coordinate on the viewing window (such as form from a mouse click)
-     * @return: true coordinate (as seen by a creature)
-     */
-    public float reverseTransformY(int y) {
-        return y / this.engine.userIO.zoomLevel + this.engine.userIO.playerPositionY
-                - this.engine.userIO.povDimY / 2;
+    public Point reverseTransformCoordinate(int x, int y) {
+        return new Point(0,
+                x / this.zoomLevel + this.playerPositionX - this.povDimX / 2,
+                y / this.zoomLevel + this.playerPositionY - this.povDimY / 2);
     }
 
     /**
      * Initialize IO listener
-     * @param engine: game engine
+     * @param game: game engine
      */
-    public UserIO(Engine engine) {
-        this.engine = engine;
+    public UserIO(Game game) {
+        this.game = game;
     }
 }
