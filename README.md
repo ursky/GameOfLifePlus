@@ -6,8 +6,8 @@ The purpose of the game is nothing more that provide a framework to model how re
 a few types of organisms can produce complex patterns and dynamics. This simulator is loosely inspired by the classical
 "Game of Life" - a mathematical 2D model that produces complex behavior from a set of extremely simple rules. My 
 version of this concept lacks this simplicity, but instead features much more realistic creature movement, 
-reproduction, movement, growth, interaction, and supports multi-species interactions such as predation, resource 
-competition, sun shading, and others. 
+reproduction, movement, growth, interaction, and supports multi-species interactions such as 
+predation, resource competition, sun shading, biomass distribution modeling, and others. 
 
 ## What is this for?
 This is just a fun passion project I came up with as I was learning Java. In its current form the project 
@@ -16,9 +16,9 @@ and extremely efficient for large-scale simulations, this engine can theoretical
 realistic microbial interaction simulation.
 
 ## Is this a realistic ecology simulator?
-This game has turtles eat ladybugs, elephants are the size of butterflies, and plants don't need water... No, its not
-realistic. I just used graphics and creature statistics that I thought were fun. The underlying core inter-species 
-competition and predation mechanics are quite real, however. 
+This game has turtles that eat ladybugs, elephants that are the size of butterflies, and plants that don't need
+water... No, its not realistic. I just used graphics and creature statistics that I thought were fun. 
+The underlying core inter-species competition and predation mechanics are quite real, however. 
 
 ## What makes this impressive?
 The entire simulation and visualization is build from the ground up in Java. The coding implementations used
@@ -51,7 +51,24 @@ choppy).
 the images are automatically rotated, resized, change opacity, etc. (all done in O(1) time thanks to caching).
 However, since I am not a digital artist the only creatures that are currently animated are the butterflies. 
 
-## How do I play and control the game?
+## Creature descriptions:
+1. Grass: the smallest plant in the system. Very fast-growing, but is easily shaded out by larger plants. Eaten by 
+elephants. Generally, grass will go extinct if it becomes out-competed for space.
+2. Bush: the medium plant in the system. Fast-growing and prolific. Shades out grass and smaller tree saplings.
+Eaten by caterpillars.
+3. Tree: the largest plant. Slow-growing but has a large canopy that shades out all other plants except the strongest
+of adult bushes. Will slowly cover the whole map unless kept in check by beetles.
+4. Beetle: a quick bug that rapidly eats trees while young. Once an adult it stops eating and searches for new trees to
+lay eggs under, which it does until it starves to death. Is predated on by turtles.
+5. Caterpillar: the larval form of the butterfly. Very slow-moving and has poor senses. Eats bushes until it is fully
+grown, at which point it turns into a pupae. Both the caterpillar and the pupae are predated on by the turtle.
+6. Butterfly: the adult for of the caterpillar. Moves very fast thanks to flight. It does not eat, and will fly around
+laying eggs on new bushes until it starves to death.
+7. Elephant: a large last herbivore that eats grass. It is slow to reproduce but can survive food shortages.   
+8. Turtle: the predator of the system, hunting young and adult beetles, caterpillars, and butterfly pupae. Is very slow
+and vulnerable when young.
+
+## How do I "play" and control the simulation?
 Once you install the Java application and run `LaunchGame` the game will launch, randomly populate the world with some
 creatures, and fast-forward a little to a point where the populations become more stable. From there you can 
 observe the simulation and interface with it using the following controls:
@@ -62,90 +79,90 @@ observe the simulation and interface with it using the following controls:
 creatures. It can be fun to mess with established communities this way. 
 
 ## File structure:
-```aidl
+```
 ├── LICENSE
 ├── LifeSimulationJ.iml
 ├── README.md
 ├── graphics
-│   ├── bush.png
-│   ├── butterfly_1.png
-│   ├── butterfly_2.png
-│   ├── butterfly_3.png
-│   ├── butterfly_4.png
-│   ├── butterfly_5.png
-│   ├── butterfly_6.png
-│   ├── butterfly_7.png
-│   ├── butterfly_8.png
-│   ├── caterpillar_1.png
-│   ├── caterpillar_2.png
-│   ├── caterpillar_3.png
-│   ├── dead_grass.png
-│   ├── dead_mouse.png
-│   ├── dead_tree.png
-│   ├── dead_turtle.png
-│   ├── egg.png
-│   ├── egg_spotted.png
-│   ├── elephant.png
-│   ├── grass.png
-│   ├── ladybug.png
-│   ├── pupae.png
-│   ├── seed.png
-│   ├── splat.png
-│   ├── tree.png
-│   ├── tree_seed.png
-│   ├── turtle.png
+│   ├── bush.png
+│   ├── butterfly_1.png
+│   ├── butterfly_2.png
+│   ├── butterfly_3.png
+│   ├── butterfly_4.png
+│   ├── butterfly_5.png
+│   ├── butterfly_6.png
+│   ├── butterfly_7.png
+│   ├── butterfly_8.png
+│   ├── caterpillar_1.png
+│   ├── caterpillar_2.png
+│   ├── caterpillar_3.png
+│   ├── dead_grass.png
+│   ├── dead_mouse.png
+│   ├── dead_tree.png
+│   ├── dead_turtle.png
+│   ├── egg.png
+│   ├── egg_spotted.png
+│   ├── elephant.png
+│   ├── grass.png
+│   ├── ladybug.png
+│   ├── pupae.png
+│   ├── seed.png
+│   ├── splat.png
+│   ├── tree.png
+│   ├── tree_seed.png
+│   ├── turtle.png
 ├── rendered_images
 └── src
     ├── LaunchGame.java
     ├── engine
-    │   ├── CreateFrame.java
-    │   ├── Engine.java
-    │   ├── TimeTracker.java
-    │   ├── World.java
-    │   ├── dashboard
-    │   │   ├── Buttons.java
-    │   │   ├── ClickableButton.java
-    │   │   ├── Dashboard.java
-    │   │   ├── DashboardConstants.java
-    │   │   ├── LinePlot.java
-    │   │   └── StackedLinePlot.java
-    │   ├── quadsearch
-    │   │   ├── Point.java
-    │   │   ├── QuadTree.java
-    │   │   ├── Region.java
-    │   │   └── SearchAreas.java
-    │   ├── userIO
-    │   │   ├── Keyboard.java
-    │   │   ├── Mouse.java
-    │   │   ├── UiConstants.java
-    │   │   └── UserIO.java
-    │   ├── utilities
-    │   │   └── Utils.java
-    │   ├── visuals
-    │   │   ├── AnimationStack.java
-    │   │   ├── ImageLoadThread.java
-    │   │   ├── ImageStack.java
-    │   │   └── PaintingGroupThread.java
-    │   └── world
-    │       ├── InitThings.java
-    │       ├── ProceduralGeneration.java
-    │       ├── QuadTreeThread.java
-    │       ├── ThingCounter.java
-    │       └── UpdateThingsThread.java
+    │   ├── CreateFrame.java
+    │   ├── Engine.java
+    │   ├── TimeTracker.java
+    │   ├── World.java
+    │   ├── dashboard
+    │   │   ├── Buttons.java
+    │   │   ├── ClickableButton.java
+    │   │   ├── Dashboard.java
+    │   │   ├── DashboardConstants.java
+    │   │   ├── LinePlot.java
+    │   │   └── StackedLinePlot.java
+    │   ├── quadsearch
+    │   │   ├── Point.java
+    │   │   ├── QuadTree.java
+    │   │   ├── Region.java
+    │   │   └── SearchAreas.java
+    │   ├── userIO
+    │   │   ├── Keyboard.java
+    │   │   ├── Mouse.java
+    │   │   ├── UiConstants.java
+    │   │   └── UserIO.java
+    │   ├── utilities
+    │   │   └── Utils.java
+    │   ├── visuals
+    │   │   ├── AnimationStack.java
+    │   │   ├── ImageLoadThread.java
+    │   │   ├── ImageStack.java
+    │   │   └── PaintingGroupThread.java
+    │   └── world
+    │       ├── InitThings.java
+    │       ├── ProceduralGeneration.java
+    │       ├── QuadTreeThread.java
+    │       ├── ThingCounter.java
+    │       └── UpdateThingsThread.java
     └── things
         ├── AnimalConstants
-        │   ├── BeetleConstants.java
-        │   ├── ButterflyConstants.java
-        │   ├── CaterpillarConstants.java
-        │   ├── ElephantConstants.java
-        │   └── TurtleConstants.java
+        │   ├── BeetleConstants.java
+        │   ├── ButterflyConstants.java
+        │   ├── CaterpillarConstants.java
+        │   ├── ElephantConstants.java
+        │   └── TurtleConstants.java
         ├── Classes
-        │   ├── Animal.java
-        │   ├── CreatureConstants.java
-        │   ├── InitialSeedDensities.java
-        │   ├── Plant.java
-        │   ├── Thing.java
-        │   └── ThingArchive.java
+        │   ├── Animal.java
+        │   ├── CreatureConstants.java
+        │   ├── InitialSeedDensities.java
+        │   ├── Plant.java
+        │   ├── Thing.java
+        │   └── ThingArchive.java
         └── PlantConstants
             ├── BushConstants.java
             ├── GrassConstants.java

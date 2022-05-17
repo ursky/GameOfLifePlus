@@ -1,7 +1,6 @@
 package engine.userIO;
 
 import engine.Engine;
-import engine.dashboard.ClickableButton;
 
 import java.awt.event.MouseEvent;
 
@@ -15,7 +14,7 @@ public class Mouse extends java.awt.event.MouseAdapter {
     }
 
     private void handleClick(int x, int y) {
-        this.engine.dashboard.buttons.click(x, y);
+        this.engine.dashboard.creatureIcons.click(x, y);
     }
 
     public Mouse(Engine engine) {

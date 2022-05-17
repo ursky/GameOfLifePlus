@@ -30,9 +30,11 @@ public class Engine extends JPanel implements ActionListener {
     public void paint(Graphics g) {
         super.paint(g);
         this.g2D = (Graphics2D) g;
-        ArrayList<PaintingGroupThread> paintGroups = initializePaintGroups();
-        this.tracker.printStepNanoseconds("Prepare painting");
-        this.paintPaintGroup(paintGroups);
+        if (UiConstants.doPaintThings) {
+            ArrayList<PaintingGroupThread> paintGroups = initializePaintGroups();
+            this.tracker.printStepNanoseconds("Prepare painting");
+            this.paintPaintGroup(paintGroups);
+        }
         String fpsMessage = "FPS: " + String.valueOf((int) this.tracker.currentFPS);
         this.paintFPS(fpsMessage);
         this.tracker.printStepNanoseconds("\nAdd paint objects");
@@ -45,7 +47,8 @@ public class Engine extends JPanel implements ActionListener {
         float maxSize = (int)this.world.initThings.getBiggestSize() + 1;
         float sizeIncrement = UiConstants.paintSizeIncrement;
         for (float size=minSize; size<maxSize; size+=sizeIncrement) {
-            PaintingGroupThread paintThread = new PaintingGroupThread(this, size, size + sizeIncrement, false);
+            PaintingGroupThread paintThread = new PaintingGroupThread(
+                    this, size, size + sizeIncrement, false);
             paintThreads.add(paintThread);
         }
         PaintingGroupThread paintThread = new PaintingGroupThread(this, 0, 10000, true);

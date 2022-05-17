@@ -6,7 +6,7 @@ import engine.Engine;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Buttons extends LinePlot {
+public class CreatureIcons extends LinePlot {
     Engine engine;
     public ArrayList<ClickableButton> buttons;
     int size, lineWidth;
@@ -30,7 +30,7 @@ public class Buttons extends LinePlot {
     private void drawButton(ClickableButton button) {
         // draw label
         this.drawString(
-                button.name, button.xMin + this.size / 2,
+                button.name, button.xMin + this.size / 2 - this.lineWidth,
                 this.midPointY + this.size / 2, this.font);
         this.drawString(
                 this.asString(button.count), button.xMin + this.size / 2 - this.lineWidth,
@@ -87,7 +87,7 @@ public class Buttons extends LinePlot {
         }
     }
 
-    public Buttons(Engine engine, int startX, int endX, String label) {
+    public CreatureIcons(Engine engine, int startX, int endX, String label) {
         super(engine, startX, endX, 0, label);
         this.engine = engine;
         this.size = (this.maxX - this.minX) / (this.engine.world.initThings.orderedCreatureConstants.size());

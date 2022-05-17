@@ -3,12 +3,10 @@ package engine.dashboard;
 import engine.userIO.UiConstants;
 import engine.Engine;
 
-import java.awt.*;
-
 public class Dashboard {
     Engine engine;
     StackedLinePlot countsPlot;
-    public Buttons buttons;
+    public CreatureIcons creatureIcons;
     LinePlot latencyPlot, fpsPlot, totalCountPlot;
     int minY, maxY, minX, maxX;
 
@@ -18,18 +16,18 @@ public class Dashboard {
             this.latencyPlot.update(this.engine.tracker.latencyList);
             this.fpsPlot.update(this.engine.tracker.fpsList);
             this.totalCountPlot.update(this.engine.world.counter.totalCounts);
-            this.buttons.update(this.engine.world.counter.thingCounts);
+            this.creatureIcons.update(this.engine.world.counter.thingCounts);
         }
     }
 
     public void paint() {
-        if (this.engine.tracker.frameCounter > 2) {
+        if (this.engine.tracker.frameCounter > 60) {
             this.paintBar();
             this.countsPlot.draw();
             this.latencyPlot.draw();
             this.fpsPlot.draw();
             this.totalCountPlot.draw();
-            this.buttons.draw();
+            this.creatureIcons.draw();
         }
     }
 
@@ -70,7 +68,7 @@ public class Dashboard {
                 DashboardConstants.xPixelIncrement,
                 "Rendered things #");
 
-        this.buttons = new Buttons(
+        this.creatureIcons = new CreatureIcons(
                 this.engine,
                 DashboardConstants.buttonsPlotXStart,
                 DashboardConstants.buttonsPlotXEnd,
