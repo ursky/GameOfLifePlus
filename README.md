@@ -78,6 +78,20 @@ observe the simulation and interface with it using the following controls:
 4. Use the mouse to select the creature icons in the bottom right and then left-click on the field to place new
 creatures. It can be fun to mess with established communities this way. 
 
+## Installation and running:
+This is simply a Java project, so if you are comfortable, feel free to build and test however you prefer.
+The only "special" dependency is that the game needs to be run inside `GameOfLifePlus/` so it can have access
+to `GameOfLifePlus/graphics` and `GameOfLifePlus/rendered_images`. You will obviously need JRE installed on your
+system.
+
+However, if you would like a quick how-to guide, follow these steps (for Mac/Unix):
+```bash
+git clone https://github.com/ursky/GameOfLifePlus.git
+cd GameOfLifePlus
+./installGame.sh
+./runGame.sh  # alternatively: `java -jar runGame.jar` 
+```
+
 ## File structure:
 ```
 ├── LICENSE
