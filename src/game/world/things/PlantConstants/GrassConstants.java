@@ -33,7 +33,7 @@ public final class GrassConstants extends CreatureConstants {
 
         // organism constants
         this.metabolismRate = 8f; // adjust to FPS and cool down
-        this.decayRate = -500; // adjust to FPS and cool down
+        this.decayRate = -50; // adjust to FPS and cool down
         this.growAtHealth = 50;
         this.maxGrowthRate = 5; // adjust to FPS and cool down
         this.reproduceAtSize = maxSize;

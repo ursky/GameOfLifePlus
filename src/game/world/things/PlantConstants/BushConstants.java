@@ -23,7 +23,7 @@ public final class BushConstants extends CreatureConstants {
                 0, 10, 1, 300, 50);
         this.youngImage = new ImageStack("seed.png",
                 0, 3, 1, 200, 15);
-        this.deadImage = new ImageStack("dead_tree.png",
+        this.deadImage = new ImageStack("bush.png",
                 0, 3, 10, 300, 0);
         this.startingDensity = InitialSeedDensities.bushStartingDensity; // per 100pixels^2
         this.maxSize = 30;
@@ -33,7 +33,7 @@ public final class BushConstants extends CreatureConstants {
 
         // organism constants
         this.metabolismRate = 5f; // adjust to FPS and cool down
-        this.decayRate = -200; // adjust to FPS and cool down
+        this.decayRate = -50; // adjust to FPS and cool down
         this.growAtHealth = 50;
         this.maxGrowthRate = 2.0f; // adjust to FPS and cool down
         this.reproduceAtSize = 0.9f * maxSize;

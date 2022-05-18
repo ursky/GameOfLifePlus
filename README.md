@@ -28,17 +28,17 @@ throughout the project are low-level and carefully thought out with speed in min
 time complexity is O(n), and memory is also O(n), which was quite difficult to achieve considering the complexity
 of the interactions. Here are some of the simulation's features:
 1. Every creature (bug, tree, grass, etc) is processed independently every frame (running at 60 frames per second).
-This means 60 times every second, a given creature does all the game.world.things it can do at that moment, including:
+This means 60 times every second, a given creature does all the things it can do at that moment, including:
 move, accelerate towards something, run away from a predator (animals only), investigate the surrounding around, 
 hunts prey (animals only), eats, grows, reproduces, lays eggs or spreads seeds, and shades neighbors (plants only). 
-2. A novel custom implementation of a multi-threaded Quad Tree 2D search allows all the creatures to "see" other 
-creatures around them in real time with a total time complexity of T=O(log n), which allows me to simultaneously 
-calculate complex interactions between hundreds of thousands (!) of organisms.
+2. A novel custom implementation of a multi-threaded Quad Tree 2D search allows all the creatures to "see" all other 
+creatures withing vision range in real time with a total time complexity of T=O(log n), which allows me to 
+simultaneously calculate complex interactions between hundreds of thousands of organisms.
 3. Full multi-threading support - all steps of the simulation are done in parallel to improve performance. With 12 
 cores I am able to simultaneously render and display ~100,000 organisms while maintaining a 50-60 frames per second
 refresh rate.
 4. Low-memory optimizations. The project uses pointers and some clever efficient memory caching throughout to be 
-able to store millions (!!) of loaded organisms, each with their current parameters, movement, animations, etc.
+able to store millions of loaded organisms, each with their current parameters, movement, animations, etc.
 5. Because the game allows for fast scrolling and zooming but can only realistically process ~250,000 creatures at 
 a time, it saves creatures that are very far away from the player's current position into indexed bins.
 Creatures stored this way are not updated while the player "is away", but will spring back to life if he/she returns 
