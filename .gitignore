@@ -24,6 +24,7 @@ rendered_images/*
 saved_images/*
 bin/*
 out
+!*/README.md
 
 .DS_store
 */.DS_store
