@@ -14,7 +14,7 @@ public final class UiConstants {
 
     // fast-forward for the first few frames. Helps to establish and stabilize the world quicker
     // note that animals spawn half-way throughout this period
-    public static final int fastPreRenderFrames = 0;
+    public static final int fastPreRenderFrames = 200;
 
     // the speed of the fast-forward when pressing SPACE
     public static final float fastForward = 12;
@@ -22,6 +22,12 @@ public final class UiConstants {
     // when fast forwarding at very fast rates in low FPS some things start breaking (e.g. movement)
     // this constant prevents these errors by limiting the speed-up based on FPS
     public static final float maxRateFactor = 1f / 5; // no less than 1/5
+
+    // display window size
+    // public static final int panelWidth = 1600;
+    // public static final int panelHeight = 900;
+    public static final int panelWidth = 1200;
+    public static final int panelHeight = 700;
 
     // dimensions of the full play field (how far you can scroll)
     public static final int fullDimX = 1000000;
@@ -47,11 +53,6 @@ public final class UiConstants {
 
     // do not automatically seed any creatures on the screen; the player has to add everything themselves (can be fun)
     public static final boolean blankCanvas = false;
-
-
-    // display window size
-    public static final int panelWidth = 1600;
-    public static final int panelHeight = 900;
 
     // player camera zoom constants
     public static final float startZoom = 1.5f;

@@ -125,17 +125,20 @@ The only "special" dependency is that the game needs to be run inside `GameOfLif
 to `GameOfLifePlus/graphics` and `GameOfLifePlus/rendered_images`. You will obviously need JRE installed on your
 system. You can also load the project up into an IDE and launch `src/LaunchGame` directly.
 
-However, if you would like a quick how-to guide, follow these steps (for Mac/Unix):
+Note: the first time you launch the game it will need to generate all intermediate rotation/opacity variants of the
+creature images, which may take a minute. In all future runs the game will load these from disk, which only takes
+a few seconds. This will take extra memory, so I recommend giving java some memory to work with 
+(like this: `java -Xmx8192m -jar runGame.jar`).
+
+Alternatively, just follow these steps (for Mac/Unix):
 ```bash
 git clone https://github.com/ursky/GameOfLifePlus.git
 cd GameOfLifePlus
 ./installGame.sh
-./runGame.sh  # alternatively: `java -jar runGame.jar` 
+./runGame.sh  # alternatively, directly run `java -Xmx8192m -jar runGame.jar` 
 ```
 
-Note: the first time you launch the game it will need to generate all intermediate rotation/opacity variants of the 
-creature images, which may take a minute. In all future runs the game will load these from disk, which only takes
-a few seconds.
+
 
 ## Author and credits
 This game was independently developed by Gherman Uritskiy.
