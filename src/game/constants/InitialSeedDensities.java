@@ -12,7 +12,7 @@ public final class InitialSeedDensities {
     public static final float treeStartingDensity = densityMultiplier * 0.4f; // per 100pixels^2
     public static final float bushStartingDensity = densityMultiplier * 0.4f; // per 100pixels^2
     public static final float beetleStartingDensity = densityMultiplier * 0.9f; // per 100pixels^2
-    public static final float butterflyStartingDensity = densityMultiplier * 0.5f; // per 100pixels^2
+    public static final float butterflyStartingDensity = densityMultiplier * 0.2f; // per 100pixels^2
     public static final float seedEaterStartingDensity = densityMultiplier * 0.2f; // per 100pixels^2
     public static final float turtleStartingDensity = densityMultiplier * 0.05f; // per 100pixels^2
 

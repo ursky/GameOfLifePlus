@@ -4,9 +4,9 @@ package game.quadsearch;
  * This class stores a single 2d point
  */
 public class Point {
-    public int index;
-    public float x;
-    public float y;
+    private int index;
+    private float x;
+    private float y;
 
     /**
      * Store 2D point
@@ -24,7 +24,7 @@ public class Point {
      * ID/index getter. Note this is used as an index to find the creature at this position.
      * @return: index
      */
-    public float getIndex() {
+    public int getIndex() {
         return this.index;
     }
 

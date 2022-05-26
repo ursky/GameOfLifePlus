@@ -55,7 +55,7 @@ public final class BeetleConstants extends CreatureConstants {
 
         // foraging constants
         this.foodNames.add("Tree");
-        this.visionRange = 30;
+        this.visionRange = 45;
         this.minFoodSize = 5;
         this.eatsSeeds = false;
         this.eatingRate = 50; // biomass per second; adjust to FPS and cool down

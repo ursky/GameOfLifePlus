@@ -35,10 +35,11 @@ public final class BushConstants extends CreatureConstants {
         this.metabolismRate = 5f; // adjust to FPS and cool down
         this.decayRate = -50; // adjust to FPS and cool down
         this.growAtHealth = 50;
-        this.maxGrowthRate = 2.0f; // adjust to FPS and cool down
+        this.maxGrowthRate = 3.0f; // adjust to FPS and cool down
         this.reproduceAtSize = 0.9f * maxSize;
         this.reproduceAtHealth = 100;
-        this.reproductionPenalty = 0.3f;
+        this.reproductionPenalty = 0.9f;
+        this.reproductionCoolDown = 5;
         this.maxOffsprings = 3;
         this.startHealth = 50;
 

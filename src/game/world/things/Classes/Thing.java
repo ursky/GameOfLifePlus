@@ -104,7 +104,7 @@ public class Thing {
         // note that we need to first retrieve the quad tree thread group this thing belongs to
         List<Point> pointsInRange = world.quadTreeSearchGroups.getQuadTree(this).search(searchArea, null);
         for (Point point: pointsInRange) {
-            Thing thing = world.things.get(point.index);
+            Thing thing = world.things.get(point.getIndex());
             float distance = this.calculateDistanceTo(thing);
             if (distance > 0 && distance <= radius + thing.size / 2) {
                 creaturesInRange.add(thing);

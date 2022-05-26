@@ -35,7 +35,7 @@ public final class TreeConstants extends CreatureConstants {
         this.metabolismRate = 15.0f; // adjust to FPS and cool down
         this.decayRate = -50; // adjust to FPS and cool down
         this.growAtHealth = 80;
-        this.maxGrowthRate = 2.0f; // adjust to FPS and cool down
+        this.maxGrowthRate = 1.8f; // adjust to FPS and cool down
         this.reproduceAtSize = 0.8f * maxSize;
         this.reproduceAtHealth = 90;
         this.reproductionPenalty = 0.3f;

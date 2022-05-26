@@ -59,7 +59,7 @@ public final class TurtleConstants extends CreatureConstants {
         this.foodNames.add("Butterfly");
         this.visionRange = 100;
         this.minFoodSize = 5;
-        this.eatingRate = 30; // biomass per second; adjust to FPS and cool down
+        this.eatingRate = 25; // biomass per second; adjust to FPS and cool down
         this.foodConversion = 0.8f; // biomass to health
     }
 }

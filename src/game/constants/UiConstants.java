@@ -24,10 +24,10 @@ public final class UiConstants {
     public static final float maxRateFactor = 1f / 5; // no less than 1/5
 
     // display window size
-    // public static final int panelWidth = 1600;
-    // public static final int panelHeight = 900;
-    public static final int panelWidth = 1200;
-    public static final int panelHeight = 700;
+    public static final int panelWidth = 1600;
+    public static final int panelHeight = 900;
+//    public static final int panelWidth = 1200;
+//    public static final int panelHeight = 700;
 
     // dimensions of the full play field (how far you can scroll)
     public static final int fullDimX = 1000000;
@@ -68,7 +68,7 @@ public final class UiConstants {
 
 
     // how far around the current view to still calculate creatures (1 means only things on screen)
-    public static final float loadRangeMultiplier = 1.2f;
+    public static final float loadRangeMultiplier = 1.5f;
 
     // minimum pixel load range diameter (prevents strange bugs when the FOV is tiny)
     public static final float minLoadRange = 400;

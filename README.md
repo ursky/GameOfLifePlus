@@ -135,7 +135,13 @@ Alternatively, just follow these steps (for Mac/Unix):
 git clone https://github.com/ursky/GameOfLifePlus.git
 cd GameOfLifePlus
 ./installGame.sh
-./runGame.sh  # alternatively, directly run `java -Xmx8192m -jar runGame.jar` 
+```
+
+Then to run the game:
+```bash
+./runGame.sh  
+# OR
+java -Xmx8192m -jar runGame.jar 
 ```
 
 
