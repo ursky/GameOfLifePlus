@@ -132,7 +132,13 @@ a few seconds. This will take extra memory, so I recommend giving java some memo
 
 Alternatively, just follow these steps (for Mac/Unix):
 ```bash
+# install Java with conda
+conda install -y openjdk java-jdk
+
+# clone the repository
 git clone https://github.com/ursky/GameOfLifePlus.git
+
+# compile the code
 cd GameOfLifePlus
 ./installGame.sh
 ```
