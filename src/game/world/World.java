@@ -6,6 +6,7 @@ import game.quadsearch.SearchAreas;
 import game.quadsearch.QuadTreeThread;
 import game.world.things.Classes.Animal;
 import game.world.things.Classes.Thing;
+import game.world.things.Classes.ThingArchive;
 
 import java.util.ArrayList;
 
@@ -134,5 +135,10 @@ public class World {
         this.initThings = new InitThings(this);
         this.game = game;
         this.counter = new ThingCounter(this);
+    }
+
+    public void killEveryone() {
+        this.things = new ArrayList<>();
+        this.newThings = new ArrayList<>();
     }
 }

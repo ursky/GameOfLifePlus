@@ -75,6 +75,9 @@ public class UserIO {
         if (Keyboard.isKeyPressed(KeyEvent.VK_R)) {
             this.game.startRecording();
         }
+        if (Keyboard.isKeyPressed(KeyEvent.VK_BACK_SPACE)) {
+            this.game.world.killEveryone();
+        }
         else {
             this.game.recording = false;
         }
