@@ -1,0 +1,44 @@
+#!/bin/bash
+# Double-click launcher for GameOfLife+ (macOS): finds Java, (re)builds runGame.jar when the
+# sources have changed, and starts the game.
+
+ROOT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+cd "$ROOT_DIR" || exit 1
+LOG="$ROOT_DIR/launch.log"
+: > "$LOG"
+
+alert() {
+    /usr/bin/osascript -e "display dialog \"$1\" with title \"GameOfLife+\" buttons {\"OK\"} default button 1 with icon caution" >/dev/null 2>&1
+}
+
+# Apps opened from Finder don't get the terminal's PATH or JAVA_HOME, so borrow them from a login shell.
+LOGIN_SHELL="${SHELL:-/bin/zsh}"
+LOGIN_PATH="$("$LOGIN_SHELL" -lc 'printf %s "$PATH"' 2>/dev/null)"
+export PATH="${LOGIN_PATH:+$LOGIN_PATH:}$PATH:/opt/homebrew/bin:/usr/local/bin"
+LOGIN_JAVA_HOME="$("$LOGIN_SHELL" -lc 'printf %s "$JAVA_HOME"' 2>/dev/null)"
+
+# Prefer the JDK the terminal uses, then macOS's default JDK, then java on PATH.
+JAVA=""
+if [ -n "$LOGIN_JAVA_HOME" ] && [ -x "$LOGIN_JAVA_HOME/bin/java" ]; then JAVA="$LOGIN_JAVA_HOME/bin/java"
+elif JH="$(/usr/libexec/java_home 2>/dev/null)" && [ -x "$JH/bin/java" ]; then JAVA="$JH/bin/java"
+elif command -v java >/dev/null 2>&1; then JAVA="$(command -v java)"; fi
+if [ -z "$JAVA" ] || ! "$JAVA" -version >/dev/null 2>&1; then
+    alert "Java isn't installed. Install a JDK (version 11 or newer) and try again."
+    exit 1
+fi
+echo "java=$JAVA" >> "$LOG"
+
+# runGame.jar isn't kept in git: build it on first launch, and again whenever a source file is newer.
+if [ ! -f runGame.jar ] || [ -n "$(find src -name '*.java' -newer runGame.jar -print -quit)" ]; then
+    JDK_BIN="$(dirname "$JAVA")"
+    rm -rf bin/game bin/LaunchGame.class
+    mkdir -p bin
+    if ! "$JDK_BIN/javac" --release 11 -d bin -sourcepath src src/LaunchGame.java >> "$LOG" 2>&1 \
+       || ! (cd bin && "$JDK_BIN/jar" cfm ../runGame.jar ../MANIFEST.MF . >> "$LOG" 2>&1); then
+        alert "Couldn't build the game. Details are in launch.log."
+        exit 1
+    fi
+fi
+
+exec "$JAVA" -Xmx8192m -Xdock:name="GameOfLife+" -Xdock:icon="$ROOT_DIR/icons/GameOfLifePlus.png" \
+     -jar runGame.jar >> "$LOG" 2>&1

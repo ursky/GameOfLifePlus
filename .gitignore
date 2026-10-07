@@ -30,3 +30,7 @@ out
 */.DS_store
 */*/.DS_store
 
+
+# Double-click launchers: the Windows shortcut the .bat creates on first run (launch.log is
+# covered by *.log above)
+*.lnk

@@ -150,6 +150,15 @@ Then to run the game:
 java -Xmx8192m -jar runGame.jar 
 ```
 
+### Double-click launchers
+- **macOS:** `GameOfLife+.app`. Drag it to the Dock if you like; it must stay in the `GameOfLifePlus/` folder.
+  If macOS says it "can't be opened" (it does this for unsigned apps that were downloaded rather than cloned),
+  right-click it and choose **Open** once.
+- **Windows:** `GameOfLife+.bat`. Its first run creates a `GameOfLife+` shortcut with the game icon next to it
+  (a .bat file can't have its own icon); use the shortcut from then on.
+
+Both find Java (an app opened by double-click doesn't get your terminal's `PATH`), build `runGame.jar` on first
+launch if it's missing (the macOS app also rebuilds it after you edit the sources), and log to `launch.log`.
 
 
 ## Author and credits
